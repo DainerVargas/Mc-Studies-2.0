@@ -1,0 +1,2486 @@
+@use 'funciones';
+
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Work Sans", sans-serif;
+}
+
+body {
+  background-color: #f7f6f6;
+}
+
+table {
+  box-shadow: 0.2vw 0.2vw 0.5vw gray;
+}
+
+/* COLORES */
+$verde: #99BF51;
+$azul: #05CCD1;
+$gris: #959595;
+
+
+/* INPUTS */
+.conteInput {
+  @include funciones.flex(start);
+  flex-direction: column;
+  position: relative;
+
+  .input {
+    width: 16vw;
+    border: none;
+    border-bottom: 0.11vw solid #9b9b9b;
+    outline: 0;
+    font-size: 1vw;
+    padding: 0.2vw;
+    padding-right: 1.7vw;
+    box-sizing: border-box;
+    background: transparent;
+    transition: border-color 0.2s;
+  }
+
+  .input::placeholder {
+    color: transparent;
+  }
+
+  .input:focus {
+    padding-top: 0.8vw;
+    padding-bottom: 0vw;
+    box-sizing: border-box;
+    font-weight: 700;
+    border-width: 0.2vw;
+    border-image: linear-gradient(to right, #05CCD1, white);
+    border-image-slice: 1;
+  }
+
+  .label {
+    position: absolute;
+    top: -1vw;
+    left: 2%;
+    display: block;
+    transition: all 0.2s ease;
+    font-size: 1vw;
+    color: gray;
+    pointer-events: none;
+  }
+
+  .input:placeholder-shown~.label {
+    cursor: text;
+    top: -0vw;
+    left: 2%;
+  }
+
+  .input:focus~.label {
+    position: absolute;
+    top: -0.7vw;
+    left: 0;
+    display: block;
+    transition: all 0.2s ease;
+    color: #05CCD1;
+  }
+
+  .input:required,
+  .input:invalid {
+    box-shadow: none;
+  }
+
+  .errors {
+    font-size: 0.7292vw;
+    color: red;
+    margin-top: 0.3472vw;
+    position: absolute;
+    top: 94%;
+    width: 100%;
+  }
+
+  .show {
+    position: absolute;
+    top: 50%;
+    right: -1%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    user-select: none;
+    font-size: 1.2vw;
+    color: #696969;
+  }
+}
+
+/* LO@GIN - FORGOT */
+.conteLogin {
+  @include funciones.flex(center);
+  height: 45vw;
+
+  .conteFormLogin {
+    @include funciones.flex(center);
+    flex-direction: column;
+    width: 28.4722vw;
+    height: 31.25vw;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0.0694vw 0.0694vw 1vw rgb(142, 142, 142);
+    padding: 2.0833vw 0;
+    box-sizing: border-box;
+
+    .infoLogo {
+      @include funciones.flex(center);
+      flex-direction: column;
+      row-gap: 0.6944vw;
+
+      .logo {
+        height: 6.9444vw;
+      }
+
+      p {
+        font-weight: 600;
+        font-size: 1.1vw;
+      }
+    }
+
+    form {
+      margin-top: 2.7778vw;
+      text-align: center;
+
+      .contePassword {
+        margin-top: 2.0833vw;
+        margin-bottom: 1.5278vw;
+      }
+
+      .forgot {
+        color: #1062CC;
+        font-weight: 500;
+        font-size: 1vw;
+      }
+
+
+      .conteButton {
+        margin-top: 1.5278vw;
+
+        .btnLogin {
+          height: 2.3611vw;
+          width: 100%;
+          font-size: 0.9722vw;
+          border-radius: 0.4861vw;
+          cursor: pointer;
+          border: 0.0694vw solid gray;
+          font-weight: 500;
+          transition: all 0.1s ease-in-out;
+        }
+
+        #top {
+          margin-top: 1vw;
+        }
+
+        .btnLogin:hover {
+          background-color: #05CCD1;
+          color: white;
+          border: none;
+        }
+      }
+    }
+  }
+
+  .conteImagen {
+    width: 22.2222vw;
+    height: 31.25vw;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0.0694vw 0.0694vw 1vw rgb(142, 142, 142);
+    position: relative;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+/* DASHBORAD */
+.principal {
+  height: 6vw;
+  width: 100vw;
+  @include funciones.flex(space-between);
+  background-color: $azul;
+  padding: 0.2vw 1vw;
+  box-sizing: border-box;
+
+  .conteImage {
+    @include funciones.flex(center);
+
+    a {
+      font-size: 1vw;
+    }
+
+    img {
+      height: 6vw;
+    }
+  }
+
+  .links {
+    @include funciones.flex(center);
+    column-gap: 4vw;
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.3vw;
+      transition: 0.1s ease;
+    }
+
+    a:hover {
+      transform: scale(1.1);
+    }
+
+    .active {
+      text-decoration: underline;
+    }
+  }
+
+  .conteUsuario {
+    @include funciones.flex(center);
+    column-gap: 2vw;
+
+    .user {
+      @include funciones.flex(center);
+      column-gap: 0.2vw;
+      background-color: white;
+      padding: 0.2vw 0.4vw;
+      box-sizing: border-box;
+      border-radius: 1vw;
+      transition: all 0.1s ease-in-out;
+
+      span {
+        font-size: 2vw;
+      }
+
+      a {
+        color: rgb(0, 0, 0);
+        text-decoration: none;
+        font-size: 1.1vw;
+        font-weight: 500;
+      }
+    }
+
+    .user:hover {
+      transform: scale(1.1)
+    }
+
+    .logout {
+      @include funciones.flex(center);
+
+      a {
+        color: white;
+        font-size: 1vw;
+        transition: 0.2s ease;
+      }
+
+      a:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+/* LISTA-APRENDIZ */
+.conteListAprendiz {
+  @include funciones.flex(center);
+  text-align: center;
+  flex-direction: column;
+
+  .links {
+    margin-bottom: 1vw;
+    height: 3.5vw;
+    width: 100vw;
+    padding: 0.5vw 1vw;
+    border: none;
+    box-sizing: border-box;
+    @include funciones.flex(start);
+    column-gap: 3vw;
+    box-shadow: 0.1vw 0.1vw 0.6vw rgb(186, 186, 186);
+
+    a {
+      text-decoration: none;
+      font-size: 1.2vw;
+      color: $gris;
+      cursor: pointer;
+    }
+
+    a:hover {
+      transform: scale(1.1);
+    }
+
+    .activea1,
+    .activep2 {
+      color: #000;
+      text-decoration: underline;
+      font-size: 1.4vw
+    }
+  }
+
+  .componente {
+    @include funciones.flex(center);
+    flex-direction: column;
+    position: relative;
+
+    .conteFiltro {
+      @include funciones.flex(center);
+      width: 98vw;
+
+      form {
+        @include funciones.flex(space-between);
+        width: 70%;
+        margin-top: 2vw;
+        /*  border: 0.1vw solid black; */
+
+        .conteInput {
+          @include funciones.align(start, start);
+          flex-direction: column;
+          row-gap: 0.3vw;
+          width: 50%;
+
+          label {
+            font-size: 1vw;
+          }
+
+          input {
+            height: 2.4vw;
+            width: 160%;
+            padding: 0 0.3vw;
+            border: 0.1vw solid rgb(123, 123, 123);
+            border-radius: 0.7vw;
+            outline: none;
+            font-size: 1.1vw;
+          }
+
+          input:focus {
+            border-color: #99BF51;
+          }
+        }
+
+        .btnFiltro {
+          height: 2.4vw;
+          width: 8vw;
+          font-size: 1.1vw;
+          font-weight: 500;
+          border: 0.1vw solid $verde;
+          border-radius: 0.4vw;
+          cursor: pointer;
+          background-color: $verde;
+          color: white;
+          transition: all 0.1s ease-in-out;
+          margin-top: 1vw;
+        }
+
+        .btnFiltro:hover {
+          transform: scale(1.1);
+        }
+      }
+
+    }
+
+    .conteSelect {
+      width: 65%;
+      margin-top: 2vw;
+      @include funciones.flex(space-around);
+
+      select {
+        height: 2.4vw;
+        width: 15vw;
+        font-weight: 500;
+        font-size: 0.9vw;
+        padding: 0 0.4vw;
+        box-sizing: border-box;
+        border: 0.1vw solid gray;
+        border-radius: 0.3vw;
+        background-color: white;
+      }
+
+      .conteChecks {
+        @include funciones.flex(center);
+        column-gap: 0.6vw;
+        border: 0.1vw solid gray;
+        border-radius: 0.3vw;
+        height: 2.4vw;
+        padding: 0 0.3vw;
+        box-sizing: border-box;
+        font-weight: 500;
+
+        .conteRadio {
+          @include funciones.flex(center);
+          column-gap: 0.2vw;
+
+          input {
+            height: 1vw;
+            border: 0.1vw solid gray;
+            outline: none;
+          }
+
+          input[type="radio"]:checked+label:before {
+            background-color: #000;
+          }
+
+          label {
+            font-size: 0.9vw;
+          }
+        }
+      }
+
+      .send {
+        height: 2vw;
+        width: 8vw;
+        font-size: 1vw;
+        font-weight: 500;
+        background-color: #99BF51;
+        color: white;
+        box-shadow: 0.1vw 0.2vw 0.5vw #aeaeae;
+        cursor: pointer;
+        animation: send 0.5s linear infinite;
+      }
+
+      @keyframes send {
+
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    .message {
+      position: absolute;
+      top: 34%;
+      right: 25%;
+      transform: translate(-50%, -50%);
+      z-index: 99999;
+    }
+
+    .containerConte {
+      width: 100%;
+      margin-top: 3vw;
+      border: none;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      scrollbar-width: none;
+      height: 23.4vw;
+
+      .conteTable {
+        width: 100%;
+        @include funciones.flex(center);
+
+        .teacher {
+          th {
+            font-size: 1vw;
+          }
+        }
+
+        table {
+          width: 90%;
+          border: 0.1vw solid gray;
+          border-radius: 0.4vw;
+          border-collapse: collapse;
+
+          th {
+            height: 1.7vw;
+            font-size: 1vw;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background-color: #dbdbdb;
+            height: 2vw;
+          }
+
+          td {
+            padding: 0.3vw 0.5vw;
+            box-sizing: border-box;
+            border: 0.1vw solid gray;
+            font-size: 1vw;
+            background-color: white;
+            text-align: center;
+            flex-direction: column;
+
+            .flex {
+              @include funciones.flex(center);
+              width: 100%;
+
+              a {
+                text-decoration: none;
+              }
+            }
+
+            button {
+              height: 2vw;
+              width: 6.5vw;
+              border: 0.1vw solid gray;
+              border-radius: 0.3vw;
+              cursor: pointer;
+              font-size: 0.9vw;
+              font-weight: 500;
+              @include funciones.flex(center);
+              column-gap: 0.3vw;
+
+              span {
+                font-size: 1.6vw;
+              }
+            }
+
+            .active {
+              background-color: #7AEE71;
+              border: 0.1vw solid #3b6d39;
+              cursor: auto;
+            }
+
+            .inactive {
+              background-color: #f85858;
+              cursor: auto;
+            }
+
+            .update:hover {
+              background-color: rgb(1, 185, 1);
+              color: white;
+              border: none;
+            }
+
+            .delete:hover {
+              background-color: rgb(255, 23, 23);
+              color: white;
+              border: none;
+            }
+
+            .nodatos {
+              font-weight: 500;
+              font-size: 1.2vw;
+              margin-bottom: 0.5vw;
+            }
+
+            .video {
+              height: 20vw;
+              border-radius: 0.5vw;
+            }
+          }
+
+          .conteName {
+            width: 100%;
+            @include funciones.flex(start);
+            column-gap: 0.5vw;
+            padding: 0.2vw 0.5vw;
+            box-sizing: border-box;
+
+            img {
+              height: 3.3vw;
+              width: 3.3vw;
+              border-radius: 50%;
+              border: 0.11vw solid rgb(161, 161, 161);
+            }
+
+            a {
+              text-decoration: none;
+              color: rgb(24, 24, 24);
+              font-size: 0.9vw;
+            }
+
+            a:hover {
+              font-weight: 500;
+              color: black;
+            }
+          }
+
+          .relative {
+            position: relative;
+            z-index: 0;
+
+            .new {
+              @include funciones.flex(center);
+              border: 0.1vw solid rgb(255, 0, 0);
+              width: 3vw;
+              height: 1.3vw;
+              border-radius: 0.3vw;
+              position: absolute;
+              top: 10%;
+              right: 4%;
+              background-color: red;
+              color: white;
+              font-weight: 500;
+              animation: new .5s linear infinite;
+
+              small {
+                font-size: 0.8vw;
+              }
+            }
+          }
+
+          @keyframes new {
+
+            0%,
+            100% {
+              transform: scale(1)
+            }
+
+            ;
+
+            50% {
+              transform: scale(1.1)
+            }
+          }
+        }
+
+        /* TABLE GROUP VIEW */
+        .grupo {
+
+          th {
+            font-size: 1vw;
+          }
+
+          td {
+            height: 3vw;
+            font-size: 1vw;
+          }
+
+          #start {
+            text-align: start;
+            font-size: 1.1vw;
+          }
+
+          .cantidad {
+            font-size: 1.1vw;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+
+    .conteUpdate {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 40vw;
+      width: 80%;
+      box-shadow: 0.1vw 0.1vw 1vw gray;
+      z-index: 999;
+      border-radius: 0.4vw;
+      background-color: white;
+      padding: 0.4vw 2vw;
+      box-sizing: border-box;
+      margin-top: 1vw;
+
+      .close {
+        @include funciones.flex(end);
+        position: absolute;
+        top: 1%;
+        right: 1%;
+
+        span {
+          font-size: 2.3vw;
+          color: red;
+          cursor: pointer;
+          font-weight: bold;
+        }
+
+        span:hover {
+          transform: scale(1.1);
+        }
+      }
+
+      form {
+        width: 100%;
+        @include funciones.flex(center);
+        flex-direction: column;
+        row-gap: 2.2vw;
+        margin-top: 1vw;
+
+        .conteImage {
+          @include funciones.flex(center);
+
+          .contePerfil {
+            position: relative;
+
+            .imageConte {
+              height: 13vw;
+              width: 13vw;
+              border-radius: 50%;
+              border: 0.1vw solid gray;
+
+              .perfil {
+                height: 100%;
+                width: 100%;
+                border-radius: 50%;
+              }
+            }
+
+            label {
+              font-size: 1vw;
+
+              .mas {
+                height: 2vw;
+                position: absolute;
+                top: 80%;
+                left: 84%;
+                transform: translate(-50%, -50%);
+                border: 0.3vw solid white;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.2s;
+              }
+
+              .mas:hover {
+                height: 2.2vw;
+              }
+            }
+
+            .loading {
+              position: absolute;
+              font-size: 4vw;
+              top: 30%;
+              left: 30%;
+              transform: translate(-50%, -50%);
+              color: rgb(89, 89, 89);
+              animation: girar .8s linear infinite;
+            }
+
+            @keyframes girar {
+              0% {
+                transform: rotateZ(0deg);
+              }
+
+              50% {
+                transform: rotateZ(180deg);
+
+              }
+
+              100% {
+                transform: rotateZ(360deg);
+
+              }
+            }
+          }
+        }
+
+        .errors {
+          font-size: 0.8vw;
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 9999;
+        }
+
+        .containerContent {
+          height: 3vw;
+          @include funciones.align(space-evenly, end);
+          position: relative;
+          column-gap: 9vw;
+
+          .conteInput {
+
+            width: 16vw;
+
+            label {
+              font-size: 1.2vw;
+            }
+
+            .input {
+              font-size: 1.3vw;
+            }
+
+            .input:placeholder-shown~.label {
+              cursor: text;
+              top: -0vw;
+              left: 2%;
+            }
+
+            .input:focus~.label {
+              position: absolute;
+              top: -0.7vw;
+              left: 0;
+              display: block;
+              transition: all 0.2s ease;
+              color: #05CCD1;
+            }
+          }
+
+          select {
+            height: 2vw;
+            width: 41vw;
+            border: none;
+            border-bottom: 0.1vw solid gray;
+            background-color: transparent;
+            font-size: 1.1vw;
+            color: rgb(90, 90, 90);
+          }
+        }
+
+        button {
+          height: 2.4vw;
+          width: 25vw;
+          margin-top: 2vw;
+          border: 0.1vw solid gray;
+          border-radius: 0.3vw;
+          font-size: 1.1vw;
+          font-weight: 500;
+          background-color: #d2d2d2;
+          color: #242424;
+          cursor: pointer;
+          transition: all 0.1s ease-in-out;
+        }
+
+        button:hover {
+          transform: scale(1.1);
+          background-color: #a3d14f;
+          color: white;
+        }
+      }
+
+      /* FORM GROUP */
+      #formgroup {
+        padding: 3vw 2vw;
+
+        .contetitulo {
+          h1 {
+            font-size: 3vw;
+            color: #99BF51;
+          }
+        }
+
+        .containerContent {
+          margin-top: 1vw;
+
+          select {
+            width: 25vw;
+          }
+
+          .errors {
+            top: 125%;
+            left: 72%;
+            transform: translate(-50%, -50%);
+          }
+
+          .conteInput {
+
+            .errors {
+              top: 120%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+          }
+        }
+
+        .conteBtn {
+          @include funciones.flex(space-evenly);
+          width: 100%;
+          margin-top: 1vw;
+
+          .cancelar {
+            background-color: #BB0000;
+            height: 2.5vw;
+            border: 0.1vw solid #BB0000;
+          }
+
+          .registrar {
+            height: 2.5vw;
+            background-color: $verde;
+            border: 0.1vw solid $verde
+          }
+        }
+      }
+
+    }
+
+    #informe {
+      height: 20vw;
+      width: 50%;
+
+      form {
+        margin-top: 5vw;
+
+        button {
+          background-color: $verde;
+          border: 0.1vw solid $verde;
+          font-size: 1.3vw;
+          font-weight: 600;
+        }
+
+        .containerContent {
+          .conteInput {
+            .message {
+              top: 130%;
+            }
+          }
+        }
+      }
+    }
+
+    #updateGroup {
+      height: 18vw;
+      width: 60%;
+      @include funciones.flex(center);
+
+      #formgroup {
+        margin-top: -2vw;
+        @include funciones.flex(center);
+        flex-direction: column;
+
+        button {
+          background-color: $verde;
+          border: 0.1vw solid $verde;
+          font-size: 1.3vw;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  /* LISTA-PROFESOR */
+
+  #conteProfesor {
+    @include funciones.flex(end);
+    padding: 0 2vw;
+    box-sizing: border-box;
+
+    form {
+      .conteInput {
+        input {
+          width: 50vw;
+        }
+      }
+    }
+
+    .conteSelect {
+      margin-top: 3vw;
+
+      .conteChecks {
+        height: 2.6vw;
+        width: 18vw;
+        @include funciones.flex(space-between);
+        padding: 0 0.4vw;
+        box-sizing: border-box;
+      }
+    }
+
+    .conteBtnCreate {
+      @include funciones.flex(center);
+      margin-top: 2.6vw;
+
+      a {
+        font-size: 1vw;
+        text-decoration: none;
+
+        button {
+          color: white;
+          font-weight: 500;
+          height: 2.7vw;
+          width: 7vw;
+          border: 0.1vw solid gray;
+          border-radius: 0.4vw;
+          @include funciones.flex(center);
+          column-gap: 0.4vw;
+          background-color: #99BF51;
+          font-size: 1.2vw;
+          transition: all 0.2s ease;
+          cursor: pointer;
+
+          img {
+            height: 1.9vw;
+          }
+        }
+
+        button:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+  }
+}
+
+/* INFORMACION-APRENDIZ */
+.conteInformacion {
+  @include funciones.flex(center);
+  width: 100vw;
+  padding: 0;
+  box-sizing: border-box;
+
+  .componente {
+    width: 100%;
+    position: relative;
+
+    .headerInfo {
+      @include funciones.flex(space-between);
+      width: 100%;
+      padding: 0.3vw 0.3vw 0 0.5vw;
+      box-sizing: border-box;
+      border-bottom: 0.11vw solid gray;
+      position: relative;
+      height: 8vw;
+
+      .back {
+        @include funciones.align(start, start);
+
+        a {
+          font-size: 1vw;
+          text-decoration: none;
+          transition: all 0.2s;
+
+          img {
+            height: 2.7vw;
+          }
+        }
+
+        a:hover {
+          transform: scale(1.1);
+        }
+
+        .conteImage {
+          .perfilImg {
+            position: absolute;
+            top: 10%;
+            left: 8%;
+            border-radius: 50%;
+            height: 18vw;
+            width: 18vw;
+            border: 0.1vw solid gray;
+          }
+
+          .conteFile {
+            position: absolute;
+            top: 180%;
+            left: 23%;
+            z-index: 9999;
+
+            label {
+              height: 2.5vw;
+              @include funciones.flex(center);
+
+              .mas {
+                height: 2.5vw;
+                border: 0.2vw solid white;
+                border-radius: 50%;
+                cursor: pointer;
+              }
+
+              .mas:hover {
+                transform: scale(1.1);
+              }
+
+              position: a;
+            }
+          }
+
+          .loading {
+            position: absolute;
+            top: 96%;
+            left: 14.5%;
+            font-size: 5vw;
+            color: #05CCD1;
+            animation: girar 1s linear infinite;
+          }
+
+          @keyframes girar {
+            0% {
+              transform: rotateZ(0deg);
+            }
+
+            50% {
+              transform: rotateZ(180deg);
+
+            }
+
+            100% {
+              transform: rotateZ(360deg);
+
+            }
+          }
+        }
+      }
+    }
+
+    .nameTeacher {
+
+      p {
+        font-size: 2.4vw;
+        font-weight: 600;
+        color: rgb(71, 71, 71);
+
+        span {
+          font-size: 2vw;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .estado {
+      @include funciones.flex(center);
+      column-gap: 0.7vw;
+      padding: 0 0.8vw 0 0;
+      box-sizing: border-box;
+
+      .active {
+
+        .textestado {
+          font-size: 1.6vw;
+          color: green;
+        }
+      }
+
+      .inactive {
+
+        .textestado {
+          font-size: 1.6vw;
+          color: red;
+        }
+      }
+
+      .botonInactive,
+      .botonActive {
+        height: 2.5vw;
+        width: 5.4vw;
+        border-radius: 1.4vw;
+        transition: all 1s ease;
+        padding: 0 0.3vw;
+        box-sizing: border-box;
+
+        button {
+          height: 2vw;
+          width: 2vw;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: all 1s ease;
+        }
+      }
+
+      .botonActive {
+        background-color: #7AEE71;
+        border: 0.1vw solid #056D05;
+        @include funciones.flex(start);
+
+        button {
+          border: 0.1vw solid #056D05;
+          background-color: #056D05;
+        }
+      }
+
+      .botonInactive {
+        background-color: #EE7171;
+        border: 0.1vw solid #6D0505;
+        @include funciones.flex(end);
+
+        button {
+          background-color: #6D0505;
+          border: 0.1vw solid #6D0505;
+        }
+      }
+
+    }
+  }
+
+  .mainInfo {
+    @include funciones.align(space-around, start);
+    margin-top: 4vw;
+    position: relative;
+
+    .infoEstado {
+      @include funciones.align(start, start);
+      flex-direction: column;
+      margin-top: 7.7vw;
+      row-gap: 0.4vw;
+
+      p {
+        font-size: 1.2vw;
+      }
+
+      .name {
+        font-size: 2.3vw;
+        font-weight: 600;
+      }
+
+      .eye {
+        @include funciones.flex(center);
+        column-gap: 1.4vw;
+        position: relative;
+
+        span {
+          font-size: 1.5vw;
+          cursor: pointer;
+          user-select: none;
+          color: black;
+        }
+
+        a {
+          font-size: 1vw;
+
+          span {
+            color: #000000;
+          }
+        }
+
+        small {
+          font-size: 0.9vw;
+          color: red;
+          position: absolute;
+          width: 100%;
+          top: 80%;
+          left: 166%;
+          transform: translate(-50%, -50%)
+        }
+      }
+
+      .estado {
+        @include funciones.align(start, start);
+        flex-direction: column;
+        row-gap: 0.3vw;
+
+        span {
+          font-size: 1.2vw;
+          font-weight: 500;
+        }
+
+        button {
+          height: 2.2vw;
+          width: 14vw;
+          border: none;
+          font-size: 1vw;
+          font-weight: 500;
+          border-radius: 0.3vw;
+        }
+
+        .inactive {
+          background-color: #EE7171;
+          border: 0.1vw solid #6D0505;
+        }
+
+        .active {
+          background-color: #7AEE71;
+          border: 0.1vw solid #056D05;
+        }
+      }
+    }
+
+    .informacion,
+    .infoAcudiente {
+      @include funciones.align(end, start);
+      flex-direction: column;
+      row-gap: 1.7vw;
+      margin-left: -5vw;
+      margin-top: 1.2vw;
+
+      .title {
+        font-size: 1.6vw;
+        font-weight: 500;
+        margin-left: -3vw;
+      }
+
+      .datos {
+        @include funciones.align(end, start);
+        flex-direction: column;
+        row-gap: 1vw;
+
+        p {
+          font-size: 1.3vw;
+          font-weight: 500;
+
+          span {
+            font-size: 1.2vw;
+            font-weight: 400;
+          }
+
+          select {
+            height: 1.7vw;
+            width: 10vw;
+            font-size: 0.9vw;
+            background-color: #ffffff;
+            border: 0.1vw solid gray;
+            font-weight: 500;
+            padding: 0 0.2vw;
+            box-sizing: border-box;
+            border-radius: 0.2vw;
+          }
+
+          input {
+            height: 1.8vw;
+            width: 12vw;
+            border: 0.1vw solid gray;
+            padding: 0 0.3vw;
+            border-radius: 0.25vw;
+            font-size: 1.1vw;
+          }
+        }
+
+      }
+
+      a {
+        text-decoration: none;
+        font-size: 1vw;
+      }
+
+      button {
+        height: 2.3vw;
+        width: 18vw;
+        border: 0.1vw solid #056D05;
+        border-radius: 0.4vw;
+        color: white;
+        background-color: #99BF51;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.1s ease;
+        margin-top: 2vw;
+        font-size: 1.2vw;
+        @include funciones.flex(center);
+        column-gap: 0.7vw;
+      }
+
+      button:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .absolute {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      img {
+        height: 40vw;
+        border: 0.1vw solid black;
+        border-radius: 0.3vw;
+        position: relative;
+      }
+
+      .close {
+        position: absolute;
+        top: 4%;
+        right: -5%;
+        transform: translate(-50%, -50%);
+        color: red;
+        font-weight: 500;
+        cursor: pointer;
+        user-select: none;
+        font-size: 2.8vw;
+        background-color: white;
+      }
+
+      .close:hover {
+        font-weight: 900;
+      }
+
+      .download {
+        position: absolute;
+        top: 95%;
+        right: -3%;
+        transform: translate(-50%, -50%);
+        color: black;
+        font-weight: 500;
+        cursor: pointer;
+        user-select: none;
+        font-size: 2.8vw;
+        background-color: white;
+      }
+
+      .download:hover {
+        font-weight: 900;
+      }
+    }
+  }
+
+  .conteUpdate {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 40vw;
+    width: 35%;
+    box-shadow: 0.1vw 0.1vw 1vw gray;
+    z-index: 999;
+    border-radius: 0.4vw;
+    background-color: white;
+    padding: 0.4vw 2vw;
+    box-sizing: border-box;
+
+    .close {
+      @include funciones.flex(end);
+      position: absolute;
+      top: 1%;
+      right: 1%;
+
+      span {
+        font-size: 2.3vw;
+        color: red;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      span:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .conteImagen {
+      @include funciones.flex(center);
+      flex-direction: column;
+      padding: 0 1vw;
+      box-sizing: border-box;
+
+      h3 {
+        font-size: 1.6vw;
+        margin-top: 2vw;
+      }
+
+      form {
+        @include funciones.align(start, start);
+        flex-direction: column;
+        margin-top: 1vw;
+        position: relative;
+
+        .conteLabel {
+          @include funciones.flex(center);
+          border: 0.1vw dotted gray;
+          height: 24vw;
+          width: 90%;
+          margin-bottom: 1vw;
+          margin-left: 1.3vw;
+
+          label {
+            @include funciones.flex(center);
+            user-select: none;
+            width: 100%;
+            height: 100%;
+
+            img {
+              height: 90%;
+              max-width: 90%;
+              cursor: pointer;
+            }
+
+            .comprobante {
+              height: 50%;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .conteInput {
+          margin-top: 1vw;
+          margin-left: 1vw;
+
+          label {
+            font-size: 1.2vw;
+            font-weight: 500;
+            position: absolute;
+            left: 0;
+            top: -0.9vw;
+          }
+
+          .input {
+            font-size: 1.2vw;
+          }
+        }
+
+        .errors {
+          font-size: 1vw;
+          position: absolute;
+          top: 90%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .boton {
+          @include funciones.flex(center);
+          width: 100%;
+
+          button {
+            height: 2.2vw;
+            width: 70%;
+            margin-top: 2vw;
+            font-size: 1.2vw;
+            font-weight: 500;
+            cursor: pointer;
+            border: 0.1vw solid gray;
+            border-radius: 0.3vw;
+            @include funciones.flex(center);
+          }
+
+          button:hover {
+            background-color: #05CCD1;
+            zoom: 104%;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+/* REGISTRO Header*/
+.registro {
+  height: 100px;
+  width: 100%;
+  padding: 0 0.5vw;
+  box-sizing: border-box;
+  background-color: $azul;
+  @include funciones.flex(space-between);
+  flex-wrap: wrap;
+  position: fixed;
+  z-index: 99999;
+
+  .conteImage {
+    img {
+      height: 90px;
+    }
+  }
+
+  h2 {
+    color: white;
+    font-size: 30px;
+  }
+
+  div {
+    width: 5vw;
+  }
+}
+
+/* REGISTRO FORM */
+/* Main */
+.mainRegistro {
+  height: auto;
+  width: 98.7vw;
+  padding: 2vw;
+  box-sizing: border-box;
+  @include funciones.flex(center);
+  background-color: white;
+
+  .conteForm {
+    margin-top: 115px;
+    width: 94%;
+    padding: 14.3px 0;
+    box-sizing: border-box;
+    @include funciones.flex(center);
+    box-shadow: 1.44px 1.44px 7.2px gray;
+    border-radius: 5.76px;
+
+    form {
+      @include funciones.flex(center);
+      flex-direction: column;
+      width: 100%;
+      text-align: center;
+
+      h2 {
+        font-size: 28.8px;
+        margin-bottom: 14.3px;
+        color: #808080;
+        letter-spacing: 1px;
+        font-weight: 500;
+      }
+
+      .containerContents {
+        @include funciones.flex(center);
+        column-gap: 200px;
+        flex-wrap: wrap;
+        width: auto;
+
+        .conteInput {
+          @include funciones.align(start, start);
+          margin-top: 28.8px;
+          position: relative;
+
+          .labels {
+            margin-bottom: 2px;
+          }
+
+          .inputs {
+            height: 30px;
+            padding: 0 5px;
+            font-size: 16px;
+            width: 230px;
+            background-color: white;
+            border: 1px solid gray;
+            border-radius: 4px;
+            outline: none;
+          }
+
+          .inputs:focus {
+            border: 2px solid $verde;
+          }
+
+          .errors {
+            font-size: 12px;
+            position: absolute;
+            top: 105%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+
+        }
+      }
+
+      .top {
+        margin-top: 28.8px;
+        margin-bottom: 36px;
+      }
+
+      .modalidad {
+        @include funciones.align(center, end);
+        width: 100%;
+        margin-top: 43.2px;
+        margin-bottom: 57.6px;
+        flex-wrap: wrap;
+
+        .pagomensual,
+        .pagocompleto,
+        .pagodoscuotas {
+          width: 360px;
+          height: 489.6px;
+          border-radius: 18.72px;
+          border: 1.44px solid rgb(178, 178, 178);
+          padding: 14.3px;
+          box-sizing: border-box;
+          text-align: justify;
+          position: relative;
+
+          .titulo {
+            @include funciones.flex(space-between);
+            padding: 17.28px 20.16px 0 0;
+
+            p {
+              font-size: 21.6px;
+              font-weight: 600;
+              color: #516727;
+            }
+
+            small {
+              border: 1.44px solid #99BF51;
+              background-color: #99BF51;
+              color: white;
+              font-weight: 500;
+              border-radius: 5.76px;
+              padding: 4.32px;
+              box-sizing: border-box;
+              box-shadow: 1.44px 1.44px 8.64px #a1d442;
+              animation: popular 0.7s linear infinite;
+              font-size: 14.4px;
+            }
+
+            @keyframes popular {
+
+              0%,
+              100% {
+                transform: scale(1);
+              }
+
+              50% {
+                transform: scale(1.1);
+              }
+            }
+          }
+
+          .informacion {
+            margin-top: 28.8px;
+            width: 100%;
+            @include funciones.align(center, start);
+            flex-direction: column;
+
+            p {
+              font-size: 16px;
+              margin-bottom: 11.52px;
+              text-align: justify;
+            }
+
+            small {
+              font-size: 14.4px;
+            }
+
+            strong {
+              font-size: 31.68px;
+              color: #99BF51;
+
+              small {
+                color: #333333;
+                font-size: 14.4px;
+                font-weight: 500;
+              }
+            }
+          }
+
+          .plataforma {
+            text-align: center;
+            margin-top: 28.8px;
+            /* 2vw en 1440px */
+
+            p {
+              font-size: 17.28px;
+            }
+
+            span {
+              font-size: 28.8px;
+              /* 2vw en 1440px */
+              font-weight: 600;
+              color: rgb(86, 86, 86);
+            }
+          }
+
+          .info {
+            margin-top: 21.6px;
+            font-size: 14px;
+          }
+
+          .conteBtn {
+            @include funciones.flex(center);
+            width: 100%;
+            margin-top: 17.28px;
+
+            .btnModulo {
+              height: 33.12px;
+              width: 70%;
+              border: 1.44px solid transparent;
+              border-radius: 4.32px;
+              cursor: pointer;
+              font-size: 14.4px;
+              font-weight: 600;
+              border: 1px solid gray;
+            }
+
+            .completo {
+              background-color: #99BF51;
+              color: white;
+              margin-top: 28.8px;
+              height: 34px;
+            }
+
+            .btnModulo:hover {
+              transform: scale(1.1);
+            }
+          }
+
+          .absolute {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 100%;
+            width: 100%;
+            background-color: #0000007b;
+            @include funciones.flex(center);
+            border: none;
+            border-radius: 18px;
+
+            p {
+              font-size: 60px;
+              font-weight: 600;
+              text-transform: uppercase;
+              transform: rotate(-50deg);
+              color: white;
+              box-shadow: 0.1vw 0.1vw 1vw rgb(215, 215, 215);
+              padding: 0.5vw;
+              box-sizing: border-box;
+            }
+          }
+        }
+
+        .pagomensual {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          z-index: 0;
+
+          .absolute {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+
+          }
+        }
+
+        .pagocompleto {
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+          height: 547.2px;
+          box-shadow: 0px 8px 20.8px #c0c0c0;
+          border: 2.304px solid $verde;
+          z-index: 9999;
+          width: 432px;
+
+          .absolute {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+          }
+        }
+
+        .pagodoscuotas {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          z-index: 0;
+
+          .absolute {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+
+          }
+
+          .errors {
+            font-size: 12px;
+            position: absolute;
+            top: 105%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+        }
+      }
+
+      .metodosPagos {
+        @include funciones.flex(space-evenly);
+        margin-bottom: 50px;
+        flex-wrap: wrap;
+        width: 100%;
+
+        .bancolombia,
+        .pagoFisico {
+          @include funciones.align(center, start);
+          flex-direction: column;
+          row-gap: 10px;
+          margin-top: 20px;
+          /* border: 1px solid gray; */
+          padding: 10px;
+          box-sizing: border-box;
+          width: 350px;
+          border-radius: 10px;
+          text-align: center;
+          cursor: pointer;
+          box-shadow: 0.1vw 0.1vw 0.7vw rgb(107, 107, 107);
+
+          img {
+            user-select: none;
+            height: 90px;
+            max-width: 100%;
+            margin-bottom: 6px;
+          }
+        }
+
+        .bancolombia:hover,
+        .pagoFisico:hover {
+          border: 2px solid $verde;
+          box-shadow: 0vw 0vw 0;
+        }
+
+        .pagoFisico1,
+        .bancolombia2 {
+          border: 3px solid $verde;
+          box-shadow: 0vw 0vw 0;
+        }
+      }
+
+      .comprobante {
+        @include funciones.flex(center);
+        flex-direction: column;
+        width: 100%;
+        margin-top: 40px;
+        position: relative;
+
+        img {
+          height: 420px;
+          width: 460px;
+          border: 1px dotted gray;
+          padding: 48px;
+          box-sizing: border-box;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        .absolute {
+          height: 50px;
+          width: 50px;
+          position: absolute;
+          top: 47%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+
+          .loading {
+            font-size: 80px;
+            color: $azul;
+            animation: girar .8s linear infinite;
+          }
+
+          @keyframes girar {
+            0% {
+              transform: rotateZ(0deg);
+            }
+
+            50% {
+              transform: rotateZ(180deg);
+
+            }
+
+            100% {
+              transform: rotateZ(360deg);
+
+            }
+          }
+        }
+      }
+
+
+      .boton {
+        margin-top: 40px;
+        margin-bottom: 40px;
+
+        .btnRegistro {
+          height: 40px;
+          width: 400px;
+          font-size: 16px;
+          font-weight: 500;
+          cursor: pointer;
+          border: 1px solid gray;
+          border-radius: 4px;
+        }
+
+        .btnRegistro:hover {
+          background-color: #99BF51;
+          color: white;
+          transform: scale(1.1);
+        }
+      }
+
+      .success {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+/* ACTUALIZAR ESTUDIANTE */
+
+.conteUpdate {
+  width: 100vw;
+  padding: 0.5vw;
+  box-sizing: border-box;
+
+  .conteImg {
+    @include funciones.flex(center);
+    width: 100%;
+    height: 8vw;
+    border-bottom: 0.11vw solid rgb(125, 125, 125);
+    position: relative;
+
+    #img {
+      height: 15vw;
+      width: 15vw;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 0.11vw solid gray;
+    }
+
+    label {
+      z-index: 999;
+      position: absolute;
+      top: 150%;
+      left: 54%;
+
+      img {
+        height: 2.4vw;
+        border: 0.2vw solid white;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+    }
+
+    label:hover {
+      transform: scale(1.1)
+    }
+  }
+
+  form {
+    @include funciones.flex(center);
+    flex-direction: column;
+    width: 100%;
+
+    .containerInfo {
+      @include funciones.flex(space-around);
+      width: 100%;
+      padding: 0;
+      box-sizing: border-box;
+      margin-top: 5vw;
+
+      .infoAprendiz,
+      .infoAcudiente {
+        @include funciones.flex(center);
+        column-gap: 2vw;
+
+        .datosPersonales,
+        .datosAcudiente,
+        .datosEstudiantil {
+          @include funciones.flex(center);
+          flex-direction: column;
+          row-gap: 3vw;
+
+          h2 {
+            color: gray;
+            font-size: 2vw;
+          }
+
+          .containerContents {
+            @include funciones.flex(center);
+            flex-direction: column;
+            row-gap: 1.5vw;
+
+            .conteInput {
+              input {
+                font-size: 1.2vw;
+              }
+
+              label {
+                font-size: 1.2vw;
+
+              }
+            }
+
+          }
+        }
+
+        .datosEstudiantil {
+          .containerContents {
+            row-gap: 2vw;
+          }
+        }
+
+      }
+    }
+
+    .btnConte {
+      margin-top: 3vw;
+
+      .btn {
+        height: 2.6vw;
+        width: 22vw;
+        font-size: 1.2vw;
+        font-weight: 600;
+        border: 0.11vw solid $verde;
+        border-radius: 0.2vw;
+        cursor: pointer;
+        background-color: $verde;
+        color: white;
+      }
+
+      .btn:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+/* INFORMACIÓN DEL USUSARIO */
+
+.conteInfoUser {
+  @include funciones.flex(center);
+  flex-direction: column;
+
+  .links {
+    margin-bottom: 3vw;
+    height: 3.5vw;
+    width: 100%;
+    padding: 0.5vw 1vw;
+    border: none;
+    box-sizing: border-box;
+    @include funciones.flex(start);
+    column-gap: 3vw;
+    box-shadow: 0.1vw 0.1vw 0.6vw rgb(186, 186, 186);
+
+    a {
+      text-decoration: none;
+      font-size: 1.2vw;
+      color: $gris;
+    }
+
+    a:hover {
+      transform: scale(1.1);
+    }
+
+    .active {
+      color: #000;
+      text-decoration: underline;
+      font-size: 1.4vw
+    }
+  }
+
+  .contenedor {
+    .conteInformacion {
+      @include funciones.align(space-between, start);
+      padding: 0 1vw;
+      box-sizing: border-box;
+
+      .conteImg {
+        @include funciones.flex(start);
+        flex-direction: column;
+        row-gap: 2vw;
+        border: 0.1vw solid #dcdcdc;
+        background-color: #f3f3f3;
+        height: 31.2vw;
+        padding: 3vw 1vw;
+        width: 24%;
+        box-sizing: border-box;
+        border-radius: 0.3vw;
+        position: relative;
+
+        img {
+          height: 14vw;
+          width: 14vw;
+          border: 0.1vw solid gray;
+          border-radius: 50%;
+        }
+
+        .file {
+          position: absolute;
+          top: 45%;
+          left: 67%;
+          @include funciones.flex(center);
+
+          img {
+            height: 2vw;
+            width: 2vw;
+            cursor: pointer;
+          }
+        }
+
+        .informacion {
+          @include funciones.flex(center);
+          flex-direction: column;
+          row-gap: 0.8vw;
+
+          h2 {
+            font-size: 1.9vw;
+          }
+
+          p {
+            font-size: 1.2vw;
+          }
+        }
+      }
+
+      .containerForm {
+        width: 75%;
+        height: 31.7vw;
+        border: 0.1vw solid gray;
+        background: linear-gradient(#e5e5e5, 3%, white);
+        @include funciones.flex(start);
+        flex-direction: column;
+        row-gap: 3vw;
+        padding: 1vw;
+        box-sizing: border-box;
+        border-radius: 0.3vw;
+
+        h2 {
+          font-size: 2.2vw;
+          color: rgb(64, 64, 64);
+        }
+
+        form {
+          @include funciones.flex(center);
+          flex-direction: column;
+
+          .contenedor {
+            @include funciones.flex(center);
+            column-gap: 5vw;
+          }
+
+          .containerContents {
+            @include funciones.flex(start);
+            flex-direction: column;
+            row-gap: 3.5vw;
+            margin-bottom: 3.5vw;
+
+            .conteInput {
+
+              .input,
+              .label {
+                font-size: 1.2vw;
+              }
+
+              .errors {
+                left: 10%;
+              }
+
+              .eye {
+                color: #4c4c4c;
+                position: absolute;
+                top: 50%;
+                left: 93%;
+                transform: translate(-50%, -50%);
+                user-select: none;
+                cursor: pointer;
+                font-size: 1.5vw;
+              }
+
+              select {
+                width: 36vw;
+              }
+
+              #left {
+                left: 35%;
+              }
+            }
+          }
+
+          .btnActualizar {
+            height: 2.2vw;
+            width: 16vw;
+            cursor: pointer;
+            font-size: 1.05vw;
+            font-weight: 500;
+            border: 0.1vw solid $gris;
+            border-radius: 0.3vw;
+          }
+
+          .btnActualizar:hover {
+            background-color: $azul;
+            border: 0.1vw solid $azul;
+            transform: scale(1.1);
+          }
+        }
+
+        .containerConte {
+          width: 100%;
+          border: none;
+          overflow-x: hidden;
+          overflow-y: scroll;
+          scrollbar-width: none;
+          height: 24.5vw;
+
+          .conteTable {
+            width: 100%;
+            @include funciones.flex(center);
+
+            table {
+              width: 100%;
+              border: 0.1vw solid gray;
+              border-radius: 0.4vw;
+              border-collapse: collapse;
+
+              th {
+                height: 1.7vw;
+                font-size: 0.9vw;
+                position: sticky;
+                top: 0;
+                z-index: 999;
+                border: 0.1vw solid gray !important;
+                background-color: #dbdbdb;
+                height: 2vw;
+              }
+
+              td,
+              th {
+                border: 0.1vw solid gray;
+              }
+
+              td {
+                padding: 0.3vw 0.5vw;
+                box-sizing: border-box;
+                border: 0.1vw solid gray;
+                font-size: 1vw;
+                background-color: white;
+                text-align: center;
+
+                button {
+                  height: 1.6vw;
+                  width: 5vw;
+                  border: 0.1vw solid gray;
+                  border-radius: 0.3vw;
+                  cursor: pointer;
+                  font-size: 0.8vw;
+                  font-weight: 500;
+                }
+
+                .conteImage {
+                  @include funciones.flex(start);
+                  column-gap: 1vw;
+                  padding: 0 1vw;
+
+                  img {
+                    height: 4vw;
+                    width: 4vw;
+                    border: 0.1vw solid gray;
+                    border-radius: 50%;
+                  }
+                }
+
+                .safe {
+                  background-color: #05CCD1;
+                  font-weight: 500;
+                  border: 0.1vw solid $azul;
+                }
+
+                .update:hover {
+                  background-color: rgb(1, 185, 1);
+                  color: white;
+                  border: none;
+                }
+
+                .delete:hover {
+                  background-color: rgb(255, 23, 23);
+                  color: white;
+                  border: none;
+                }
+
+                .video {
+                  height: 20vw;
+                  border-radius: 0.5vw;
+                }
+              }
+
+            }
+
+          }
+        }
+      }
+    }
+  }
+}
+
+/* HISTORIAL */
+
+.contenedorHistorial {
+  @include funciones.flex(center);
+  flex-direction: column;
+  width: 100vw;
+  padding: 2vw 0;
+  box-sizing: border-box;
+
+  .conteTable {
+    @include funciones.flex(center);
+    flex-direction: column;
+    row-gap: 2vw;
+    width: 100%;
+
+    table {
+      width: 90%;
+
+      th,
+      td {
+        border: 0.1vw solid gray;
+        padding: 0.6vw;
+        box-sizing: border-box;
+        font-size: 1.2vw;
+        text-align: center;
+      }
+
+      .titulo {
+        font-size: 2.2vw;
+        border: 0.1vw solid palevioletred;
+        background-color: palevioletred;
+        color: white;
+        border-top-left-radius: 0.4vw;
+        border-top-right-radius: 0.4vw;
+
+        span {
+          font-size: 1.7vw;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .back {
+          transform: rotateZ(180deg);
+        }
+      }
+
+      .titulo2 {
+        font-size: 1.4vw;
+      }
+    }
+  }
+}
+
+@media (max-width: 817px) {
+
+  .registro {
+    height: 156px;
+    @include funciones.flex(center);
+    flex-direction: column;
+    text-align: center;
+    padding: 6px 0;
+    box-sizing: border-box;
+
+    .conteImage {
+      img {
+        height: 100px;
+      }
+    }
+
+    div {
+      width: 15vw;
+    }
+  }
+
+  .mainRegistro {
+    padding: 4px;
+
+    .conteForm {
+      padding: 10px 0;
+
+      form {
+        margin-top: 28px;
+
+        .comprobante {
+          img {
+            height: 370px;
+            width: 410px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 566px) {
+
+  .registro {
+    height: 176px;
+    @include funciones.flex(center);
+    flex-direction: column;
+    text-align: center;
+    padding: 6px 0;
+    box-sizing: border-box;
+
+    .conteImage {
+      img {
+        height: 100px;
+      }
+    }
+
+    div {
+      width: 100%;
+    }
+
+    h2 {
+      font-size: 26px;
+    }
+  }
+
+  .mainRegistro {
+    padding: 24px;
+
+    .conteForm {
+      padding: 10px;
+
+      form {
+        margin-top: 42px;
+
+        .comprobante {
+          img {
+            height: 200px;
+            width: 220px;
+            padding: 30px;
+          }
+        }
+
+        .boton {
+          .btnRegistro {
+            width: 240px;
+          }
+        }
+      }
+    }
+  }
+}
