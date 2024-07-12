@@ -28,7 +28,7 @@
         <p style="font-size: 14px; color: #666;">Para contactarnos:</p>
         <p style="font-size: 14px; color: #007bff;">Teléfono:3173961175
         </p>
-        <p style="font-size: 14px; color: #007bff;">Correo electrónico: info.mcstudies@gmail.com
+        <p style="font-size: 14px; color: #007bff;">Correo electrónico: info@mcstudies.com
         </p>
         <p style="font-size: 14px; color: #007bff;">Sitio web: <a href="http://www.mcstudies.com/ ">MC-Studies</a></p>
     </div>

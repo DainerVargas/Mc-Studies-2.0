@@ -4,7 +4,8 @@
             <img id="img" src="{{ $image->temporaryUrl() }}" alt="">
         @else
             @if ($aprendiz->imagen)
-                <img id="img" src="/users/{{ $aprendiz->imagen }}" alt="">
+                {{-- <img id="img" src="/users/{{ $aprendiz->imagen }}" alt=""> --}}
+                <img id="img" src="{{ asset('users/' . $aprendiz->imagen) }}" alt="">
             @else
                 <img id="img" src="/images/perfil.png" alt="">
             @endif
@@ -15,7 +16,7 @@
     </div>
     <form action="{{ route('update', $aprendiz->id) }}" method="post" enctype="multipart/form-data">
         @csrf
-        <input type="file" wire:model="image" value="{{$aprendiz->imagen}}" name="imagen" id="imagen" hidden>
+        <input type="file" wire:model="image" value="{{ $aprendiz->imagen }}" name="imagen" id="imagen" hidden>
         <div class="containerInfo">
             <div class="infoAprendiz">
                 <div class="datosPersonales">
@@ -53,9 +54,17 @@
                                 <small style="color: red">{{ $message }}</small>
                             @enderror
                         </div>
+                        <div class="conteInput">
+                            <input class="input" type="text" name="direccion" placeholder="Dirección"
+                                value="{{ old('direccion', $aprendiz->direccion) }}">
+                            <label class="label" for="">Dirección</label>
+                            @error('direccion')
+                                <small style="color: red">{{ $message }}</small>
+                            @enderror
+                        </div>
                     </div>
                 </div>
-                <div class="datosEstudiantil">
+                <div class="datosEstudiantil datosPersonales">
                     <div class="containerContents">
                         <div class="conteInput">
                             <select class="input" name="modality_id" id="">
@@ -95,6 +104,25 @@
                                 <small style="color: red">{{ $message }}</small>
                             @enderror
                         </div>
+
+                        @if ($aprendiz->edad >= 18)
+                            <div class="conteInput">
+                                <input type="text" class="input" name="telefonoStudent" placeholder="Telefono"
+                                    value="{{ old('telefonoStudent', $aprendiz->telefono) }}">
+                                <label for="" class="label">Telefono</label>
+                                @error('telefonoStudent')
+                                    <small class="errors" style="color red">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="conteInput">
+                                <input type="text" class="input" name="emailStudent" placeholder="Email"
+                                    value="{{ old('emailStudent', $aprendiz->email) }}">
+                                <label for="" class="label">Email</label>
+                                @error('emailStudent')
+                                    <small class="errors" style="color red">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

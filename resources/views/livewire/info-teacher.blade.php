@@ -82,6 +82,11 @@
                 <span title="Enviar comprobante de pago" wire:click="comprobantePago" class="material-symbols-outlined">
                     file_open
                 </span>
+                <a href="{{ route('descargap', $teacher->id) }}">
+                    <span class="material-symbols-outlined" title="Descargar documento">
+                        download
+                    </span>
+                </a>
             </div>
             <div class="estado">
                 <span>Estatus:</span>

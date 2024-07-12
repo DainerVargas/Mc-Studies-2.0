@@ -28,7 +28,7 @@ class ConfirmacionMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Registro Exitoso, MC-Studies',
+            subject: 'Registro Exitoso, MC Languaje studies',
         );
     }
 

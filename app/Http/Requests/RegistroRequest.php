@@ -25,7 +25,10 @@ class RegistroRequest extends FormRequest
             'name' => 'required',
             'apellido' => 'required',
             'edad' => 'required',
+            'direccion' => 'required',
             'fecha_nacimiento' => 'required',
+            'telefonoStudent' => 'nullable',
+            'emailStudent' => 'nullable',
 
             'nameAcudiente' => 'required',
             'apellidoAcudiente' => 'required',
@@ -46,6 +49,7 @@ class RegistroRequest extends FormRequest
             'name.required' => 'El nombre es requerido',
             'apellido.required' => 'El apellido es requerido',
             'edad.required' => 'La edad es requerida',
+            'direccion.required' => 'La dirección es requerida',
             'fecha_nacimiento.required' => 'La fecha de nacimiento es requerida',
 
             'nameAcudiente.required' => 'El nombre del acudiente es requerido',

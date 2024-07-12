@@ -17,22 +17,26 @@ class SelectComprobante extends Component
 
     use WithFileUploads;
 
-    public $name;
-    public $apellido;
-    public $edad;
+    public $name, $apellido, $edad, $telefono, $email, $direccion, $valor;
     public $fecha_nacimiento;
     public $nameAcudiente;
     public $apellidoAcudiente;
-    public $telefono;
-    public $email;
+    public $telefonoAcudiente;
+    public $emailAcudiente;
     public $modality_id;
     public $imagen;
     public $comprobante;
-    public $success;
+    public $success, $error;
     public $metodo;
 
     public function modalidad($value)
     {
+        if ($value == 4 && $this->valor == '') {
+            $this->error = 'Ingrese el valor de la modalidad.';
+            return;
+        }else{
+            $this->error = '';
+        }
         $this->modality_id = $value;
     }
 
@@ -47,13 +51,8 @@ class SelectComprobante extends Component
             'name' => 'required',
             'apellido' => 'required',
             'edad' => 'required',
+            'direccion' => 'required',
             'fecha_nacimiento' => 'required',
-
-            'nameAcudiente' => 'required',
-            'apellidoAcudiente' => 'required',
-            'telefono' => 'required|numeric',
-            'email' => 'required|email',
-
             'modality_id' => 'required',
             'comprobante' => 'nullable'
         ], [
@@ -61,18 +60,48 @@ class SelectComprobante extends Component
             'name.required' => 'El nombre es requerido',
             'apellido.required' => 'El apellido es requerido',
             'edad.required' => 'La edad es requerida',
+            'direccion.required' => 'La dirección es requerida',
             'fecha_nacimiento.required' => 'La fecha de nacimiento es requerida',
 
             'nameAcudiente.required' => 'El nombre del acudiente es requerido',
             'apellidoAcudiente.required' => 'El apellido del acudiente es requerido',
-            'telefono.required' => 'El teléfono es requerido',
-            'telefono.numeric' => 'El teléfono debe contener solo números',
-            'email.required' => 'El email es requerido',
-            'email.email' => 'El email no tiene un formato válido',
+            'telefonoAcudiente.required' => 'El teléfono es requerido',
+            'telefonoAcudiente.numeric' => 'El teléfono debe contener solo números',
+            'emailAcudiente.required' => 'El email es requerido',
+            'emailAcudiente.email' => 'El email no tiene un formato válido',
             'modality_id' => 'La modalidad es requerida',
             'comprobante.image' => 'Es requerida una imagen para el comprobante'
         ]);
 
+        if ($this->edad >= 18) {
+            $acudienteID = 1;
+            $this->validate([
+                'telefono' => 'required|numeric',
+                'email' => 'required|email',
+            ], [
+                'telefono.required' => 'El teléfono es requerido',
+                'telefono.numeric' => 'El teléfono debe contener solo números',
+                'email.required' => 'El email es requerido',
+                'email.email' => 'El email no tiene un formato válido',
+            ]);
+        } else {
+            $this->validate([
+                'nameAcudiente' => 'required',
+                'apellidoAcudiente' => 'required',
+                'telefonoAcudiente' => 'required|numeric',
+                'emailAcudiente' => 'required|email',
+
+            ], [
+                'nameAcudiente.required' => 'El nombre del acudiente es requerido',
+                'apellidoAcudiente.required' => 'El apellido del acudiente es requerido',
+                'telefonoAcudiente.required' => 'El teléfono es requerido',
+                'telefonoAcudiente.numeric' => 'El teléfono debe contener solo números',
+                'emailAcudiente.required' => 'El email es requerido',
+                'emailAcudiente.email' => 'El email no tiene un formato válido',
+            ]);
+        }
+
+        
         if ($validaciones) {
 
             if ($this->imagen) {
@@ -83,27 +112,34 @@ class SelectComprobante extends Component
                 $imageName = null;
             }
             
-            $attendant = Attendant::where('email', $this->email)->first();
-            if ($attendant == null) {
-                $acudiente = Attendant::create([
-                    'name' => $this->nameAcudiente,
-                    'apellido' => $this->apellidoAcudiente,
-                    'telefono' => $this->telefono,
-                    'email' => $this->email,
-                ]);
-            } else {
-                $acudiente = $attendant;
+            if ($this->edad < 18) {
+                $attendant = Attendant::where('email', $this->email)->first();
+                if ($attendant == null) {
+                    $acudiente = Attendant::create([
+                        'name' => $this->nameAcudiente,
+                        'apellido' => $this->apellidoAcudiente,
+                        'telefono' => $this->telefonoAcudiente,
+                        'email' => $this->emailAcudiente,
+                    ]);
+                    $acudienteID = $acudiente->id;
+                } else {
+                    $acudiente = $attendant;
+                }
             }
-
+            
             $estudiante = Apprentice::create([
                 'name' => $this->name,
                 'apellido' => $this->apellido,
                 'edad' => $this->edad,
                 'fecha_nacimiento' => $this->fecha_nacimiento,
                 'estado' => 0,
+                'email' => $this->email,
+                'direccion' => $this->direccion,
+                'telefono' => $this->telefono,
                 'comprobante' => $imageName,
-                'attendant_id' => $acudiente->id,
+                'attendant_id' =>  $acudienteID,
                 'modality_id' => $this->modality_id,
+                'valor' => $this->valor,
             ]);
 
             $informe = Informe::create([
@@ -114,16 +150,21 @@ class SelectComprobante extends Component
 
             try {
 
-                Mail::to('dainer2607@gmail.com')->send(new ConfirmacionMail($estudiante));
-                
-                /* Mail::to('info.mcstudies@gmail.com')->send(new ConfirmacionMail($estudiante)); */
+               /*  if ($estudiante->email != null) {
+                    Mail::to($estudiante->email)->send(new ConfirmacionMail($estudiante));
+                } else {
+                    Mail::to($acudiente->email)->send(new ConfirmacionMail($estudiante));
+                } */
 
-                Mail::to($acudiente->email)->send(new ConfirmacionMail($estudiante));
+                /*  Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($estudiante)); */
+                
+                Mail::to('dainer2607@gmail.com')->send(new ConfirmacionMail($estudiante));
+               
             } catch (\Throwable $th) {
                 dd('hubo un erorr. Por favor revisa tu conexion. ');
             }
 
-            $this->success = '¡Te haz registrado con Exito!, muy pronto resiviras un correo dandote las indicaciones de todo lo relacionado.';
+            $this->success = '¡Te has registrado con éxito!';
 
             $this->name = '';
             $this->apellido = '';
@@ -131,8 +172,8 @@ class SelectComprobante extends Component
             $this->fecha_nacimiento = '';
             $this->nameAcudiente = '';
             $this->apellidoAcudiente = '';
-            $this->telefono = '';
-            $this->email = '';
+            $this->telefonoAcudiente = '';
+            $this->emailAcudiente = '';
             $this->modality_id = '';
             $this->imagen = '';
             $this->comprobante = '';

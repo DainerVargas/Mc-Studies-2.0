@@ -282,6 +282,8 @@ $gris: #959595;
       }
     }
   }
+
+
 }
 
 /* LISTA-APRENDIZ */
@@ -320,6 +322,7 @@ $gris: #959595;
     }
   }
 
+  /* INFORME ESTUDIANTES */
   .componente {
     @include funciones.flex(center);
     flex-direction: column;
@@ -331,7 +334,7 @@ $gris: #959595;
 
       form {
         @include funciones.flex(space-between);
-        width: 70%;
+        width: 90%;
         margin-top: 2vw;
         /*  border: 0.1vw solid black; */
 
@@ -339,7 +342,7 @@ $gris: #959595;
           @include funciones.align(start, start);
           flex-direction: column;
           row-gap: 0.3vw;
-          width: 50%;
+          width: 44%;
 
           label {
             font-size: 1vw;
@@ -357,6 +360,26 @@ $gris: #959595;
 
           input:focus {
             border-color: #99BF51;
+          }
+        }
+
+        .contelink {
+          @include funciones.flex(center);
+
+          a {
+            font-size: 1.2vw;
+            text-decoration: none;
+            color: #1062CC;
+            text-decoration: underline;
+            transition: all 0.2s ease-in-out;
+
+            span {
+              font-size: 1.5vw;
+            }
+          }
+
+          a:hover {
+            transform: scale(1.1);
           }
         }
 
@@ -507,6 +530,21 @@ $gris: #959595;
 
             .flex {
               @include funciones.flex(center);
+              column-gap: 0.5vw;
+              
+              .editar {
+                font-size: 1.5vw;
+                cursor: pointer;
+                user-select: none;
+              }
+
+              .editar:hover{
+                color: #01b901;
+              }
+            }
+
+            .flex {
+              @include funciones.flex(center);
               width: 100%;
 
               a {
@@ -542,7 +580,7 @@ $gris: #959595;
             }
 
             .update:hover {
-              background-color: rgb(1, 185, 1);
+              background-color: #01b901;
               color: white;
               border: none;
             }
@@ -619,13 +657,11 @@ $gris: #959595;
 
             0%,
             100% {
-              transform: scale(1)
+              transform: scale(1);
             }
 
-            ;
-
             50% {
-              transform: scale(1.1)
+              transform: scale(1.1);
             }
           }
         }
@@ -995,7 +1031,6 @@ $gris: #959595;
         }
       }
     }
-
   }
 }
 
@@ -1630,6 +1665,8 @@ $gris: #959595;
         margin-bottom: 57.6px;
         flex-wrap: wrap;
 
+        h2 {}
+
         .pagomensual,
         .pagocompleto,
         .pagodoscuotas {
@@ -1831,43 +1868,51 @@ $gris: #959595;
 
       .metodosPagos {
         @include funciones.flex(space-evenly);
+        flex-direction: column;
+        margin-top: 40px;
         margin-bottom: 50px;
         flex-wrap: wrap;
         width: 100%;
 
-        .bancolombia,
-        .pagoFisico {
-          @include funciones.align(center, start);
-          flex-direction: column;
-          row-gap: 10px;
-          margin-top: 20px;
-          /* border: 1px solid gray; */
-          padding: 10px;
-          box-sizing: border-box;
-          width: 350px;
-          border-radius: 10px;
-          text-align: center;
-          cursor: pointer;
-          box-shadow: 0.1vw 0.1vw 0.7vw rgb(107, 107, 107);
+        .colum {
+          @include funciones.flex(space-evenly);
+          column-gap: 50px;
+          flex-wrap: wrap;
 
-          img {
-            user-select: none;
-            height: 90px;
-            max-width: 100%;
-            margin-bottom: 6px;
+          .bancolombia,
+          .pagoFisico {
+            @include funciones.align(center, start);
+            flex-direction: column;
+            row-gap: 10px;
+            margin-top: 20px;
+            /* border: 1px solid gray; */
+            padding: 10px;
+            box-sizing: border-box;
+            width: 350px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0.1vw 0.1vw 0.7vw rgb(107, 107, 107);
+
+            img {
+              user-select: none;
+              height: 90px;
+              max-width: 100%;
+              margin-bottom: 6px;
+            }
           }
-        }
 
-        .bancolombia:hover,
-        .pagoFisico:hover {
-          border: 2px solid $verde;
-          box-shadow: 0vw 0vw 0;
-        }
+          .bancolombia:hover,
+          .pagoFisico:hover {
+            border: 2px solid $verde;
+            box-shadow: 0vw 0vw 0;
+          }
 
-        .pagoFisico1,
-        .bancolombia2 {
-          border: 3px solid $verde;
-          box-shadow: 0vw 0vw 0;
+          .pagoFisico1,
+          .bancolombia2 {
+            border: 3px solid $verde;
+            box-shadow: 0vw 0vw 0;
+          }
         }
       }
 
@@ -2042,6 +2087,8 @@ $gris: #959595;
         }
 
         .datosEstudiantil {
+          margin-top: 5vw;
+
           .containerContents {
             row-gap: 2vw;
           }
@@ -2389,6 +2436,71 @@ $gris: #959595;
         font-size: 1.4vw;
       }
     }
+  }
+}
+
+/* DESCARGA */
+.descarga {
+
+  width: 100vw;
+  padding: 0 1vw;
+  box-sizing: border-box;
+  /* #logo {
+  background-image: url('/public/images/Logo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 7vw;
+  width: 10vw;
+} */
+
+  .container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .header,
+  .footer {
+    text-align: center;
+    background-color: #05CCD1;
+    color: #fff;
+    padding: 10px 0;
+  }
+
+  .content {
+    padding: 20px;
+    background-color: #f9f9f9;
+    width: 100%;
+
+    table {
+      border: 1px solid #eb0303;
+      width: 100%;
+    }
+  }
+
+  .content h2 {
+    color: #99BF51;
+  }
+
+  .content p {
+    margin: 10px 0;
+  }
+
+  .details {
+    margin-top: 20px;
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .details p {
+    margin: 5px 0;
+    color: #959595;
+  }
+
+  .details p strong {
+    color: #333;
   }
 }
 

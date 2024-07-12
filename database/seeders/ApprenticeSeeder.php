@@ -19,6 +19,8 @@ class ApprenticeSeeder extends Seeder
             'edad' => '20',
             'fecha_nacimiento' => '2003/07/26',
             'estado' => '0',
+            'email' => '',
+            'telefono' => '',
             'Attendant_id' => 1,
             'modality_id' => 3,
             'group_id' => null

@@ -5,6 +5,13 @@
                 <label for="filtro">Filtra por el nombre del Profesor</label>
                 <input type="text" wire:model.live="filtro" placeholder="Nombre del Profesor">
             </div>
+            <div class="contelink">
+                <a href="{{ route('informedescarga') }}" > Descargar Informe
+                    <span class="material-symbols-outlined" >
+                        download
+                    </span>
+                </a>
+            </div>
         </form>
     </div>
     <div class="containerConte">

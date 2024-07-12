@@ -32,6 +32,8 @@ class Apprentice extends Model
         'name',
         'apellido',
         'edad',
+        'email',
+        'telefono',
         'fecha_nacimiento',
         'estado',
         'imagen',
@@ -39,5 +41,7 @@ class Apprentice extends Model
         'comprobante',
         'attendant_id',
         'group_id',
+        'valor',
+        'direccion',
     ];
 }

@@ -11,7 +11,8 @@
 </head>
 
 <body>
-    <link rel="stylesheet" href="{{asset('build/assets/app-CtNZF0j3.css')}}">
+   {{--  <link rel="stylesheet" href="{{asset('build/assets/app-hjctGKyo.css')}}"> --}}
+   @vite('resources/sass/app.scss')
     <header class="registro">
         <div class="conteImage">
             <img src="/images/Logo.png" alt="">

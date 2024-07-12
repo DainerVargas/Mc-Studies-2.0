@@ -20,13 +20,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('apellido');
             $table->integer('edad');
+            $table->string('email')->nullable();
+            $table->string('telefono')->nullable();
             $table->date('fecha_nacimiento');
             $table->boolean('estado')->nullable();
             $table->string('imagen')->nullable();
             $table->string('comprobante')->nullable();
             $table->dateTime('fecha_inicio')->nullable();
             $table->dateTime('fecha_fin')->nullable();
-            $table->foreignIdFor(Attendant::class)->constrained();
+            $table->foreignIdFor(Attendant::class)->constrained()->nullable();
             $table->foreignIdFor(Modality::class)->constrained();
             $table->foreignIdFor(Group::class)->nullable()->constrained();
             $table->timestamps();

@@ -75,9 +75,9 @@ class InfoTeacher extends Component
             }
 
             try {
-                Mail::to('dainer2607@gmail.com')->send(new ComprobanteMail($teacher, $comprobante, $this->valor));
-              /*   Mail::to('$teacher->email')->send(new ComprobanteMail($teacher, $comprobante)); */
-                /* Mail::to('info.mcstudies@gmail.com')->send(new ConfirmacionMail($estudiante)); */
+                /* Mail::to('dainer2607@gmail.com')->send(new ComprobanteMail($teacher, $comprobante, $this->valor)); */
+                Mail::to($teacher->email)->send(new ComprobanteMail($teacher, $comprobante, $this->valor));
+                /* Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($estudiante)); */
                 session()->flash('message', 'Email enviado con éxito!');
             } catch (\Throwable $th) {
                 return back()->withErrors([

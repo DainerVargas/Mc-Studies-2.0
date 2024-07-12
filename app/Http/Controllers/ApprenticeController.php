@@ -33,20 +33,27 @@ class ApprenticeController extends Controller
         $aprendices = Apprentice::all();
         $dia_semana = date("N");
         foreach ($aprendices as $key => $aprendiz) {
-            if (Carbon::now()->toDateString() . ' 00:00:00' >= $aprendiz->fecha_fin) {
+            if (Carbon::now()->toDateString() . ' 00:00:00' >= $aprendiz->fecha_fin && $aprendiz->fecha_inicio != null) {
                 $aprendiz->estado = false;
                 $aprendiz->save();
 
-                try {
-                    Mail::to('dainer2607@gmail.com')->send(new PasswordResetMail($aprendiz));
-                    Mail::to($aprendiz->attendant->email)->send(new PasswordResetMail($aprendiz));
-                } catch (\Throwable $th) {
-                    dd('hubo un erorr. Por favor revisa tu conexion. ');
+                 if ($aprendiz->email != null) {
+                    $email = $aprendiz->email;
+                } else {
+                    $email = $aprendiz->attendant->email;
                 }
-            }
+
+                    try {
+                        Mail::to($email)->send(new PasswordResetMail($aprendiz));
+                        /* Mail::to('dainer2607@gmail.com')->send(new PasswordResetMail($aprendiz)); */
+                    } catch (\Throwable $th) {
+                        return 'hubo un erorr. Por favor revisa tu conexion.';
+                    }
+                }
+          /*   } */
 
             if ($dia_semana == 3) {
-                Mail::to('dainer2607@gmail.com')->send(new RecordatorioVirtualMail($aprendiz));
+                /*  Mail::to('dainer2607@gmail.com')->send(new RecordatorioVirtualMail($aprendiz)); */
                 Mail::to($aprendiz->attendant->email)->send(new RecordatorioVirtualMail($aprendiz));
             }
         }

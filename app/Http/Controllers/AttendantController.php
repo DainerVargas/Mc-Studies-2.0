@@ -55,10 +55,14 @@ class AttendantController extends Controller
     ]);
 
     $grupo = Group::find($request->group_id);
+    
     $aprendiz->update([
       'name' => $request->name,
       'apellido' => $request->apellido,
       'edad' => $request->edad,
+      'email' => $request->emailStudent,
+      'telefono' => $request->telefonoStudent,
+      'direccion' => $request->direccion,
       'imagen' => $foto,
       'comprobante' => $aprendiz->comprobante,
       'fecha_nacimiento' => $request->fecha_nacimiento,

@@ -86,9 +86,9 @@
                 <p>Apellido: <span>{{ $aprendiz->apellido }}</span> </p>
                 <p>Edad: <span>{{ $aprendiz->edad }}</span> </p>
                 <p>Fecha-Nacimiento: <span>{{ $aprendiz->fecha_nacimiento }}</span> </p>
+                <p>Dirección: <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : "No hay dirección" }}</span></p>
                 <p>Fecha-Inicio: <span>{{ $aprendiz->fecha_inicio }}</span></p>
                 <p>Fecha-Finalización: <span>{{ $aprendiz->fecha_fin }}</span></p>
-                <p>Fecha-Actual: <span>{{ $fechaActual }}</span></p>
             </div>
         </div>
         <div class="infoAcudiente">

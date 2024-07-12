@@ -74,11 +74,18 @@ Route::get('Listado-Usuarios', [UserController::class, 'listado'])->middleware('
 
 Route::get('Donwload-PDF/{aprendiz}', [descargaController::class, 'donwload'])->middleware('auth')->name('donwload');
 
-Route::get('Descarga-PDF/{aprendiz}', [descargaController::class, 'descarga'])->middleware('auth')->name('descarga');
+Route::get('Donwload/{teacher}', [descargaController::class, 'descargap'])->middleware('auth')->name('descargap');
+
+
+Route::get('Descarga-PDF', [descargaController::class, 'descargar'])->middleware('auth')->name('descargar');
+
+/* Route::get('Descarga-PDF/{aprendiz}', [descargaController::class, 'descarga'])->middleware('auth')->name('descarga'); */
+
+Route::get('DescargaInforme', [descargaController::class, 'informedescarga'])->middleware('auth')->name('informedescarga');
 
 /* Historial */
 Route::get('Historial', [AuthenticationController::class, 'historial'])->middleware('auth')->name('historial');
 
-/* COMPROBANTE */
+/* COMPROBANTE */ 
 
 Route::get('Comprobante/{teacher}', [TeacherController::class, 'comprobante'])->middleware('auth')->name('comprobante');

@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Mc-Studies',
             'usuario' => 'Mcstudies',
-            'email' => 'mcstudies@gmail.com',
+            'email' => 'info@mcstudies.com',
             'password' => Hash::make('Mcstudies2024',),
             'rol_id' => 1,
         ]);
