@@ -61,33 +61,7 @@ class InfoAprendiz extends Component
 
     public function render()
     {
-        /* dd(Carbon::now()->toDateString() . ' 00:00:00'); */
-
         $this->fechaActual = Carbon::now()->toDateString();
         return view('livewire.info-aprendiz');
     }
 }
-
-
-
-/*  public function save(Apprentice $aprendiz){
-
-        $aprendiz->update([
-            'name' => $this->name,
-            'apellido' => $this->apellido,
-            'edad' => $this->edad,
-            'fecha_nacimiento' => $this->fecha_nacimiento,
-            'modality_id' => $this->modality_id,
-            'group_id' => $this->group_id,
-        ]);
-
-        $acudiente = Attendant::find($aprendiz->attendant->id);
-
-        $acudiente->update([
-            'name' => $this->nameAcudiente,
-            'apellido' => $this->apellidoAcudiente,
-            'email' => $this->email,
-            'telefono' => $this->telefono,
-        ]);
-
-    } */

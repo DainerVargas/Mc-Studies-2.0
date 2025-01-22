@@ -22,7 +22,9 @@ return new class extends Migration
             $table->integer('edad');
             $table->string('email')->nullable();
             $table->string('telefono')->nullable();
+            $table->string('direccion');
             $table->date('fecha_nacimiento');
+            $table->integer('plataforma')->nullable();
             $table->boolean('estado')->nullable();
             $table->string('imagen')->nullable();
             $table->string('comprobante')->nullable();

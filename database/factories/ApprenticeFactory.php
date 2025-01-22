@@ -22,6 +22,8 @@ class ApprenticeFactory extends Factory
             'edad' => rand(4,20),
             'fecha_nacimiento' => fake()->date('y-m-d'),
             'estado' => 0,
+            'plataforma' => 0,
+            'direccion' => $this->faker->address(),
             'email' => $this->faker->email(),
             'telefono' => $this->faker->phoneNumber(),
             'Attendant_id' => rand(1,3),

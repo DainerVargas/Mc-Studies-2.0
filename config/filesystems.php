@@ -39,10 +39,10 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => public_path('users'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/users',
             'visibility' => 'public',
             'throw' => false,
-        ], 
+        ],
 
         's3' => [
             'driver' => 's3',

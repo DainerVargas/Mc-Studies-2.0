@@ -350,7 +350,7 @@ $gris: #959595;
 
           input {
             height: 2.4vw;
-            width: 160%;
+            width: 120%;
             padding: 0 0.3vw;
             border: 0.1vw solid rgb(123, 123, 123);
             border-radius: 0.7vw;
@@ -363,15 +363,29 @@ $gris: #959595;
           }
         }
 
+        .mes select {
+          height: 2vw;
+          width: 10vw;
+          background-color: #fff;
+          border: .1vw solid gray;
+          padding: 0 .5vw;
+          border-radius: .3vw;
+          font-size: 1.1vw;
+          cursor: pointer;
+        }
+
         .contelink {
           @include funciones.flex(center);
+          background-color: #99bf51;
+          padding: .3vw;
+          box-sizing: border-box;
+          border-radius: .4vw;
 
           a {
             font-size: 1.2vw;
             text-decoration: none;
-            color: #1062CC;
-            text-decoration: underline;
-            transition: all 0.2s ease-in-out;
+            color: #000;
+            text-decoration: none;
 
             span {
               font-size: 1.5vw;
@@ -379,7 +393,7 @@ $gris: #959595;
           }
 
           a:hover {
-            transform: scale(1.1);
+            color: #fff;
           }
         }
 
@@ -531,14 +545,14 @@ $gris: #959595;
             .flex {
               @include funciones.flex(center);
               column-gap: 0.5vw;
-              
+
               .editar {
                 font-size: 1.5vw;
                 cursor: pointer;
                 user-select: none;
               }
 
-              .editar:hover{
+              .editar:hover {
                 color: #01b901;
               }
             }

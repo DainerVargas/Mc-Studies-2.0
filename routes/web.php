@@ -76,8 +76,7 @@ Route::get('Donwload-PDF/{aprendiz}', [descargaController::class, 'donwload'])->
 
 Route::get('Donwload/{teacher}', [descargaController::class, 'descargap'])->middleware('auth')->name('descargap');
 
-
-Route::get('Descarga-PDF', [descargaController::class, 'descargar'])->middleware('auth')->name('descargar');
+Route::get('Descarga-PDF/{mes}', [descargaController::class, 'descargar'])->middleware('auth')->name('descargar');
 
 /* Route::get('Descarga-PDF/{aprendiz}', [descargaController::class, 'descarga'])->middleware('auth')->name('descarga'); */
 

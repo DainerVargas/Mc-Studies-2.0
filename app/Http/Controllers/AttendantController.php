@@ -28,7 +28,7 @@ class AttendantController extends Controller
   {
 
     if (isset($request->imagen)) {
-      $path = $request->imagen->store('/');
+      $path = $request->imagen->store('', 'public');
       $foto = basename($path);
     } else {
       $foto = $aprendiz->imagen;

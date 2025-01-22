@@ -25,30 +25,20 @@ class descargaController extends Controller
         return $pdf->download("Informe - $teacher->name  $teacher->apellido .pdf");
     }
 
-    public function descargar()
-    { 
-        $informes = Informe::all();
+    public function descargar($mes)
+    {
+        if ($mes == '00') {
+            $informes = Informe::all();
+        } else {
+            $informes = Informe::whereMonth('fecha', $mes)->get();
+        }
+
         $aprendices = Apprentice::all();
 
         $fecha = Carbon::now()->format('d-m-Y');
         $pdf = Pdf::loadView('excelDescarga', compact('informes', 'aprendices', 'fecha'));
 
         return $pdf->download('Informe-Estudiantes.pdf');
-
-
-       /*  
-        $pdf = Pdf::loadView('excelDescarga',compact('informes', 'aprendices', 'fecha'));
-       return $pdf->download("Informe-Estudiantes.pdf"); */
-
-
-      /*   $html = View('excelDescarga', compact('informes', 'aprendices', 'fecha'))->render();
-
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A3', 'landscape');
-        $dompdf->render();
-        return $dompdf->stream('Informe-Estudiantes.pdf'); */
-
     }
 
 

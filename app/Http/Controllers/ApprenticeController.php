@@ -44,18 +44,17 @@ class ApprenticeController extends Controller
                 }
 
                     try {
-                        Mail::to($email)->send(new PasswordResetMail($aprendiz));
-                        /* Mail::to('dainer2607@gmail.com')->send(new PasswordResetMail($aprendiz)); */
+                       /*  Mail::to($email)->send(new PasswordResetMail($aprendiz)); */
+                        Mail::to('dainer2607@gmail.com')->send(new PasswordResetMail($aprendiz));
                     } catch (\Throwable $th) {
                         return 'hubo un erorr. Por favor revisa tu conexion.';
                     }
                 }
-          /*   } */
 
-            if ($dia_semana == 3) {
-                /*  Mail::to('dainer2607@gmail.com')->send(new RecordatorioVirtualMail($aprendiz)); */
+            /* if ($dia_semana == 3) {
+                 Mail::to('dainer2607@gmail.com')->send(new RecordatorioVirtualMail($aprendiz));
                 Mail::to($aprendiz->attendant->email)->send(new RecordatorioVirtualMail($aprendiz));
-            }
+            } */
         }
     }
 }

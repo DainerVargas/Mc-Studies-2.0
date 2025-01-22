@@ -6,8 +6,8 @@
                 <input type="text" wire:model.live="filtro" placeholder="Nombre del Profesor">
             </div>
             <div class="contelink">
-                <a href="{{ route('informedescarga') }}" > Descargar Informe
-                    <span class="material-symbols-outlined" >
+                <a href="{{ route('informedescarga') }}"> Descargar Informe
+                    <span class="material-symbols-outlined">
                         download
                     </span>
                 </a>
@@ -83,34 +83,3 @@
         </div>
     </div>
 </div>
-{{--   @if ($view != 0)
-    <div class="conteUpdate" id="informe">
-        <div class="close">
-            <span wire:click="ocultar" title="Cerrar" class="material-symbols-outlined">
-                close
-            </span>
-        </div>
-        <form wire:submit="">
-            <div class="containerContent">
-                <div class="conteInput">
-                    <input wire:model="name" class="input" readonly type="text" placeholder="nombre"
-                        name="" id="">
-                    <label class="label" for="">Profesor</label>
-                </div>
-                <div class="conteInput">
-                    <input wire:model="abono" class="input" type="text" placeholder="nombre" name="abono"
-                        id="">
-                    <label class="label" for="">Abono</label>
-                    @error('abono')
-                        <small class="errors" style="color: red">{{ $message }}</small>
-                    @enderror
-                    @if (isset($message))
-                        <small class="errors message" style="color: red">{{ $message }}</small>
-                    @endif
-                </div>
-            </div>
-            <button wire:click="save({{ $teacher->id }})">Abonar</button>
-        </form>
-    </div>
-    
-@endif --}}

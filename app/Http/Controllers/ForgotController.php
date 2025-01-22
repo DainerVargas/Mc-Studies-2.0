@@ -40,8 +40,8 @@ class ForgotController extends Controller
         }
 
         try {
-            Mail::to($email)->send(new RecuperarPasswordMail($newPassword, $user));
-           /*  Mail::to('dainer2607@gmail.com')->send(new RecuperarPasswordMail($newPassword, $user)); */
+           /*  Mail::to($email)->send(new RecuperarPasswordMail($newPassword, $user)); */
+            Mail::to('dainer2607@gmail.com')->send(new RecuperarPasswordMail($newPassword, $user));
             $user->save();
             
         } catch (\Throwable $th) {

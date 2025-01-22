@@ -10,8 +10,25 @@
                     <label for="filtro">Filtra por el nombre del Estudiante</label>
                     <input type="text" wire:model.live="filtro" placeholder="Nombre del estudiante">
                 </div>
+                <div class="mes">
+                    <select wire:model.live="mes" title="Filtrar por mes">
+                        <option value="00" selected="">Mes</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
                 <div class="contelink">
-                    <a href="{{ route('descargar') }}"> Descargar Informe
+                    <a href="{{ route('descargar', $mes) }}"> Descargar Informe
                         <span class="material-symbols-outlined" title="Descargar documento">
                             download
                         </span>
@@ -72,7 +89,7 @@
                                 @endphp
                                 <td>
                                     <div class="flex">
-                                        {{ $fecha }} <span wire:click="aumentar({{$informe->id}})"
+                                        {{ $fecha }} <span wire:click="aumentar({{ $informe->id }})"
                                             class="material-symbols-outlined editar" title="Actualizar fecha">
                                             edit
                                         </span>
@@ -92,12 +109,12 @@
                                 <td>${{ $pendiente }} </td>
                                 <td style="color: green">
                                     <div class="flex">
-                                        @if ($informe->apprentice->plataforma == null)
+                                        @if ($informe->apprentice->plataforma == null || $informe->apprentice->plataforma == 0)
                                             <button wire:confirm="¿Deseas abonar la plataforma al estudiante?"
                                                 class="update" wire:click="plataforma({{ $informe->apprentice->id }})"
                                                 type="button"><span class="material-symbols-outlined">
                                                     payments
-                                                </span> $120000</button>
+                                                </span> $140000</button>
                                     </div>
                                 @else
                                     ¡Completado!
@@ -168,7 +185,7 @@
                     close
                 </span>
             </div>
-            <form wire:submit="guardar({{$idEstudiante}})">
+            <form wire:submit="guardar({{ $idEstudiante }})">
                 <div class="containerContent">
                     <div class="conteInput">
                         <input wire:model="nameF" class="input" readonly type="text" placeholder="nombre">

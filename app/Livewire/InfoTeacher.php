@@ -58,7 +58,7 @@ class InfoTeacher extends Component
         ]);
 
         if ($validacion) {
-            $comprobante = $this->comprobante->store('/');
+            $comprobante = $this->comprobante->store('', 'public');
             $teacher = Teacher::find($idTeacher);
 
             $informe = Tinforme::where('teacher_id', $teacher->id)->first();
@@ -75,8 +75,8 @@ class InfoTeacher extends Component
             }
 
             try {
-                /* Mail::to('dainer2607@gmail.com')->send(new ComprobanteMail($teacher, $comprobante, $this->valor)); */
-                Mail::to($teacher->email)->send(new ComprobanteMail($teacher, $comprobante, $this->valor));
+                Mail::to('dainer2607@gmail.com')->send(new ComprobanteMail($teacher, $comprobante, $this->valor));
+                /* Mail::to($teacher->email)->send(new ComprobanteMail($teacher, $comprobante, $this->valor)); */
                 /* Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($estudiante)); */
                 session()->flash('message', 'Email enviado con éxito!');
             } catch (\Throwable $th) {
@@ -105,7 +105,7 @@ class InfoTeacher extends Component
     public function update(Teacher $teacher)
     {
         if (isset($this->image)) {
-            $path = $this->image->store('/');
+            $path = $this->image->store('', 'public');
             $foto = basename($path);
         } else {
             $foto = $teacher->image;

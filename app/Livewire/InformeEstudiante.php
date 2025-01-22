@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class InformeEstudiante extends Component
 {
-    public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha;
+    public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00';
 
     public $active = 1;
     public $filtro = '';
@@ -110,8 +110,7 @@ class InformeEstudiante extends Component
 
     public function plataforma(Apprentice $aprendiz)
     {
-
-        $aprendiz->plataforma = 120000;
+        $aprendiz->plataforma = 140000;
         $aprendiz->save();
         $this->informes = Informe::all();
         $this->aprendices = Apprentice::all();
@@ -149,11 +148,16 @@ class InformeEstudiante extends Component
 
     public function render()
     {
-        $aprendices = Apprentice::where('name', 'LIKE', '%' . $this->filtro . '%')->get();
+        if ($this->mes != '00' ) {
+            $this->informes = Informe::whereMonth('fecha', $this->mes)->get();
+        } else {
 
-        $idsAprendices = $aprendices->pluck('id');
+            $aprendices = Apprentice::where('name', 'LIKE', '%' . $this->filtro . '%')->get();
 
-        $this->informes = Informe::whereIn('apprentice_id', $idsAprendices)->get();
+            $idsAprendices = $aprendices->pluck('id');
+
+            $this->informes = Informe::whereIn('apprentice_id', $idsAprendices)->get();
+        }
 
         return view('livewire.informe-estudiante');
     }

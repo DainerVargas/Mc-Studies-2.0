@@ -6,9 +6,9 @@
             </a>
             <div class="conteImage">
                 @if ($aprendiz->imagen)
-                    <img class="perfilImg" src="/users/{{ $aprendiz->imagen }}" alt="">
+                    <img class="perfilImg" src="{{ asset('users/'. $aprendiz->imagen) }}" alt="">
                 @else
-                    <img class="perfilImg" src="/images/perfil.png" alt="">
+                    <img class="perfilImg" src="{{ asset('images/perfil.png') }}" alt="">
                 @endif
             </div>
         </div>
@@ -86,7 +86,8 @@
                 <p>Apellido: <span>{{ $aprendiz->apellido }}</span> </p>
                 <p>Edad: <span>{{ $aprendiz->edad }}</span> </p>
                 <p>Fecha-Nacimiento: <span>{{ $aprendiz->fecha_nacimiento }}</span> </p>
-                <p>Dirección: <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : "No hay dirección" }}</span></p>
+                <p>Dirección:
+                    <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : 'No hay dirección' }}</span></p>
                 <p>Fecha-Inicio: <span>{{ $aprendiz->fecha_inicio }}</span></p>
                 <p>Fecha-Finalización: <span>{{ $aprendiz->fecha_fin }}</span></p>
             </div>
@@ -101,9 +102,10 @@
                 <p>Telefono: <span>{{ $aprendiz->attendant->telefono }}</span>
                 </p>
             </div>
-            <a href="{{ route('viewUpdate', $aprendiz->id) }}"><button> Ir Actualizar <span class="material-symbols-outlined">
-                directions_run
-                </span> </button></a>
+            <a href="{{ route('viewUpdate', $aprendiz->id) }}"><button> Ir Actualizar <span
+                        class="material-symbols-outlined">
+                        directions_run
+                    </span> </button></a>
         </div>
         @if ($valor > 0)
             <div class="absolute">
