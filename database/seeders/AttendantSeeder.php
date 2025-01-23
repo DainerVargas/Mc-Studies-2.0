@@ -14,11 +14,11 @@ class AttendantSeeder extends Seeder
     public function run(): void
     {
         Attendant::create([
-            'name' => 'Mc',
-            'apellido' => 'Studies',
+            'name' => 'Mc-Studies',
+            'apellido' => 'Languaje',
             'email' => 'info@mcstudies.com',
             'telefono' => '317 396 1175'
         ]);
-        Attendant::factory(3)->create();
+        /* Attendant::factory(3)->create(); */
     }
 }

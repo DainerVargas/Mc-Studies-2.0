@@ -21,6 +21,7 @@ class ApprenticeSeeder extends Seeder
             'estado' => '0',
             'email' => '',
             'plataforma' => 0,
+            'valor' => 0,
             'direccion' => '',
             'telefono' => '',
             'Attendant_id' => 1,
@@ -28,6 +29,6 @@ class ApprenticeSeeder extends Seeder
             'group_id' => null
         ]);
         
-        Apprentice::factory(2)->create();
+        /* Apprentice::factory(2)->create(); */
     }
 }

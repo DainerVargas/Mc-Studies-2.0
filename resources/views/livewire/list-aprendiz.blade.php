@@ -31,8 +31,15 @@
                 <label for="option3">Inactive</label>
             </div>
         </div>
-    </div>    
-    
+        <div class="conteDeleteAll">
+            <button class="delete" wire:click="deleteAll"
+                wire:confirm="¿Desea elimiar a todos los estudiantes?"><span
+                    class="material-symbols-outlined">
+                    delete
+                </span> Eliminar todos los estudiantes</button>
+        </div>
+    </div>
+
     <div class="containerConte">
         <div class="conteTable">
             <table>

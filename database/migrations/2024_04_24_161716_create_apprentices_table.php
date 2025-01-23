@@ -26,6 +26,7 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->integer('plataforma')->nullable();
             $table->boolean('estado')->nullable();
+            $table->integer('valor')->nullable();
             $table->string('imagen')->nullable();
             $table->string('comprobante')->nullable();
             $table->dateTime('fecha_inicio')->nullable();

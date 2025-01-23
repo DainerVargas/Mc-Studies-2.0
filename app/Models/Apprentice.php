@@ -38,7 +38,7 @@ class Apprentice extends Model
         'estado',
         'imagen',
         'modality_id',
-        'comprobante',
+        'plataforma',
         'attendant_id',
         'group_id',
         'valor',

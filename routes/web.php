@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApprenticeController;
 use App\Http\Controllers\AttendantController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\descargaController;
 use App\Http\Controllers\ForgotController;
@@ -88,3 +89,7 @@ Route::get('Historial', [AuthenticationController::class, 'historial'])->middlew
 /* COMPROBANTE */ 
 
 Route::get('Comprobante/{teacher}', [TeacherController::class, 'comprobante'])->middleware('auth')->name('comprobante');
+
+Route::get('/mercadopago/success',  [AuthController::class, 'capturePayment'])->name('payment.success');
+
+Route::get('/mercadopago/cancel', [AuthController::class, 'cancelPayment'])->name('payment.failure');

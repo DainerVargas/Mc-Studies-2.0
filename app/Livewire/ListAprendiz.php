@@ -57,6 +57,23 @@ class ListAprendiz extends Component
         $this->aprendices = Apprentice::all();
     }
 
+
+    public function deleteAll()
+    {
+        $informes = Informe::all();
+        $aprendices = Apprentice::all();
+
+        foreach ($informes as $value) {
+            $value->delete();
+        }
+
+        foreach ($aprendices as $value) {
+            $value->delete();
+        }
+
+        $this->aprendices = Apprentice::all();
+    }
+
     public function mount()
     {
         $this->aprendices = Apprentice::all();

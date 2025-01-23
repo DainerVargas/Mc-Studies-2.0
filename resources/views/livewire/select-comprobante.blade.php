@@ -1,5 +1,5 @@
 <div class="conteForm">
-    <form wire:submit="store">
+    <form wire:submit="">
         @csrf
         <h2>Datos del Estudiante</h2>
         <div class="containerContents">
@@ -230,14 +230,18 @@
             <h2>Seleccione un método de Pago</h2>
             <div class="colum">
                 <div class="bancolombia bancolombia{{ $comprobante }}" wire:click="active(2)">
-                    <img src="/images/Bancolombia2.png" alt="">
+                    <div class="imagen">
+                        <img src="/images/transferencia.png" alt="">
+                    </div>
                     <p>Método: <span>Transferencia electrónica</span></p>
                     <p>Cuenta: <span>72400002457</span></p>
                     <p>Nombre: <span>MC Language S.A.S .</span></p>
                     <p>Nit: <span>901809528-9</span></p>
                 </div>
                 <div class="pagoFisico pagoFisico{{ $comprobante }}" wire:click="active(1)"">
-                    <img src="/images/fisico.png" alt="">
+                    <div class="imagen">
+                        <img src="/images/efectivo.png" alt="">
+                    </div>
                     <p>Método: <span>Efectivo</span></p>
                     <p>Dirección: <span>calle 10 #18-25</span></p>
                     <p>Telefono: <span>3173961175</span></p>
@@ -245,12 +249,18 @@
                 </div>
             </div>
         </div>
-        @if ($comprobante >= 1)
+        @if ($comprobante == 2)
             <div class="boton">
-                <button type="submit" class="btnRegistro">¡REGISTRARME! <small
-                        wire:loading="store">Cargando...</small></button>
+                <button disabled class="btnRegistro">Aun no está dispoblie <small
+                        wire:loading="" >Cargando...</small></button>
+            </div>
+        @elseif ($comprobante == 1)
+            <div class="boton">
+                <button wire:click="createApprentice" class="btnRegistro">¡REGISTRARME! <small
+                    wire:loading="createApprentice" >Cargando...</small></button>
             </div>
         @endif
+
 
         <p class="success" style="color: green">{{ $success }}</p>
         @if ($errors->any())

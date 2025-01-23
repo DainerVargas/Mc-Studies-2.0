@@ -7,6 +7,9 @@ use App\Mail\ConfirmacionMail;
 use App\Models\Apprentice;
 use App\Models\Attendant;
 use App\Models\Informe;
+use App\Services\MercadoPagoService;
+use Exception;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Livewire\Component;
@@ -17,7 +20,7 @@ class SelectComprobante extends Component
 
     use WithFileUploads;
 
-    public $name, $apellido, $edad, $telefono, $email, $direccion, $valor;
+    public $name, $apellido, $edad, $telefono, $email, $direccion, $valor, $precio;
     public $fecha_nacimiento;
     public $nameAcudiente;
     public $apellidoAcudiente;
@@ -34,7 +37,7 @@ class SelectComprobante extends Component
         if ($value == 4 && $this->valor == '') {
             $this->error = 'Ingrese el valor de la modalidad.';
             return;
-        }else{
+        } else {
             $this->error = '';
         }
         $this->modality_id = $value;
@@ -45,7 +48,7 @@ class SelectComprobante extends Component
         $this->comprobante = $valor;
     }
 
-    public function store()
+    public function validacion()
     {
         $validaciones = $this->validate([
             'name' => 'required',
@@ -74,7 +77,6 @@ class SelectComprobante extends Component
         ]);
 
         if ($this->edad >= 18) {
-            $acudienteID = 1;
             $this->validate([
                 'telefono' => 'required|numeric',
                 'email' => 'required|email',
@@ -100,83 +102,110 @@ class SelectComprobante extends Component
                 'emailAcudiente.email' => 'El email no tiene un formato válido',
             ]);
         }
+    }
 
-        
-        if ($validaciones) {
+    public function createApprentice()
+    {
+        $this->validacion();
 
-            if ($this->imagen) {
+        $acudienteID = 1;
 
-                $imageName = time() . '.' . $this->imagen->extension();
-                $this->imagen->storeAs('/', $imageName);
-            } else {
-                $imageName = null;
+        if ($this->edad < 18) {
+            $attendant = Attendant::where('email', $this->email)->first();
+            if ($attendant == null) {
+                $acudiente = Attendant::create([
+                    'name' => $this->nameAcudiente,
+                    'apellido' => $this->apellidoAcudiente,
+                    'telefono' => $this->telefonoAcudiente,
+                    'email' => $this->emailAcudiente,
+                ]);
+                $acudienteID = $acudiente->id;
             }
-            
-            if ($this->edad < 18) {
-                $attendant = Attendant::where('email', $this->email)->first();
-                if ($attendant == null) {
-                    $acudiente = Attendant::create([
-                        'name' => $this->nameAcudiente,
-                        'apellido' => $this->apellidoAcudiente,
-                        'telefono' => $this->telefonoAcudiente,
-                        'email' => $this->emailAcudiente,
-                    ]);
-                    $acudienteID = $acudiente->id;
-                } else {
-                    $acudiente = $attendant;
-                }
-            }
-            
-            $estudiante = Apprentice::create([
-                'name' => $this->name,
-                'apellido' => $this->apellido,
-                'edad' => $this->edad,
-                'fecha_nacimiento' => $this->fecha_nacimiento,
-                'estado' => 0,
-                'email' => $this->email,
-                'direccion' => $this->direccion,
-                'telefono' => $this->telefono,
-                'comprobante' => $imageName,
-                'attendant_id' =>  $acudienteID,
-                'modality_id' => $this->modality_id,
-                'valor' => $this->valor,
-            ]);
+        }
 
-            $informe = Informe::create([
-                'apprentice_id' => $estudiante->id,
-                'abono' => 0,
-                'fecha' => null,
-            ]);
+        $plataforma = 0;
 
-            try {
+        $aprendiz = Apprentice::create([
+            'name' => $this->name,
+            'apellido' => $this->apellido,
+            'edad' => $this->edad,
+            'fecha_nacimiento' => $this->fecha_nacimiento,
+            'estado' => 0,
+            'valor' => $this->valor,
+            'email' => $this->email,
+            'direccion' => $this->direccion,
+            'telefono' => $this->telefono,
+            'comprobante' => null,
+            'plataforma' => $plataforma,
+            'attendant_id' => $acudienteID,
+            'modality_id' => $this->modality_id,
+        ]);
 
-               /*  if ($estudiante->email != null) {
+        $informe = Informe::create([
+            'apprentice_id' => $aprendiz->id,
+            'abono' => 0,
+            'fecha' => null,
+        ]);
+
+        try {
+            /*  if ($estudiante->email != null) {
                     Mail::to($estudiante->email)->send(new ConfirmacionMail($estudiante));
                 } else {
                     Mail::to($acudiente->email)->send(new ConfirmacionMail($estudiante));
                 } */
 
-                /*  Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($estudiante)); */
-                
-                Mail::to('dainer2607@gmail.com')->send(new ConfirmacionMail($estudiante));
-               
-            } catch (\Throwable $th) {
-                dd('hubo un erorr. Por favor revisa tu conexion. ');
-            }
+            /*  Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($estudiante)); */
 
-            $this->success = '¡Te has registrado con éxito!';
+            Mail::to('dainer2607@gmail.com')->send(new ConfirmacionMail($aprendiz));
+        } catch (\Throwable $th) {
+            return redirect('Registrate')->with('messageError', 'Hubo un erorr. Por favor revisa tu conexion.');
+        }
 
-            $this->name = '';
-            $this->apellido = '';
-            $this->edad = '';
-            $this->fecha_nacimiento = '';
-            $this->nameAcudiente = '';
-            $this->apellidoAcudiente = '';
-            $this->telefonoAcudiente = '';
-            $this->emailAcudiente = '';
-            $this->modality_id = '';
-            $this->imagen = '';
-            $this->comprobante = '';
+        return redirect('Registrate')->with('messageSuccess', 'Registro satisfactorio.');
+    }
+
+    public function stores()
+    {
+
+        $this->validacion();
+
+        if ($this->modality_id == 3) {
+            /* $this->precio =  950000; */
+            $this->precio =  5000;
+        } elseif ($this->modality_id == 2) {
+            /*  $this->precio =  590000; */
+            $this->precio =  4000;
+        } elseif ($this->modality_id == 1) {
+            /* $this->precio =  440000; */
+            $this->precio =  3000;
+        } elseif ($this->modality_id == 4) {
+            $this->precio = $this->valor;
+        }
+
+        $mercadoPagoService = new  MercadoPagoService;
+        $paymentUrl = $mercadoPagoService->createPaymentPreference($this->precio, "Pago de la modalidad. Mc-Studies |", 1);
+
+        session()->put('people_data', [
+            'name' => $this->name,
+            'apellido' => $this->apellido,
+            'fecha_nacimiento' => $this->fecha_nacimiento,
+            'edad' => $this->edad,
+            'email' => $this->email,
+            'telefono' => $this->telefono,
+            'direccion' => $this->direccion,
+            'nameAcudiente' => $this->nameAcudiente,
+            'apellidoAcudiente' => $this->apellidoAcudiente,
+            'telefonoAcudiente' => $this->telefonoAcudiente,
+            'emailAcudiente' => $this->emailAcudiente,
+            'estado' => 0,
+            'modality_id' => $this->modality_id,
+            'precio' => $this->precio,
+        ]);
+
+        try {
+            return redirect()->away($paymentUrl);
+        } catch (Exception $e) {
+            dd($e->getMessage());
         }
     }
 

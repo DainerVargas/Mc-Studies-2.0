@@ -419,9 +419,9 @@ $gris: #959595;
     }
 
     .conteSelect {
-      width: 65%;
+      width: 77%;
       margin-top: 2vw;
-      @include funciones.flex(space-around);
+      @include funciones.flex(space-between);
 
       select {
         height: 2.4vw;
@@ -462,6 +462,22 @@ $gris: #959595;
           label {
             font-size: 0.9vw;
           }
+        }
+
+      }
+
+      .conteDeleteAll {
+        margin-left: 15vw;
+
+        .delete {
+          height: 2.4vw;
+          width: 18vw;
+          @include funciones.flex(center);
+          background-color: #fa2f2f;
+          color: white;
+          border: 0.1vw solid #ff1717;
+          border-radius: 0.3vw;
+          cursor: pointer;
         }
       }
 
@@ -600,7 +616,7 @@ $gris: #959595;
             }
 
             .delete:hover {
-              background-color: rgb(255, 23, 23);
+              background-color: #ff1717;
               color: white;
               border: none;
             }
@@ -1593,6 +1609,118 @@ $gris: #959595;
   }
 }
 
+/* MESSAGE MERCADO PAGO */
+
+.messageMercadoPago {
+
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, -50%);
+
+  /* From Uiverse.io by akshat-patel28 */
+  .card {
+    width: 430px;
+    height: 80px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 15px;
+    border: 1px solid rgb(187, 187, 187);
+  }
+
+  .wave {
+    position: absolute;
+    transform: rotate(90deg);
+    left: -31px;
+    top: 32px;
+    width: 80px;
+  }
+
+  .wave-error {
+    fill: #fc0c0c3a;
+  }
+
+  .wave-success {
+    fill: #04e4003a;
+  }
+
+  .icon-container {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin-left: 8px;
+  }
+
+  .icon-container-success {
+    background-color: #04e40048;
+  }
+
+  .icon-container-error {
+    background-color: #fc0c0c48;
+  }
+
+  .icon-error {
+    width: 17px;
+    height: 17px;
+    color: #d10d0d;
+  }
+
+  .icon-success {
+    width: 17px;
+    height: 17px;
+    color: #269b24;
+  }
+
+  .message-text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex-grow: 1;
+  }
+
+  .message-text,
+  .sub-text {
+    margin: 0;
+    cursor: default;
+  }
+
+  .message-error {
+    color: #d10d0d;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .message-success {
+    color: #269b24;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .sub-text {
+    font-size: 14px;
+    color: #555;
+  }
+
+  .cross-icon {
+    width: 18px;
+    height: 18px;
+    color: #555;
+    cursor: pointer;
+  }
+}
+
 /* REGISTRO FORM */
 /* Main */
 .mainRegistro {
@@ -1602,6 +1730,7 @@ $gris: #959595;
   box-sizing: border-box;
   @include funciones.flex(center);
   background-color: white;
+  flex-direction: column;
 
   .conteForm {
     margin-top: 115px;
@@ -1867,9 +1996,8 @@ $gris: #959595;
           .absolute {
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
-
           }
-
+   
           .errors {
             font-size: 12px;
             position: absolute;
@@ -1908,17 +2036,28 @@ $gris: #959595;
             cursor: pointer;
             box-shadow: 0.1vw 0.1vw 0.7vw rgb(107, 107, 107);
 
-            img {
-              user-select: none;
-              height: 90px;
-              max-width: 100%;
-              margin-bottom: 6px;
+            .imagen{
+              width: 100%;
+              @include funciones.flex(center);
+              img {
+                user-select: none;
+                height: 190px;
+                max-width: 100%;
+                margin-bottom: 6px;
+              }
+            }
+            p{
+              color: $verde;
+              font-weight: 600;
+            }
+            span{
+              color: #393939;
             }
           }
 
           .bancolombia:hover,
           .pagoFisico:hover {
-            border: 2px solid $verde;
+            border: 1px solid $verde;;
             box-shadow: 0vw 0vw 0;
           }
 
