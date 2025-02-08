@@ -114,17 +114,17 @@
                     <p>Pago mensual</p>
                 </div>
                 <div class="informacion">
-                    <p>Pago mensual durante 4 meses:</p>
-                    <strong class="valor">$300.000<small>/un mes</small></strong>
+                    <p>Valor completo del módulo:</p>
+                    <strong class="valor">$900.000<small>/cuatro meses</small></strong>
                 </div>
                 <div class="plataforma">
                     <p>Plataforma virtual de aprendizaje </p>
                     <span>$140.000</span>
                 </div>
                 <div class="informacion">
-                    <small>Valor total del módulo:</small>
-                    <strong class="valor">$440.000<small>/primer mes</small></strong>
-                    <strong class="valor">$300.000<small>/tres pagos durante el módulo</small></strong>
+                    <small>Resumen pago del módulo:</small>
+                    <strong class="valor">$440.000<small>/primer pago</small></strong>
+                    <strong class="valor">$300.000<small>/dos pagos restantes</small></strong>
                 </div>
                 <div class="conteBtn">
                     <button type="button" wire:click="modalidad(1)" class="btnModulo">Adquirir plan</button>
@@ -168,17 +168,17 @@
                     <p>Pago a dos cuotas</p>
                 </div>
                 <div class="informacion">
-                    <p>Dos pagos en el transcurso del módulo:</p>
-                    <strong class="valor">$450.000<small>/dos meses</small></strong>
+                    <p>Valor completo del módulo:</p>
+                    <strong class="valor">$900.000<small>/cuatro meses</small></strong>
                 </div>
                 <div class="plataforma">
                     <p>Plataforma virtual de aprendizaje</p>
                     <span>$140.000</span>
                 </div>
                 <div class="informacion">
-                    <small>Valor total del módulo:</small>
-                    <strong class="valor">$590.000<small>/dos meses</small></strong>
-                    <strong class="valor">$450.000<small>/dos pagos durante el módulo</small></strong>
+                    <small>Resumen pago del módulo:</small>
+                    <strong class="valor">$590.000<small>/primer mes</small></strong>
+                    <strong class="valor">$450.000<small>/un pago restante</small></strong>
                 </div>
                 <div class="conteBtn">
                     <button type="button" wire:click="modalidad(2)" class="btnModulo">Adquirir plan</button>

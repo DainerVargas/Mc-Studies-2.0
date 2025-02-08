@@ -12,11 +12,11 @@ class ModalitySeeder extends Seeder
     {
         Modality::create([
             'name' => 'Pago Mensual',
-            'valor' => 300000,
+            'valor' => 900000,
         ]);
         Modality::create([
             'name' => 'Pago a dos cuotas',
-            'valor' => 450000,
+            'valor' => 900000,
         ]);
         Modality::create([
             'name' => 'Pago Completo',

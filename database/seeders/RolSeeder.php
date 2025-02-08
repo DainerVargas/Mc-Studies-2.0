@@ -14,11 +14,18 @@ class RolSeeder extends Seeder
     public function run(): void
     {
         Rol::create([
-            'name' => 'Administrador'
+            'name' => 'Gerente'
         ]);
 
         Rol::create([
-            'name' => 'Usuario'
+            'name' => 'Secretaria'
+        ]);
+
+        Rol::create([
+            'name' => 'Asistente'
+        ]);
+        Rol::create([
+            'name' => 'Profesor'
         ]);
     }
 }

@@ -16,9 +16,6 @@ class AttendantFactory extends Factory
      */
     public function definition(): array
     {
-        /*  $table->string('name');
-            $table->string('email');
-            $table->string('telefono'); */
         return [
             'name' => fake()->name(),
             'apellido' => fake()->lastName(),

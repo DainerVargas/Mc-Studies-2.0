@@ -67,6 +67,9 @@ return [
 
     'timezone' => env('APP_TIMEZONE', 'UTC'),
 
+    ini_set('max_execution_time', 300),
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

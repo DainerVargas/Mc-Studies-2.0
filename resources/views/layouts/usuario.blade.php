@@ -21,7 +21,7 @@
                 }
             @endphp
             <a class="{{ $validat ? 'active' : '' }}" href="{{ route('actualizar') }}">Actualizar Contraseña</a>
-            @if ($user->id == 1)
+            @if ($user->rol_id == 1)
                 @php
                     if (request()->routeIs('agregar') == true) {
                         $validat = true;

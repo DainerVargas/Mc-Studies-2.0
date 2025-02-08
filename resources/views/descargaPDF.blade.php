@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Información del Aprendiz</title>
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/app-hjctGKyo.css') }}"> --}}
+    <link rel="stylesheet" href="{{asset('build/assets/app-Be1cidhe.css')}}">
 </head>
 
 <body>

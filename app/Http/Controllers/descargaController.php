@@ -30,13 +30,22 @@ class descargaController extends Controller
         if ($mes == '00') {
             $informes = Informe::all();
         } else {
-            $informes = Informe::whereMonth('fecha', $mes)->get();
+            $informes = Informe::whereMonth('fecha', $mes)
+                ->get();
         }
+
+        $informe = Informe::selectRaw('MIN(id) as id, apprentice_id, MIN(abono) as abono')
+            ->groupBy('apprentice_id')
+            ->with('apprentice')
+            ->get();
+
+
+        $totalDescuento = $informe->sum(fn($inform) => $inform->apprentice->descuento);
 
         $aprendices = Apprentice::all();
 
         $fecha = Carbon::now()->format('d-m-Y');
-        $pdf = Pdf::loadView('excelDescarga', compact('informes', 'aprendices', 'fecha'));
+        $pdf = Pdf::loadView('excelDescarga', compact('informes', 'aprendices', 'fecha', 'totalDescuento'));
 
         return $pdf->download('Informe-Estudiantes.pdf');
     }

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RECUPERAR CONTRASEÑAS</title>
-    <link rel="stylesheet" href="{{asset('build/assets/app-hjctGKyo.css')}}">
+    <link rel="stylesheet" href="{{asset('build/assets/app-Be1cidhe.css')}}">
 </head>
 
 <body class="forgotBody">

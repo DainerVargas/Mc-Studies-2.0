@@ -8,9 +8,6 @@ use Illuminate\Database\Seeder;
 
 class ApprenticeSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         Apprentice::create([
@@ -21,14 +18,15 @@ class ApprenticeSeeder extends Seeder
             'estado' => '0',
             'email' => '',
             'plataforma' => 0,
-            'valor' => 0,
-            'direccion' => '',
-            'telefono' => '',
+            'valor' => 810000,
+            'descuento' => 10000,
+            'direccion' => 'calle 28',
+            'telefono' => '3242406307',
             'Attendant_id' => 1,
             'modality_id' => 3,
             'group_id' => null
         ]);
         
-        /* Apprentice::factory(2)->create(); */
+        Apprentice::factory(2)->create();
     }
 }

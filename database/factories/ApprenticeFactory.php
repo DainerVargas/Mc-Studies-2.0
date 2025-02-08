@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Attendant;
+use App\Models\Modality;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,15 +21,17 @@ class ApprenticeFactory extends Factory
         return [
             'name' => fake()->name(),
             'apellido' => fake()->lastName(),
-            'edad' => rand(4,20),
+            'edad' => rand(4,40),
             'fecha_nacimiento' => fake()->date('y-m-d'),
             'estado' => 0,
             'plataforma' => 0,
+            'valor' => fake()->randomElement([900000, 810000]),
+            'descuento' => 120000,
             'direccion' => $this->faker->address(),
             'email' => $this->faker->email(),
             'telefono' => $this->faker->phoneNumber(),
-            'Attendant_id' => rand(1,3),
-            'modality_id' => rand(1,3),
+            'Attendant_id' => Attendant::pluck('id')->random(),
+            'modality_id' => Modality::pluck('id')->random(),
             'group_id' => null
         ];
     }

@@ -471,7 +471,7 @@ $gris: #959595;
 
         .delete {
           height: 2.4vw;
-          width: 18vw;
+          width: 19vw;
           @include funciones.flex(center);
           background-color: #fa2f2f;
           color: white;
@@ -1005,7 +1005,8 @@ $gris: #959595;
   /* LISTA-PROFESOR */
 
   #conteProfesor {
-    @include funciones.flex(end);
+    @include funciones.flex(space-between);
+    gap: 8vw;
     padding: 0 2vw;
     box-sizing: border-box;
 
@@ -2695,6 +2696,10 @@ $gris: #959595;
         }
       }
     }
+
+    .messageMercadoPago{
+      top: 35%;
+    }
   }
 }
 
@@ -2746,6 +2751,10 @@ $gris: #959595;
           }
         }
       }
+    }
+
+    .messageMercadoPago{
+      top: 40%;
     }
   }
 }

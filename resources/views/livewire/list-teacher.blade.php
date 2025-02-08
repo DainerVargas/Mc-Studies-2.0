@@ -6,6 +6,7 @@
                 <input type="text" wire:model.live="filtro" placeholder="Nombre del Profesor o Tutor">
             </div>
         </form>
+
         <div class="conteSelect">
             <div class="conteChecks">
                 <div class="conteRadio">
@@ -22,10 +23,12 @@
                 </div>
             </div>
         </div>
+
         <div class="conteBtnCreate">
             <a><button wire:click="update"><img src="/images/agregar.png" alt="">
                     añadir</button></a>
         </div>
+        
     </div>
 
     <div class="containerConte">

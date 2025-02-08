@@ -46,6 +46,7 @@
                             <th>Acudiente</th>
                             <th>Estudiante</th>
                             <th>Valor Modulo</th>
+                            <th>Descuento</th>
                             <th>Abono</th>
                             <th>Fecha</th>
                             <th>Pendiente</th>
@@ -59,17 +60,10 @@
                         @php
                             $count = 1;
                             $total = 0;
-                            $totalModulos = 0;
                             $plataforma = 0;
-
-                            foreach ($aprendices as $valor) {
-                                if ($valor->modality->id == 4) {
-                                    $totalModulos += $valor->valor;
-                                } else {
-                                    $totalModulos += $valor->modality->valor;
-                                }
-                                $plataforma += $valor->plataforma ?? 0;
-                            }
+                            $totalPendiente = 0;
+                            $color = '#000000';
+                            $valorModulo = 0;
                         @endphp
                         @forelse ($informes ?? [] as $informe)
                             <tr>
@@ -77,13 +71,42 @@
                                 <td class="relative">
                                     {{ $informe->apprentice->attendant->name }}
                                 </td>
-                                <td>{{ $informe->apprentice->name }}</td>
-                                @if ($informe->apprentice->modality->id == 4)
-                                    <td>${{ $informe->apprentice->valor }}</td>
-                                @else
-                                    <td>${{ $informe->apprentice->modality->valor }}</td>
-                                @endif
-                                <td>${{ $informe->abono }}</td>
+                                <td>{{ $informe->apprentice->name }} {{ $informe->apprentice->apellido }}</td>
+
+                                @php
+                                    if ($informe->apprentice->modality_id != 4) {
+                                        $valorModulo = $informe->apprentice->modality->valor;
+                                    } else {
+                                        $valorModulo = $informe->apprentice->valor;
+                                    }
+                                @endphp
+                                <td>$
+                                    {{ number_format($valorModulo - $informe->apprentice->descuento, 0, ',', '.') }}
+                                </td>
+                                <td>
+                                    <div class="flex">
+                                        ${{ number_format($informe->apprentice->descuento, 0, ',', '.') }} <span
+                                            wire:click="descuento({{ $informe->apprentice->id }})"
+                                            class="material-symbols-outlined editar" title="Actualizar descuento">
+                                            edit
+                                        </span>
+                                    </div>
+                                </td>
+                                @php
+                                    if ($informe->abono <= 300000) {
+                                        $color = 'red';
+                                    }
+                                    if ($informe->abono > 300000 && $informe->abono <= 799999) {
+                                        $color = 'orange';
+                                    }
+                                    if ($informe->abono >= 800000) {
+                                        $color = 'green';
+                                    }
+
+                                @endphp
+
+                                <td style="color: {{ $color }}">
+                                    ${{ number_format($informe->abono, 0, ',', '.') }} </td>
                                 @php
                                     $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
                                 @endphp
@@ -96,17 +119,24 @@
                                     </div>
                                 </td>
                                 @php
+                                    $valueAprendiz = 0;
                                     $totalAbonos = $informes
                                         ->where('apprentice_id', $informe->apprentice->id)
                                         ->sum('abono');
-                                    if ($informe->apprentice->modality->id == 4) {
-                                        $pendiente = $informe->apprentice->valor - $totalAbonos;
-                                    } else {
-                                        $pendiente = $informe->apprentice->modality->valor - $totalAbonos;
-                                    }
 
+                                    if ($informe->apprentice->modality_id != 4) {
+                                        $valueAprendiz = $informe->apprentice->modality->valor;
+                                    } else {
+                                        $valueAprendiz = $informe->apprentice->valor;
+                                    }
+                                    $pendiente =
+                                        $valueAprendiz - $totalAbonos - $informe->apprentice->descuento;
+
+                                    $totalPendiente += $pendiente;
+                                    $plataforma += $informe->apprentice->plataforma ?? 0;
                                 @endphp
-                                <td>${{ $pendiente }} </td>
+                                <td>${{ number_format($pendiente , 0, ',', '.') }}
+                                </td>
                                 <td style="color: green">
                                     <div class="flex">
                                         @if ($informe->apprentice->plataforma == null || $informe->apprentice->plataforma == 0)
@@ -169,14 +199,41 @@
     @endforelse
 
     <td colspan="3">Total: </td>
-    <td>${{ $totalModulos }}</td>
-    <td>${{ $total }}</td>
+    <td>${{ number_format($totalModulos - $totalDescuento, 0, ',', '.') }}</td>
+    <td>${{ number_format($totalDescuento, 0, ',', '.') }}</td>
+    <td>${{ number_format($total, 0, ',', '.') }}</td>
     <td></td>
-    <td></td>
-    <td>${{ $plataforma }}</td>
-    <td colspan="5">${{ $plataforma + $totalModulos }}</td>
+    <td>{{ number_format($totalPendiente - $totalDescuento, 0, ',', '.') }}</td>
+    <td>${{ number_format($plataforma, 0, ',', '.') }}</td>
+    <td colspan="3">${{ number_format($plataforma + $totalModulos - $totalDescuento, 0, ',', '.') }}</td>
     </tbody>
     </table>
+
+    @if ($viewDescuento == 1)
+        <div class="conteUpdate" id="informe">
+            <div class="close">
+                <span wire:click="ocultar" title="Cerrar" class="material-symbols-outlined">
+                    close
+                </span>
+            </div>
+            <form wire:submit="saveDescuento({{ $aprendizArray->id }})">
+                <div class="containerContent">
+                    <div class="conteInput">
+                        <input wire:model="nameF" class="input" readonly type="text" placeholder="nombre">
+                        <label class="label">Estudiante</label>
+                    </div>
+                    <div class="conteInput">
+                        <input wire:model="descuent" class="input" type="text" placeholder="Descuento">
+                        <label class="label" for="">Descuento</label>
+                        @if (isset($message))
+                            <small class="errors message" style="color: red">{{ $message }}</small>
+                        @endif
+                    </div>
+                </div>
+                <button>Guardar</button>
+            </form>
+        </div>
+    @endif
 
     @if ($vista == 1)
         <div class="conteUpdate" id="informe">
@@ -202,7 +259,6 @@
                 <button>Guardar</button>
             </form>
         </div>
-    @else
     @endif
 
 </div>
@@ -218,8 +274,8 @@
         <form wire:submit="">
             <div class="containerContent">
                 <div class="conteInput">
-                    <input wire:model="name" class="input" readonly type="text" placeholder="nombre" name=""
-                        id="">
+                    <input wire:model="name" class="input" readonly type="text" placeholder="nombre"
+                        name="" id="">
                     <label class="label" for="">Estudiante</label>
                 </div>
                 <div class="conteInput">

@@ -125,6 +125,16 @@ class SelectComprobante extends Component
 
         $plataforma = 0;
 
+        if ($this->modality_id == 3) {
+            $this->valor =  810000;
+        } elseif ($this->modality_id == 2) {
+            /* $this->valor =  450000; */
+            $this->valor =  900000;
+        } elseif ($this->modality_id == 1) {
+            /* $this->valor =  300000; */
+            $this->valor =  900000;
+        }
+
         $aprendiz = Apprentice::create([
             'name' => $this->name,
             'apellido' => $this->apellido,
@@ -148,15 +158,17 @@ class SelectComprobante extends Component
         ]);
 
         try {
-            /*  if ($estudiante->email != null) {
-                    Mail::to($estudiante->email)->send(new ConfirmacionMail($estudiante));
-                } else {
-                    Mail::to($acudiente->email)->send(new ConfirmacionMail($estudiante));
-                } */
 
-            /*  Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($estudiante)); */
+            /* if ($aprendiz->email != null) {
+                Mail::to($aprendiz->email)->send(new ConfirmacionMail($aprendiz));
+            } else {
+                Mail::to($acudiente->email)->send(new ConfirmacionMail($aprendiz));
+            }
+
+            Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($aprendiz)); */
 
             Mail::to('dainer2607@gmail.com')->send(new ConfirmacionMail($aprendiz));
+            
         } catch (\Throwable $th) {
             return redirect('Registrate')->with('messageError', 'Hubo un erorr. Por favor revisa tu conexion.');
         }

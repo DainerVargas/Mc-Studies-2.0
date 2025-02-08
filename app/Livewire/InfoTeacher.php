@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Mail\ComprobanteMail;
+use App\Mail\ConfirmacionMail;
 use App\Models\Group;
 use App\Models\Informe;
 use App\Models\Teacher;
@@ -77,7 +78,6 @@ class InfoTeacher extends Component
             try {
                 Mail::to('dainer2607@gmail.com')->send(new ComprobanteMail($teacher, $comprobante, $this->valor));
                 /* Mail::to($teacher->email)->send(new ComprobanteMail($teacher, $comprobante, $this->valor)); */
-                /* Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($estudiante)); */
                 session()->flash('message', 'Email enviado con éxito!');
             } catch (\Throwable $th) {
                 return back()->withErrors([

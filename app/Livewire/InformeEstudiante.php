@@ -11,9 +11,9 @@ class InformeEstudiante extends Component
 {
     public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00';
 
-    public $active = 1;
+    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalModulos;
     public $filtro = '';
-    public $aprendices;
+    public $aprendices, $aprendizArray;
     public $vista = 0;
 
     public function mount()
@@ -36,12 +36,68 @@ class InformeEstudiante extends Component
         $this->aprendices = Apprentice::all();
     }
 
+    public function descuento(Apprentice $aprendiz)
+    {
+        $this->viewDescuento = 1;
+        $this->view = 0;
+        $this->vista = 0;
+        $this->aprendizArray = $aprendiz;
+        $this->nameF = $this->aprendizArray->name;
+        $this->descuent = $this->aprendizArray->descuento;
+        $this->aprendices = Apprentice::all();
+    }
+
+    public function saveDescuento(Apprentice $aprendiz)
+    {
+        $this->validate([
+            'descuent' => 'required|numeric',
+        ], [
+            'required' => 'Este campo es requerido.',
+            'numeric' => 'Escribe el valor sin puntos o coma.'
+        ]);
+
+        $totalAbono = 0;
+        $valueAprendiz = 0;
+
+        foreach ($aprendiz->informe as $key => $informe) {
+            $totalAbono += $informe->abono;
+        }
+
+
+        if ($aprendiz->modality_id != 4) {
+            $valueAprendiz = $aprendiz->modality->valor;
+        } else {
+            $valueAprendiz = $aprendiz->valor;
+        }
+
+
+        $total = $valueAprendiz - $aprendiz->descuento;
+        $pendiente = $valueAprendiz - $totalAbono - $this->descuent;
+
+        /* dd('Total Abono: '.$totalAbono, ' Total Apagar: '. $total , ' Total descuento: '. $aprendiz->descuento, ' value: '. $pendiente, 'descuento ingresado ' . $this->descuent); */
+
+        if ($total != $totalAbono) {
+            if ($pendiente <= 0) {
+                $this->message = "El descuento sobre pasa el valor del modulo";
+            } else {
+                $aprendiz->descuento = $this->descuent;
+                $aprendiz->save();
+                $this->viewDescuento = 0;
+                $this->message = "";
+            }
+        } else {
+
+            $this->message = "El estudiante ya ha completado el pago";
+        }
+    }
+
     public function ocultar()
     {
         $this->view = 0;
         $this->vista = 0;
         $this->abono = '';
         $this->message = '';
+        $this->viewDescuento = 0;
     }
     public function aumentar(Informe $informe)
     {
@@ -50,15 +106,14 @@ class InformeEstudiante extends Component
         $this->fecha = $informe->fecha;
         $this->idEstudiante = $informe->id;
         $this->vista = 1;
-
     }
 
     public function guardar(Informe $informe)
     {
-        if($this->fecha == ''){
+        if ($this->fecha == '') {
             $this->message = 'La fecha es requerida';
             return;
-        }else{
+        } else {
             $informe->fecha = $this->fecha;
             $informe->save();
             $this->vista = 0;
@@ -73,6 +128,7 @@ class InformeEstudiante extends Component
             'required' => 'Este campo es requerido.',
             'numeric' => 'Escribe el valor sin puntos o coma.'
         ]);
+
         $abonoT = 0;
         $inform = Informe::where('apprentice_id', $aprendiz->id)->get();
         foreach ($inform as $valor) {
@@ -86,7 +142,7 @@ class InformeEstudiante extends Component
             $totalModulo = $aprendiz->modality->valor;
         }
 
-        if ($this->total <= $totalModulo) {
+        if ($this->total <= $totalModulo - $aprendiz->descuento) {
             if ($inform[0]->abono != 0) {
                 $informe = Informe::create([
                     'apprentice_id' => $inform[0]->apprentice_id,
@@ -122,6 +178,7 @@ class InformeEstudiante extends Component
         $informe->fecha = null;
         $informe->save();
         $aprendiz->plataforma = null;
+        $aprendiz->descuento = 0;
         $aprendiz->save();
         $this->message2 = '';
         $this->aprendices = Apprentice::all();
@@ -148,16 +205,30 @@ class InformeEstudiante extends Component
 
     public function render()
     {
-        if ($this->mes != '00' ) {
-            $this->informes = Informe::whereMonth('fecha', $this->mes)->get();
-        } else {
+        $query = Informe::query()->with('apprentice.attendant', 'apprentice.modality');
 
-            $aprendices = Apprentice::where('name', 'LIKE', '%' . $this->filtro . '%')->get();
-
-            $idsAprendices = $aprendices->pluck('id');
-
-            $this->informes = Informe::whereIn('apprentice_id', $idsAprendices)->get();
+        if (!empty($this->mes) && $this->mes != '00') {
+            $query->whereMonth('fecha', intval($this->mes));
         }
+
+        if (!empty($this->filtro)) {
+            $query->whereIn('apprentice_id', function ($subQuery) {
+                $subQuery->select('id')
+                    ->from('apprentices')
+                    ->where('name', 'LIKE', '%' . $this->filtro . '%');
+            });
+        }
+        $this->informes = $query->get();
+
+        $this->totalModulos = $this->informes
+            ->unique('apprentice_id') 
+            ->sum(fn($informe) => optional($informe->apprentice)->valor ?? 0);
+
+        $informesAgrupados = $query->selectRaw('MIN(id) as id, apprentice_id, MIN(abono) as abono')
+            ->groupBy('apprentice_id')
+            ->get();
+
+        $this->totalDescuento = $informesAgrupados->sum(fn($informe) => optional($informe->apprentice)->descuento ?? 0);
 
         return view('livewire.informe-estudiante');
     }

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Informe de los estudiantes</title>
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/app-hjctGKyo.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('build/assets/app-Be1cidhe.css') }}">
 </head>
 
 <body>
@@ -32,6 +32,7 @@
                                 <th>Acudiente</th>
                                 <th>Estudiante</th>
                                 <th>Modulo</th>
+                                <th>Descuento</th>
                                 <th>Abono</th>
                                 <th>Fecha</th>
                                 <th>Pendiente</th>
@@ -61,12 +62,18 @@
                                     <td class="relative">
                                         {{ $informe->apprentice->attendant->name }}
                                     </td>
-                                    <td>{{ $informe->apprentice->name }}</td>
-                                    @if ($informe->apprentice->modality->id == 4)
-                                        <td>${{ $informe->apprentice->valor }}</td>
-                                    @else
-                                        <td>${{ $informe->apprentice->modality->valor }}</td>
-                                    @endif
+                                    <td>{{ $informe->apprentice->name }} {{$informe->apprentice->apellido}}</td>
+                                    @php
+                                    if ($informe->apprentice->modality_id != 4) {
+                                        $valorModulo = $informe->apprentice->modality->valor;
+                                    } else {
+                                        $valorModulo = $informe->apprentice->valor;
+                                    }
+                                @endphp
+                                <td>$
+                                    {{ number_format($valorModulo - $informe->apprentice->descuento, 0, ',', '.') }}
+                                </td>
+                                    <td>${{ $informe->apprentice->descuento }}</td>
                                     <td>${{ $informe->abono }}</td>
                                     @php
                                         $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
@@ -83,7 +90,7 @@
                                         }
 
                                     @endphp
-                                    <td>${{ $pendiente }} </td>
+                                    <td>${{ $pendiente - $informe->apprentice->descuento}} </td>
                                     <td>${{ $informe->apprentice->plataforma ?? 0 }} </td>
                                     <td>-----</td>
                                 </tr>
@@ -99,9 +106,9 @@
                             @endforelse
                             <tr>
                                 <td colspan="3">Total: </td>
-                                <td>${{ $totalModulos }}</td>
+                                <td>${{ $totalModulos - $totalDescuento }}</td>
+                                <td>${{ $totalDescuento }}</td>
                                 <td>${{ $total }}</td>
-                                <td></td>
                                 <td></td>
                                 <td>${{ $plataforma }}</td>
                                 <td>${{ $plataforma + $totalModulos }}</td>

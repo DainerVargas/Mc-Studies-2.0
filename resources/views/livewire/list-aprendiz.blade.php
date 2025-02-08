@@ -1,16 +1,16 @@
 <div class="componente">
     <div class="conteFiltro">
-        <form wire:submit="filtrar">
+        <form >
             <div class="conteInput">
                 <label for="filtro">Filtra por el nombre del aprendiz</label>
-                <input type="text" wire:model="filtro" placeholder="Nombre del Aprendiz">
+                <input type="text" wire:model.live="nameAprendiz" placeholder="Nombre del Aprendiz">
             </div>
-            <button wire:click="filtrar" class="btnFiltro">Buscar</button>
+            <button type="submit" class="btnFiltro">Buscar</button>
         </form>
     </div>
 
     <div class="conteSelect">
-        <select wire:model="grupo" wire:change="filtrar">
+        <select wire:model.live="grupo">
             <option value="all" selected>Filtra por grupos</option>
             <option value="none">Sin grupos</option>
             @foreach ($grupos as $grupoItem)
@@ -19,25 +19,26 @@
         </select>
         <div class="conteChecks">
             <div class="conteRadio">
-                <input wire:model="estado" value="all" type="radio" id="option1" wire:change="filtrar">
+                <input wire:model.live="estado" value="all" type="radio" id="option1">
                 <label for="option1">Todos</label>
             </div>
             <div class="conteRadio">
-                <input wire:model="estado" value="active" type="radio" id="option2" wire:change="filtrar">
+                <input wire:model.live="estado" value="active" type="radio" id="option2">
                 <label for="option2">Active</label>
             </div>
             <div class="conteRadio">
-                <input wire:model="estado" value="inactive" type="radio" id="option3" wire:change="filtrar">
+                <input wire:model.live="estado" value="inactive" type="radio" id="option3">
                 <label for="option3">Inactive</label>
             </div>
         </div>
-        <div class="conteDeleteAll">
-            <button class="delete" wire:click="deleteAll"
-                wire:confirm="¿Desea elimiar a todos los estudiantes?"><span
-                    class="material-symbols-outlined">
-                    delete
-                </span> Eliminar todos los estudiantes</button>
-        </div>
+        @if ($user->rol_id == 1)
+            <div class="conteDeleteAll">
+                <button class="delete" wire:click="deleteAll"
+                    wire:confirm="¿Desea elimiar a todos los estudiantes?"><span class="material-symbols-outlined">
+                        delete
+                    </span> Eliminar todos los estudiantes</button>
+            </div>
+        @endif
     </div>
 
     <div class="containerConte">

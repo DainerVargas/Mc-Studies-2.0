@@ -41,13 +41,12 @@
                                 <td>{{ $usuario->email }}</td>
                                 <td>{{ $usuario->rol->name }}</td>
                                 <td>
-                                    @if ($usuario->id == 1)
+                                    @if ($usuario->rol_id == 1)
                                         <button class="safe">Seguro</button>
                                     @else
-                                        
-                                    <button class="delete"
-                                    wire:confirm="¿Desea eliminar el {{ $usuario->rol->name }} {{ $usuario->name }}"
-                                    wire:click="eliminar({{ $usuario->id }})">Eliminar</button>
+                                        <button class="delete"
+                                            wire:confirm="¿Desea eliminar el {{ $usuario->rol->name }} {{ $usuario->name }}"
+                                            wire:click="eliminar({{ $usuario->id }})">Eliminar</button>
                                     @endif
                                 </td>
                             </tr>

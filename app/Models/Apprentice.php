@@ -42,6 +42,7 @@ class Apprentice extends Model
         'attendant_id',
         'group_id',
         'valor',
+        'descuento',
         'direccion',
     ];
 }

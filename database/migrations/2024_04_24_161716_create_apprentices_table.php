@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('apprentices', function (Blueprint $table) {
@@ -27,6 +25,7 @@ return new class extends Migration
             $table->integer('plataforma')->nullable();
             $table->boolean('estado')->nullable();
             $table->integer('valor')->nullable();
+            $table->integer('descuento')->nullable()->defaultValue(0);
             $table->string('imagen')->nullable();
             $table->string('comprobante')->nullable();
             $table->dateTime('fecha_inicio')->nullable();
@@ -37,9 +36,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-    /**
-     * Reverse the migrations.
-     */
+
     public function down(): void
     {
         Schema::dropIfExists('apprentices');

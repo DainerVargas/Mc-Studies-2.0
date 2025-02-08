@@ -18,7 +18,7 @@ class InformeSeeder extends Seeder
             'abono' => 0,
             'fecha' => null
         ]);
-       /*  Informe::create([
+        Informe::create([
             'apprentice_id' => 2,
             'abono' => 0,
             'fecha' => null
@@ -27,6 +27,6 @@ class InformeSeeder extends Seeder
             'apprentice_id' => 3,
             'abono' => 0,
             'fecha' => null
-        ]); */
+        ]);
     }
 }
