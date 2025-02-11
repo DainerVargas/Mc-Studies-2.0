@@ -25,6 +25,7 @@ class ApprenticeFactory extends Factory
             'fecha_nacimiento' => fake()->date('y-m-d'),
             'estado' => 0,
             'plataforma' => 0,
+            'fechaPlataforma' => fake()->date('Y'),
             'valor' => fake()->randomElement([900000, 810000]),
             'descuento' => 120000,
             'direccion' => $this->faker->address(),

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Attendant;
+use App\Models\Comprobante;
 use App\Models\Group;
 use App\Models\Modality;
 use App\Models\Type;
@@ -23,11 +24,11 @@ return new class extends Migration
             $table->string('direccion');
             $table->date('fecha_nacimiento');
             $table->integer('plataforma')->nullable();
+            $table->integer('fechaPlataforma')->nullable();  
             $table->boolean('estado')->nullable();
             $table->integer('valor')->nullable();
             $table->integer('descuento')->nullable()->defaultValue(0);
             $table->string('imagen')->nullable();
-            $table->string('comprobante')->nullable();
             $table->dateTime('fecha_inicio')->nullable();
             $table->dateTime('fecha_fin')->nullable();
             $table->foreignIdFor(Attendant::class)->constrained()->nullable();

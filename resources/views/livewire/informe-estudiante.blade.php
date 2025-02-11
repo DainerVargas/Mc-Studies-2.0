@@ -27,6 +27,17 @@
                         <option value="12">Diciembre</option>
                     </select>
                 </div>
+
+                <div class="year">
+                    <span class="material-symbols-outlined" wire:click="previous">
+                        skip_previous
+                    </span>
+                    <p>{{ $year }}</p>
+                    <span class="material-symbols-outlined" wire:click="next">
+                        skip_next
+                    </span>
+                </div>
+
                 <div class="contelink">
                     <a href="{{ route('descargar', $mes) }}"> Descargar Informe
                         <span class="material-symbols-outlined" title="Descargar documento">
@@ -48,7 +59,6 @@
                             <th>Valor Modulo</th>
                             <th>Descuento</th>
                             <th>Abono</th>
-                            <th>Fecha</th>
                             <th>Pendiente</th>
                             <th>Plataforma de Pago</th>
                             <th>Abonar</th>
@@ -59,11 +69,11 @@
                     <tbody>
                         @php
                             $count = 1;
-                            $total = 0;
+                            $totalAbono = 0;
                             $plataforma = 0;
-                            $totalPendiente = 0;
                             $color = '#000000';
                             $valorModulo = 0;
+                            $fechaPlataforma = Date::now()->year;
                         @endphp
                         @forelse ($informes ?? [] as $informe)
                             <tr>
@@ -71,7 +81,11 @@
                                 <td class="relative">
                                     {{ $informe->apprentice->attendant->name }}
                                 </td>
-                                <td>{{ $informe->apprentice->name }} {{ $informe->apprentice->apellido }}</td>
+                                <td>
+                                    <a href="{{ route('estadoCuenta', $informe->apprentice->id) }}">
+                                        {{ $informe->apprentice->name . ' ' . $informe->apprentice->apellido }}
+                                    </a>
+                                </td>
 
                                 @php
                                     if ($informe->apprentice->modality_id != 4) {
@@ -93,49 +107,38 @@
                                     </div>
                                 </td>
                                 @php
-                                    if ($informe->abono <= 300000) {
+                                    if ($informe->total_abonos <= 300000) {
                                         $color = 'red';
                                     }
-                                    if ($informe->abono > 300000 && $informe->abono <= 799999) {
+                                    if ($informe->total_abonos > 300000 && $informe->abono <= 799999) {
                                         $color = 'orange';
                                     }
-                                    if ($informe->abono >= 800000) {
+                                    if ($informe->total_abonos >= 800000) {
                                         $color = 'green';
                                     }
-
+                                    $totalAbono += $informe->total_abonos;
                                 @endphp
 
                                 <td style="color: {{ $color }}">
-                                    ${{ number_format($informe->abono, 0, ',', '.') }} </td>
+                                    ${{ number_format($informe->total_abonos, 0, ',', '.') }} </td>
                                 @php
                                     $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
                                 @endphp
-                                <td>
-                                    <div class="flex">
-                                        {{ $fecha }} <span wire:click="aumentar({{ $informe->id }})"
-                                            class="material-symbols-outlined editar" title="Actualizar fecha">
-                                            edit
-                                        </span>
-                                    </div>
-                                </td>
                                 @php
                                     $valueAprendiz = 0;
-                                    $totalAbonos = $informes
-                                        ->where('apprentice_id', $informe->apprentice->id)
-                                        ->sum('abono');
-
                                     if ($informe->apprentice->modality_id != 4) {
                                         $valueAprendiz = $informe->apprentice->modality->valor;
                                     } else {
                                         $valueAprendiz = $informe->apprentice->valor;
                                     }
                                     $pendiente =
-                                        $valueAprendiz - $totalAbonos - $informe->apprentice->descuento;
+                                        $valueAprendiz - $informe->total_abonos - $informe->apprentice->descuento;
 
-                                    $totalPendiente += $pendiente;
-                                    $plataforma += $informe->apprentice->plataforma ?? 0;
+                                    if ($informe->apprentice->fechaPlataforma == $fechaPlataforma) {
+                                        $plataforma += $informe->apprentice->plataforma ?? 0;
+                                    }
                                 @endphp
-                                <td>${{ number_format($pendiente , 0, ',', '.') }}
+                                <td>${{ number_format($pendiente, 0, ',', '.') }}
                                 </td>
                                 <td style="color: green">
                                     <div class="flex">
@@ -184,9 +187,6 @@
                             </div>
                         </td>
                         </tr>
-                        @php
-                            $total += $informe->abono;
-                        @endphp
                     @empty
                         <tr>
                             <td colspan="11">
@@ -201,9 +201,8 @@
     <td colspan="3">Total: </td>
     <td>${{ number_format($totalModulos - $totalDescuento, 0, ',', '.') }}</td>
     <td>${{ number_format($totalDescuento, 0, ',', '.') }}</td>
-    <td>${{ number_format($total, 0, ',', '.') }}</td>
-    <td></td>
-    <td>{{ number_format($totalPendiente - $totalDescuento, 0, ',', '.') }}</td>
+    <td>${{ number_format($totalAbono, 0, ',', '.') }}</td>
+    <td>${{ number_format($totalPendiente, 0, ',', '.') }}</td>
     <td>${{ number_format($plataforma, 0, ',', '.') }}</td>
     <td colspan="3">${{ number_format($plataforma + $totalModulos - $totalDescuento, 0, ',', '.') }}</td>
     </tbody>

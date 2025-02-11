@@ -22,6 +22,11 @@ $verde: #99BF51;
 $azul: #05CCD1;
 $gris: #959595;
 
+@page {
+  size: auto;
+  margin: 0;
+}
+
 
 /* INPUTS */
 .conteInput {
@@ -336,13 +341,13 @@ $gris: #959595;
         @include funciones.flex(space-between);
         width: 90%;
         margin-top: 2vw;
-        /*  border: 0.1vw solid black; */
+        height: 4vw;
 
         .conteInput {
           @include funciones.align(start, start);
           flex-direction: column;
           row-gap: 0.3vw;
-          width: 44%;
+          width: 34%;
 
           label {
             font-size: 1vw;
@@ -363,15 +368,39 @@ $gris: #959595;
           }
         }
 
-        .mes select {
-          height: 2vw;
-          width: 10vw;
-          background-color: #fff;
-          border: .1vw solid gray;
-          padding: 0 .5vw;
-          border-radius: .3vw;
-          font-size: 1.1vw;
-          cursor: pointer;
+        .mes {
+          @include funciones.align(end, center);
+          height: 100%;
+
+          select {
+            height: 2vw;
+            width: 10vw;
+            background-color: #fff;
+            border: .1vw solid gray;
+            padding: 0 .5vw;
+            border-radius: .3vw;
+            font-size: 1.1vw;
+            cursor: pointer;
+          }
+        }
+
+        .year{
+          background-color: $azul;
+          padding: 5px;
+          box-sizing: border-box;
+          border-radius: 6px;
+          @include funciones.flex(center);
+          gap: 0.6vw;
+
+          p{
+            color: white;
+            font-weight: bold;
+          }
+
+          span{
+            cursor: pointer;
+            color: white;
+          }
         }
 
         .contelink {
@@ -557,6 +586,16 @@ $gris: #959595;
             background-color: white;
             text-align: center;
             flex-direction: column;
+
+            a {
+              text-decoration: none;
+              color: black;
+              /*  transition: all 0.1s ease; */
+            }
+
+            a:hover {
+              font-weight: 500;
+            }
 
             .flex {
               @include funciones.flex(center);
@@ -1998,7 +2037,7 @@ $gris: #959595;
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
           }
-   
+
           .errors {
             font-size: 12px;
             position: absolute;
@@ -2037,9 +2076,10 @@ $gris: #959595;
             cursor: pointer;
             box-shadow: 0.1vw 0.1vw 0.7vw rgb(107, 107, 107);
 
-            .imagen{
+            .imagen {
               width: 100%;
               @include funciones.flex(center);
+
               img {
                 user-select: none;
                 height: 190px;
@@ -2047,18 +2087,21 @@ $gris: #959595;
                 margin-bottom: 6px;
               }
             }
-            p{
+
+            p {
               color: $verde;
               font-weight: 600;
             }
-            span{
+
+            span {
               color: #393939;
             }
           }
 
           .bancolombia:hover,
           .pagoFisico:hover {
-            border: 1px solid $verde;;
+            border: 1px solid $verde;
+            ;
             box-shadow: 0vw 0vw 0;
           }
 
@@ -2484,6 +2527,10 @@ $gris: #959595;
                 background-color: white;
                 text-align: center;
 
+                a {
+                  text-decoration: none;
+                }
+
                 button {
                   height: 1.6vw;
                   width: 5vw;
@@ -2658,6 +2705,249 @@ $gris: #959595;
   }
 }
 
+/* ESTADO DE LA CUENTA */
+
+.containerEstado {
+  @include funciones.flex(center);
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  gap: 20px;
+
+  .title {
+    @include funciones.flex(center);
+    flex-direction: column;
+    gap: 2px;
+
+    h1 {
+      color: $verde;
+    }
+
+    p {
+      color: #323232;
+      font-size: 18px;
+    }
+
+  }
+
+  .name {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .containerButton {
+    @include funciones.flex(end);
+    width: 100%;
+    padding-right: 20px;
+    box-sizing: border-box;
+
+    a {
+      text-decoration: none;
+    }
+
+    button {
+      @include funciones.flex(center);
+      user-select: none;
+      cursor: pointer;
+      padding: 2px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background-color: rgb(186, 186, 186);
+      width: 180px;
+      font-weight: 500;
+      gap: 2px;
+      height: 40px;
+      background-color: $verde;
+      transition: all 0.2s ease;
+
+      img {
+        height: 26px;
+      }
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .containerConte {
+    width: 100%;
+    border: none;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    height: 350px;
+
+    .conteTable {
+      width: 100%;
+      @include funciones.flex(center);
+      margin-top: 30px;
+      position: relative;
+
+      table {
+        width: 80%;
+        border: 1px solid gray;
+        border-radius: 0.4vw;
+        border-collapse: collapse;
+
+        .fixed {
+          height: 18px;
+          font-size: 18px;
+          position: sticky;
+          top: 0;
+          z-index: 999;
+          border: 1px solid gray !important;
+          background-color: #dbdbdb;
+        }
+
+        .fixed:nth-child(1) {
+          height: 32px;
+        }
+
+        td,
+        th {
+          padding: 2px;
+          box-sizing: border-box;
+        }
+
+        td {
+          font-size: 16px;
+          border: 1px solid $gris;
+          text-align: center;
+
+          div {
+            width: 100%;
+            @include funciones.flex(center);
+
+            label {
+              @include funciones.flex(center);
+              cursor: pointer;
+            }
+
+            img {
+              height: 32px;
+              cursor: pointer;
+            }
+
+          }
+        }
+
+        .color-blue {
+          background-color: $azul;
+          color: white;
+          border: 1px solid $azul;
+        }
+
+        .color-green {
+          background-color: $verde;
+        }
+
+      }
+
+      .loader {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .jimu-primary-loading:before,
+      .jimu-primary-loading:after {
+        position: absolute;
+        top: 0;
+        content: '';
+      }
+
+      .jimu-primary-loading:before {
+        left: -19.992px;
+      }
+
+      .jimu-primary-loading:after {
+        left: 19.992px;
+        -webkit-animation-delay: 0.32s !important;
+        animation-delay: 0.32s !important;
+      }
+
+      .jimu-primary-loading:before,
+      .jimu-primary-loading:after,
+      .jimu-primary-loading {
+        background: #076fe5;
+        -webkit-animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+        animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+        width: 13.6px;
+        height: 32px;
+      }
+
+      .jimu-primary-loading {
+        text-indent: -9999em;
+        margin: auto;
+        position: absolute;
+        right: calc(50% - 6.8px);
+        top: calc(50% - 16px);
+        -webkit-animation-delay: 0.16s !important;
+        animation-delay: 0.16s !important;
+      }
+
+      @-webkit-keyframes loading-keys-app-loading {
+
+        0%,
+        80%,
+        100% {
+          opacity: .75;
+          box-shadow: 0 0 #076fe5;
+          height: 32px;
+        }
+
+        40% {
+          opacity: 1;
+          box-shadow: 0 -8px #076fe5;
+          height: 40px;
+        }
+      }
+
+      @keyframes loading-keys-app-loading {
+
+        0%,
+        80%,
+        100% {
+          opacity: .75;
+          box-shadow: 0 0 #076fe5;
+          height: 32px;
+        }
+
+        40% {
+          opacity: 1;
+          box-shadow: 0 -8px #076fe5;
+          height: 40px;
+        }
+      }
+    }
+
+    .containerComprobante {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 999;
+
+      .comprobante {
+        height: 500px;
+      }
+
+      .close {
+        height: 33px;
+        position: absolute;
+        top: 3.4%;
+        right: -6.4%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
 @media (max-width: 817px) {
 
   .registro {
@@ -2697,7 +2987,7 @@ $gris: #959595;
       }
     }
 
-    .messageMercadoPago{
+    .messageMercadoPago {
       top: 35%;
     }
   }
@@ -2753,7 +3043,7 @@ $gris: #959595;
       }
     }
 
-    .messageMercadoPago{
+    .messageMercadoPago {
       top: 40%;
     }
   }

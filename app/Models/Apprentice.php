@@ -39,6 +39,7 @@ class Apprentice extends Model
         'imagen',
         'modality_id',
         'plataforma',
+        'fechaPlataforma',
         'attendant_id',
         'group_id',
         'valor',

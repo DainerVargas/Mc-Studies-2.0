@@ -65,4 +65,15 @@ class descargaController extends Controller
 
         return view('descargaPDF', compact('aprendiz'));
     }
+
+    public function descargarInforme(Apprentice $aprendiz)
+    {
+        $informes = Informe::where('apprentice_id', $aprendiz->id)->get();
+
+        $pdf = Pdf::loadView('descargaInforme', ['aprendiz' => $aprendiz, 'informes' => $informes]);
+
+        return $pdf->download("Informe - $aprendiz->name  $aprendiz->apellido .pdf");
+
+        /* return view('descargaInforme', compact('informes', 'aprendiz')); */
+    }
 }

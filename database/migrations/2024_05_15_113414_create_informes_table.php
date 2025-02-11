@@ -14,11 +14,12 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Apprentice::class)->constrained();
             $table->integer('abono');
+            $table->string('urlImage')->nullable()->default(null);
             $table->date('fecha')->nullable();
+            $table->date('fechaRegistro')->nullable();
             $table->timestamps();
         });
     }
-
  
     public function down(): void
     {

@@ -12,7 +12,9 @@ class Informe extends Model
     protected $fillable = [
         'apprentice_id',
         'abono',
-        'fecha'
+        'fecha',
+        'fechaRegistro',
+        'urlImage',
     ];
 
     public function apprentice()

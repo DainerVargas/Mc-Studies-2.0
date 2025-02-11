@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Apprentice;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Date;
 
 class ApprenticeSeeder extends Seeder
 {
@@ -18,6 +19,7 @@ class ApprenticeSeeder extends Seeder
             'estado' => '0',
             'email' => '',
             'plataforma' => 0,
+            'fechaPlataforma' => Date::now()->year,
             'valor' => 810000,
             'descuento' => 10000,
             'direccion' => 'calle 28',

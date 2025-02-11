@@ -93,3 +93,9 @@ Route::get('Comprobante/{teacher}', [TeacherController::class, 'comprobante'])->
 Route::get('/mercadopago/success',  [AuthController::class, 'capturePayment'])->name('payment.success');
 
 Route::get('/mercadopago/cancel', [AuthController::class, 'cancelPayment'])->name('payment.failure');
+
+/* ESTADO DE LA CUENTA */
+
+Route::get('Estado-Cuenta/{aprendiz}', [ApprenticeController::class, 'estado'])->middleware('auth')->name('estadoCuenta');
+
+Route::get('Descarga-Informe/{aprendiz}', [descargaController::class, 'descargarInforme'])->middleware('auth')->name('descargarInforme');

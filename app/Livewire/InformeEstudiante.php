@@ -5,21 +5,35 @@ namespace App\Livewire;
 use App\Models\Apprentice;
 use App\Models\Informe;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Livewire\Component;
 
 class InformeEstudiante extends Component
 {
     public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00';
 
-    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalModulos;
+    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente, $totalModulos;
     public $filtro = '';
     public $aprendices, $aprendizArray;
     public $vista = 0;
+    public $year = 0;
 
     public function mount()
     {
-        $this->informes = Informe::all();
+        $this->year = Date::now()->year;
+        $this->informes = Informe::where('fechaRegistro', $this->year );
         $this->aprendices = Apprentice::all();
+    }
+
+    public function next()
+    {
+
+        $this->year += 1;
+    }
+    public function previous()
+    {
+
+        $this->year -= 1;
     }
 
     public function activar($value)
@@ -77,7 +91,7 @@ class InformeEstudiante extends Component
         /* dd('Total Abono: '.$totalAbono, ' Total Apagar: '. $total , ' Total descuento: '. $aprendiz->descuento, ' value: '. $pendiente, 'descuento ingresado ' . $this->descuent); */
 
         if ($total != $totalAbono) {
-            if ($pendiente <= 0) {
+            if ($pendiente < 0) {
                 $this->message = "El descuento sobre pasa el valor del modulo";
             } else {
                 $aprendiz->descuento = $this->descuent;
@@ -134,6 +148,7 @@ class InformeEstudiante extends Component
         foreach ($inform as $valor) {
             $abonoT += $valor->abono;
         }
+
         $this->total = $abonoT + $this->abono;
         if ($aprendiz->modality->id == 4) {
 
@@ -142,25 +157,30 @@ class InformeEstudiante extends Component
             $totalModulo = $aprendiz->modality->valor;
         }
 
-        if ($this->total <= $totalModulo - $aprendiz->descuento) {
-            if ($inform[0]->abono != 0) {
-                $informe = Informe::create([
-                    'apprentice_id' => $inform[0]->apprentice_id,
-                    'abono' => $this->abono,
-                    'fecha' => Carbon::now()->toDateString(),
-                ]);
-            } else {
-                $inform[0]->update([
-                    'abono' =>  $this->abono,
-                    'fecha' => Carbon::now()->toDateString(),
-                ]);
-            }
+        if ($this->abono != 0) {
 
-            $this->view = 0;
-            $this->abono = '';
-            $this->message = '';
+            if ($this->total <= $totalModulo - $aprendiz->descuento) {
+                if ($inform[0]->abono != 0) {
+                    $informe = Informe::create([
+                        'apprentice_id' => $inform[0]->apprentice_id,
+                        'abono' => $this->abono,
+                        'fecha' => Carbon::now()->toDateString(),
+                    ]);
+                } else {
+                    $inform[0]->update([
+                        'abono' =>  $this->abono,
+                        'fecha' => Carbon::now()->toDateString(),
+                    ]);
+                }
+
+                $this->view = 0;
+                $this->abono = '';
+                $this->message = '';
+            } else {
+                $this->message = "El abono sobre pasa el valor del modulo";
+            }
         } else {
-            $this->message = "El abono sobre pasa el valor del modulo";
+            $this->message = "El abono debe ser mayor a 0";
         }
     }
 
@@ -174,10 +194,15 @@ class InformeEstudiante extends Component
 
     public function reseter(Informe $informe, Apprentice $aprendiz)
     {
-        $informe->abono = 0;
-        $informe->fecha = null;
-        $informe->save();
-        $aprendiz->plataforma = null;
+
+        $ultimoInforme = Informe::where('apprentice_id', $aprendiz->id)
+            ->latest('fecha')
+            ->first();
+
+        $ultimoInforme->abono = 0;
+        $ultimoInforme->fecha = null;
+        $ultimoInforme->save();
+
         $aprendiz->descuento = 0;
         $aprendiz->save();
         $this->message2 = '';
@@ -208,27 +233,44 @@ class InformeEstudiante extends Component
         $query = Informe::query()->with('apprentice.attendant', 'apprentice.modality');
 
         if (!empty($this->mes) && $this->mes != '00') {
-            $query->whereMonth('fecha', intval($this->mes));
+            $query->whereMonth('fecha', intval($this->mes))->where('fechaRegistro', $this->year);
         }
 
         if (!empty($this->filtro)) {
-            $query->whereIn('apprentice_id', function ($subQuery) {
-                $subQuery->select('id')
-                    ->from('apprentices')
-                    ->where('name', 'LIKE', '%' . $this->filtro . '%');
+            $query->whereHas('apprentice', function ($subQuery) {
+                $subQuery->where('name', 'LIKE', '%' . $this->filtro . '%')
+                    ->orWhere('apellido', 'LIKE', '%' . $this->filtro . '%')->where('fechaRegistro', $this->year);
             });
         }
-        $this->informes = $query->get();
 
-        $this->totalModulos = $this->informes
-            ->unique('apprentice_id') 
-            ->sum(fn($informe) => optional($informe->apprentice)->valor ?? 0);
-
-        $informesAgrupados = $query->selectRaw('MIN(id) as id, apprentice_id, MIN(abono) as abono')
+        $informesAgrupados = $query->selectRaw('apprentice_id, SUM(abono) as total_abonos')
             ->groupBy('apprentice_id')
             ->get();
 
-        $this->totalDescuento = $informesAgrupados->sum(fn($informe) => optional($informe->apprentice)->descuento ?? 0);
+        $this->informes = $query->selectRaw('MIN(id) as id, apprentice_id')
+            ->groupBy('apprentice_id')
+            ->with('apprentice')
+            ->where('fechaRegistro', $this->year )
+            ->get();
+
+        foreach ($this->informes as $informe) {
+            $informe->total_abonos = $informesAgrupados
+                ->where('apprentice_id', $informe->apprentice_id)
+                ->first()->total_abonos ?? 0;
+        }
+
+        $this->totalModulos = $this->informes
+            ->sum(fn($informe) => optional($informe->apprentice)->valor ?? 0);
+
+        $this->totalDescuento = $this->informes
+            ->sum(fn($informe) => optional($informe->apprentice)->descuento ?? 0);
+
+        $this->totalPendiente = $this->informes
+            ->sum(
+                fn($informe) => (optional($informe->apprentice)->valor ?? 0)
+                    - $informe->total_abonos
+                    - (optional($informe->apprentice)->descuento ?? 0)
+            );
 
         return view('livewire.informe-estudiante');
     }

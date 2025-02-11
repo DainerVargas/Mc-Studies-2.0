@@ -147,14 +147,17 @@ class SelectComprobante extends Component
             'telefono' => $this->telefono,
             'comprobante' => null,
             'plataforma' => $plataforma,
+            'fechaPlataforma' => Date::now()->year,
             'attendant_id' => $acudienteID,
             'modality_id' => $this->modality_id,
         ]);
 
-        $informe = Informe::create([
+        Informe::create([
             'apprentice_id' => $aprendiz->id,
             'abono' => 0,
+            'urlImage' => null,
             'fecha' => null,
+            'fechaRegistro' => null,
         ]);
 
         try {
