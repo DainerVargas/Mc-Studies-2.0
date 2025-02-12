@@ -157,7 +157,7 @@ class SelectComprobante extends Component
             'abono' => 0,
             'urlImage' => null,
             'fecha' => null,
-            'fechaRegistro' => null,
+            'fechaRegistro' => Date::now()->year,
         ]);
 
         try {

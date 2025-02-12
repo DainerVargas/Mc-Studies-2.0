@@ -9,149 +9,154 @@
 </head>
 
 <style>
-    .containerEstado {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-
-    .name {
+    body {
         font-family: Arial, Helvetica, sans-serif;
     }
 
-    .logo {
+    header {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
+        padding: 20px;
+        border-bottom: 2px solid #ddd;
     }
 
-    img {
-        height: 100px;
+    .logo img {
+        height: 80px;
     }
 
-    .containerConte {
+    .info {
+        text-align: right;
+        margin-top: -80px; 
+    }
+
+    .info p {
+        margin: 5px 0;
+        color: #444;
+    }
+
+    .info span {
+        font-weight: bold;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    .student-info {
+        margin-bottom: 20px;
+        padding: 10px;
+        background: #f7f7f7;
+        border-radius: 5px;
+    }
+
+    .student-info p {
+        margin: 5px 0;
+        margin-top: 20px;
+    }
+
+    .table-container {
         width: 100%;
-        border: none;
-        overflow-x: hidden;
-        overflow-y: scroll;
-        scrollbar-width: none;
-        height: 350px;
-    }
-
-    .conteTable {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 30px;
-        position: relative;
+        overflow-x: auto;
     }
 
     table {
-        width: 80%;
-        border: 1px solid gray;
-        border-radius: 0.4vw;
+        width: 100%;
         border-collapse: collapse;
+        margin-top: 30px;
     }
 
-    .fixed {
-        height: 18px;
-        font-size: 18px;
-        position: sticky;
-        top: 0;
-        z-index: 999;
-        border: 1px solid gray !important;
-        background-color: #dbdbdb;
-    }
-
-    .fixed:nth-child(1) {
-        height: 32px;
-    }
-
-    .td,
-    .th {
-        padding: 2px;
-        box-sizing: border-box;
-    }
-
-    .td {
-        font-size: 16px;
-        border: 1px solid gray;
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
         text-align: center;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: 200;
     }
 
-    .color-blue {
-        background-color: #05CCD1;
+    th {
+        background: #05CCD1;
         color: white;
-        border: 1px solid #05CCD1;
     }
 
-    .color-green {
-        background-color: #99BF51;
+    .total-row {
+        background: #99BF51;
+        font-weight: bold;
     }
+
 </style>
 
 <body>
-    <div class="containerEstado">
+    <header>
         <div class="logo">
-            <img src="{{ public_path('Logo.png') }}" alt="">
+            <img src="{{ public_path('Logo.png') }}" alt="Logo">
         </div>
-        <p class="name">{{ $aprendiz->name . ' ' . $aprendiz->apellido }}</p>
-        <div class="containerConte">
-            <div class="conteTable">
+        <div class="info">
+            <p><span>NIT:</span> 901809528-9</p>
+            <p><span>Teléfono:</span> 3173961175</p>
+            <p><span>Email:</span> info@mcstudies.com</p>
+        </div>
+    </header>
 
-                @php
-                    $precio = 0;
-                    $descuento = 0;
-                    $totalAbono = 0;
-                @endphp
-                <table>
-                    <tr class="tr">
-                        <th class="fixed color-blue" colspan="6">Modalidad - {{ $aprendiz->modality->name }}</th>
-                    </tr>
+    <div class="container">
+        <p><strong>Fecha:</strong> {{ $fecha }}</p>
+
+        <div class="student-info">
+            <p><strong>Estudiante:</strong> {{ $aprendiz->name . ' ' . $aprendiz->apellido }}</p>
+            <p><strong>Grupo:</strong> {{ $aprendiz->group->name }}</p>
+            <p><strong>Modalidad:</strong> {{ $aprendiz->modality->name }}</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
                     <tr>
-                        <th class="fixed color-green">Precio Modulo</th>
-                        <th class="fixed color-green">Descuento</th>
-                        <th class="fixed color-green">Abono</th>
-                        <th class="fixed color-green">Pendiente</th>
-                        <th class="fixed color-green">Plataforma</th>
-                        <th class="fixed color-green">Fecha</th>
+                        <th>Precio Modulo</th>
+                        <th>Descuento</th>
+                        <th>Abono</th>
+                        <th>Pendiente</th>
+                        <th>Plataforma</th>
+                        <th>Fecha</th>
                     </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $precio = 0;
+                        $descuento = 0;
+                        $totalAbono = 0;
+                    @endphp
+
                     @forelse ($informes as $informe)
                         <tr>
-                            <td class="td">${{ number_format($informe->apprentice->valor, 0, ',', '.') }}</td>
-                            <td class="td">${{ number_format($informe->apprentice->descuento, 0, ',', '.') }}</td>
-                            <td class="td">${{ number_format($informe->abono, 0, ',', '.') }}</td>
+                            <td>${{ number_format($informe->apprentice->valor, 0, ',', '.') }}</td>
+                            <td>${{ number_format($informe->apprentice->descuento, 0, ',', '.') }}</td>
+                            <td>${{ number_format($informe->abono, 0, ',', '.') }}</td>
                             @php
                                 $precio = $informe->apprentice->valor;
                                 $descuento = $informe->apprentice->descuento;
                                 $totalAbono += $informe->abono;
                             @endphp
-                            <td class="td">${{ number_format($precio - $descuento - $totalAbono, 0, ',', '.') }}
-                            </td>
-                            <td class="td">${{ number_format($informe->apprentice->plataforma, 0, ',', '.') }}</td>
-                            <td class="td">{{ $informe->fecha ?? 'Sin fecha' }}</td>
+                            <td>${{ number_format($precio - $descuento - $totalAbono, 0, ',', '.') }}</td>
+                            <td>${{ number_format($informe->apprentice->plataforma, 0, ',', '.') }}</td>
+                            <td>{{ $informe->fecha ?? 'Sin fecha' }}</td>
                         </tr>
                     @empty
-                        <td class="td">No hay na'</td>
+                        <tr>
+                            <td colspan="6">No hay registros</td>
+                        </tr>
                     @endforelse
-                    <tr>
-                        <td class="td">${{ number_format($precio, 0, ',', '.') }}</td>
-                        <td class="td">${{ number_format($descuento, 0, ',', '.') }}</td>
-                        <td class="td">${{ number_format($totalAbono, 0, ',', '.') }}</td>
-                        <td class="td">${{ number_format($precio - $descuento - $totalAbono, 0, ',', '.') }}</td>
-                        <td class="td">${{ number_format($aprendiz->plataforma, 0, ',', '.') }}</td>
+
+                    <tr class="total-row">
+                        <td>${{ number_format($precio, 0, ',', '.') }}</td>
+                        <td>${{ number_format($descuento, 0, ',', '.') }}</td>
+                        <td>${{ number_format($totalAbono, 0, ',', '.') }}</td>
+                        <td>${{ number_format($precio - $descuento - $totalAbono, 0, ',', '.') }}</td>
+                        <td>${{ number_format($aprendiz->plataforma, 0, ',', '.') }}</td>
                         <td></td>
                     </tr>
-                </table>
-
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
-
 </body>
+
 
 </html>

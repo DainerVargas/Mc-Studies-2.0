@@ -7,10 +7,11 @@
 
     <div class="containerButton">
         <a href="{{ route('descargarInforme', $aprendiz) }}">
-            <button >Descargar Informe <img src="{{ asset('images/descargar2.png') }}" alt=""></button>
+            <button>Descargar Informe <img src="{{ asset('images/descargar2.png') }}" alt=""></button>
         </a>
     </div>
 
+    <small class="message" style="color: red">{{ $message2 }}</small>
     <div class="containerConte">
         <div class="conteTable">
 
@@ -21,7 +22,7 @@
             @endphp
             <table>
                 <tr>
-                    <th class="fixed" colspan="7">Modalidad - {{ $aprendiz->modality->name }}</th>
+                    <th class="fixed" colspan="9">Modalidad - {{ $aprendiz->modality->name }}</th>
                 </tr>
                 <tr>
                     <th class="fixed">Precio Modulo</th>
@@ -31,6 +32,8 @@
                     <th class="fixed">Plataforma</th>
                     <th class="fixed">Fecha</th>
                     <th class="fixed">Subir/Ver</th>
+                    <th class="fixed">Restablecer</th>
+                    <th class="fixed">Eliminar</th>
                 </tr>
                 @forelse ($informes as $informe)
                     <tr>
@@ -56,7 +59,7 @@
                                     </label>
                                     <input type="file" wire:model="comprobante" hidden
                                         id="cargar_{{ $informe->id }}">
-                                    </div>
+                                </div>
                             </td>
                         @else
                             <td>
@@ -66,6 +69,27 @@
                                 </div>
                             </td>
                         @endif
+                        <td>
+                            <div class="flex">
+                                <button class="delete"
+                                    wire:click="reseter({{ $informe->id }} , {{ $informe->apprentice_id }})"
+                                    wire:confirm="¿Estás seguro de restablecer los datos?
+            Si aceptas los datos se perderan."><span
+                                        class="material-symbols-outlined">
+                                        restart_alt
+                                    </span> Restore</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button class="delete" wire:click="eliminar({{ $informe->id }})"
+                                    wire:confirm="¿Estás seguro de eliminar?
+            Si aceptas los datos se perderan."><span
+                                        class="material-symbols-outlined">
+                                        delete
+                                    </span> Eliminar</button>
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <td>No hay na'</td>

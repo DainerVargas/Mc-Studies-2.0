@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Apprentice;
 use App\Models\Informe;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
@@ -12,6 +13,8 @@ class EstadoCuenta extends Component
 
     public $aprendiz, $informes;
     public $comprobante, $informeId, $viewComprobante = 0, $urlImage;
+
+    public $message2, $aprendices;
 
     public function mount() {}
 
@@ -53,6 +56,45 @@ class EstadoCuenta extends Component
     public function close()
     {
         $this->viewComprobante = 0;
+    }
+
+    public function reseter(Informe $informe, Apprentice $aprendiz)
+    {
+
+        if ($informe) {
+
+            $informe->abono = 0;
+            $informe->fecha = null;
+            $informe->urlImage = null;
+            $informe->save();
+
+            $aprendiz->descuento = 0;
+            $aprendiz->save();
+
+        } else {
+            $this->message2 = 'No existe este informe';
+        }
+        $this->message2 = '';
+        $this->aprendices = Apprentice::all();
+    }
+
+    public function eliminar(Informe $informe)
+    {
+
+        if (!$informe) {
+            $this->message2 = "El informe no existe.";
+            return;
+        }
+
+        $informCount = Informe::where('apprentice_id', $informe->apprentice_id)->count();
+
+        if ($informCount == 1) {
+            $this->message2 = "No se puede eliminar el único informe del aprendiz.";
+        } else {
+            $informe->delete();
+            $this->informes = Informe::all();
+        }
+        $this->aprendices = Apprentice::all();
     }
 
     public function render()

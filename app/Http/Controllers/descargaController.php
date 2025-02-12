@@ -9,6 +9,7 @@ use App\Models\Tinforme;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Date;
 
 class descargaController extends Controller
 {
@@ -66,14 +67,19 @@ class descargaController extends Controller
         return view('descargaPDF', compact('aprendiz'));
     }
 
-    public function descargarInforme(Apprentice $aprendiz)
+    public function descargarInforme($aprendiz)
     {
-        $informes = Informe::where('apprentice_id', $aprendiz->id)->get();
+        $informes = Informe::where('apprentice_id', $aprendiz)->get();
 
-        $pdf = Pdf::loadView('descargaInforme', ['aprendiz' => $aprendiz, 'informes' => $informes]);
+        $fecha = Date::now()->format('d-m-Y');
 
+        $aprendiz = Apprentice::with('group')->find($aprendiz);
+
+        $pdf = Pdf::loadView('descargaInforme', ['aprendiz' => $aprendiz, 'informes' => $informes, 'fecha' => $fecha]);
+        
         return $pdf->download("Informe - $aprendiz->name  $aprendiz->apellido .pdf");
+        
 
-        /* return view('descargaInforme', compact('informes', 'aprendiz')); */
+       /*  return view('descargaInforme', compact('informes', 'aprendiz', 'fecha')); */
     }
 }

@@ -385,21 +385,22 @@ $gris: #959595;
         }
 
         .year{
-          background-color: $azul;
+          background-color: white;
           padding: 5px;
+          border: 1px solid rgb(139, 139, 139);
           box-sizing: border-box;
           border-radius: 6px;
           @include funciones.flex(center);
           gap: 0.6vw;
 
           p{
-            color: white;
+            color: rgb(79, 79, 79);
             font-weight: bold;
           }
 
           span{
             cursor: pointer;
-            color: white;
+            color: rgb(42, 42, 42);
           }
         }
 
@@ -2777,7 +2778,7 @@ $gris: #959595;
     overflow-x: hidden;
     overflow-y: scroll;
     scrollbar-width: none;
-    height: 350px;
+    height: 320px;
 
     .conteTable {
       width: 100%;
@@ -2830,6 +2831,27 @@ $gris: #959595;
               cursor: pointer;
             }
 
+            button {
+              height: 2vw;
+              width: 6.5vw;
+              border: 0.1vw solid gray;
+              border-radius: 0.3vw;
+              cursor: pointer;
+              font-size: 0.9vw;
+              font-weight: 500;
+              @include funciones.flex(center);
+              column-gap: 0.3vw;
+
+              span {
+                font-size: 1.6vw;
+              }
+            }
+
+            .delete:hover {
+              background-color: #ff1717;
+              color: white;
+              border: none;
+            }
           }
         }
 

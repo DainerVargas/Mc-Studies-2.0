@@ -192,42 +192,6 @@ class InformeEstudiante extends Component
         $this->aprendices = Apprentice::all();
     }
 
-    public function reseter(Informe $informe, Apprentice $aprendiz)
-    {
-
-        $ultimoInforme = Informe::where('apprentice_id', $aprendiz->id)
-            ->latest('fecha')
-            ->first();
-
-        $ultimoInforme->abono = 0;
-        $ultimoInforme->fecha = null;
-        $ultimoInforme->save();
-
-        $aprendiz->descuento = 0;
-        $aprendiz->save();
-        $this->message2 = '';
-        $this->aprendices = Apprentice::all();
-    }
-
-    public function eliminar(Informe $informe)
-    {
-
-        if (!$informe) {
-            $this->message2 = "El informe no existe.";
-            return;
-        }
-
-        $informCount = Informe::where('apprentice_id', $informe->apprentice_id)->count();
-
-        if ($informCount == 1) {
-            $this->message2 = "No se puede eliminar el único informe del aprendiz.";
-        } else {
-            $informe->delete();
-            $this->informes = Informe::all();
-        }
-        $this->aprendices = Apprentice::all();
-    }
-
     public function render()
     {
         $query = Informe::query()->with('apprentice.attendant', 'apprentice.modality');

@@ -48,7 +48,6 @@
             </form>
         </div>
         <div class="containerConte">
-            <small class="message" style="color: red">{{ $message2 }}</small>
             <div class="conteTable">
                 <table class="tableInforme">
                     <thead>
@@ -62,8 +61,6 @@
                             <th>Pendiente</th>
                             <th>Plataforma de Pago</th>
                             <th>Abonar</th>
-                            <th>Restablecer</th>
-                            <th>Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,27 +161,6 @@
                             @else
                                 ¡Completado!
                             @endif
-                        </td>
-                        <td>
-                            <div class="flex">
-                                <button class="delete"
-                                    wire:click="reseter({{ $informe->id }} , {{ $informe->apprentice_id }})"
-                                    wire:confirm="¿Estás seguro de restablecer los datos?
-            Si aceptas los datos se perderan."><span
-                                        class="material-symbols-outlined">
-                                        restart_alt
-                                    </span> Restore</button>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex">
-                                <button class="delete" wire:click="eliminar({{ $informe->id }})"
-                                    wire:confirm="¿Estás seguro de eliminar?
-            Si aceptas los datos se perderan."><span
-                                        class="material-symbols-outlined">
-                                        delete
-                                    </span> Eliminar</button>
-                            </div>
                         </td>
                         </tr>
                     @empty

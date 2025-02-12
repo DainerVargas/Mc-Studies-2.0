@@ -7,7 +7,7 @@
     <title>@yield('title')</title>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-        <link rel="stylesheet" href="{{asset('build/assets/app-Bawwxm3p.css')}}">
+        <link rel="stylesheet" href="{{asset('build/assets/app-BvbZW79v.css')}}">
        <link rel="icon" type="image/png" href="{{ asset('Logo.png') }}">
 
 </head>
