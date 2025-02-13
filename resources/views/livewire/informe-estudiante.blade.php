@@ -61,6 +61,8 @@
                             <th>Pendiente</th>
                             <th>Plataforma de Pago</th>
                             <th>Abonar</th>
+                            <th>Fecha</th>
+                            <th>Observaciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,6 +106,11 @@
                                     </div>
                                 </td>
                                 @php
+                                    $value = $valorModulo - $informe->apprentice->descuento - $informe->total_abonos;
+
+                                    if ($value === 0) {
+                                        $color = 'green';
+                                    }
                                     if ($informe->total_abonos <= 300000) {
                                         $color = 'red';
                                     }
@@ -113,14 +120,16 @@
                                     if ($informe->total_abonos >= 800000) {
                                         $color = 'green';
                                     }
+
+                                    if ($value === 0) {
+                                        $color = 'green';
+                                    }
                                     $totalAbono += $informe->total_abonos;
                                 @endphp
 
                                 <td style="color: {{ $color }}">
                                     ${{ number_format($informe->total_abonos, 0, ',', '.') }} </td>
-                                @php
-                                    $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
-                                @endphp
+
                                 @php
                                     $valueAprendiz = 0;
                                     if ($informe->apprentice->modality_id != 4) {
@@ -161,6 +170,28 @@
                             @else
                                 ¡Completado!
                             @endif
+                        </td>
+                        @php
+                            $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
+                        @endphp
+                        <td>
+                            <div class="flex">
+                                {{ $fecha }} <span wire:click="aumentar({{ $informe->id }})"
+                                    class="material-symbols-outlined editar" title="Actualizar fecha">
+                                    edit
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <form wire:submit.prevent="saveObservacion({{ $informe->apprentice->id }})">
+                                    <textarea class="observaciones" wire:model="observaciones.{{ $informe->apprentice->id }}" rows="2"></textarea>
+
+                                    <img wire:click="saveObservacion({{ $informe->apprentice->id }})"
+                                        title="Guardar observaciones" class="save"
+                                        src="{{ asset('images/save.png') }}" alt="">
+                                </form> 
+                            </div>
                         </td>
                         </tr>
                     @empty

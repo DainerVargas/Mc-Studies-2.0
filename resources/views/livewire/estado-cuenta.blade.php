@@ -22,7 +22,7 @@
             @endphp
             <table>
                 <tr>
-                    <th class="fixed" colspan="9">Modalidad - {{ $aprendiz->modality->name }}</th>
+                    <th class="fixed" colspan="8">Modalidad - {{ $aprendiz->modality->name }}</th>
                 </tr>
                 <tr>
                     <th class="fixed">Precio Modulo</th>
@@ -32,7 +32,6 @@
                     <th class="fixed">Plataforma</th>
                     <th class="fixed">Fecha</th>
                     <th class="fixed">Subir/Ver</th>
-                    <th class="fixed">Restablecer</th>
                     <th class="fixed">Eliminar</th>
                 </tr>
                 @forelse ($informes as $informe)
@@ -62,24 +61,25 @@
                                 </div>
                             </td>
                         @else
+                            @php
+                                $extension = pathinfo($informe->urlImage, PATHINFO_EXTENSION);
+                            @endphp
                             <td>
-                                <div wire:click="show({{ $informe->id }})" class="flex">
-                                    <label> Mostrar</label>
-                                    <img src="{{ asset('images/mostrar.png') }}" alt="">
-                                </div>
+                                @if ($extension != 'pdf')
+                                    <div wire:click="show({{ $informe->id }})" class="flex">
+                                        <label>Mostrar</label>
+                                        <img src="{{ asset('images/mostrar.png') }}" alt="">
+                                    </div>
+                                @else
+                                    <a href="{{ asset('users/'. $informe->urlImage)}}" download="Comprobante de pago-{{$informe->apprentice->name}}">
+                                        <div class="flex">
+                                            <label>Descargar</label>
+                                            <img src="{{ asset('images/descargar.png') }}" alt="">
+                                        </div>
+                                    </a>
+                                @endif
                             </td>
                         @endif
-                        <td>
-                            <div class="flex">
-                                <button class="delete"
-                                    wire:click="reseter({{ $informe->id }} , {{ $informe->apprentice_id }})"
-                                    wire:confirm="¿Estás seguro de restablecer los datos?
-            Si aceptas los datos se perderan."><span
-                                        class="material-symbols-outlined">
-                                        restart_alt
-                                    </span> Restore</button>
-                            </div>
-                        </td>
                         <td>
                             <div class="flex">
                                 <button class="delete" wire:click="eliminar({{ $informe->id }})"
@@ -92,7 +92,7 @@
                         </td>
                     </tr>
                 @empty
-                    <td>No hay na'</td>
+                    <td>No hay datos que mostrar</td>
                 @endforelse
                 <tr>
                     <td>${{ number_format($precio, 0, ',', '.') }}</td>

@@ -45,5 +45,6 @@ class Apprentice extends Model
         'valor',
         'descuento',
         'direccion',
+        'observacion',
     ];
 }

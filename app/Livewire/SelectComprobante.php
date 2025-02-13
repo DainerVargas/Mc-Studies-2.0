@@ -145,7 +145,7 @@ class SelectComprobante extends Component
             'email' => $this->email,
             'direccion' => $this->direccion,
             'telefono' => $this->telefono,
-            'comprobante' => null,
+            'observacion' => null,
             'plataforma' => $plataforma,
             'fechaPlataforma' => Date::now()->year,
             'attendant_id' => $acudienteID,
@@ -156,7 +156,7 @@ class SelectComprobante extends Component
             'apprentice_id' => $aprendiz->id,
             'abono' => 0,
             'urlImage' => null,
-            'fecha' => null,
+            'fecha' => Date::now(),
             'fechaRegistro' => Date::now()->year,
         ]);
 

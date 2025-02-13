@@ -28,7 +28,7 @@ return new class extends Migration
             $table->boolean('estado')->nullable();
             $table->integer('valor')->nullable();
             $table->integer('descuento')->nullable()->defaultValue(0);
-            $table->string('imagen')->nullable();
+            $table->string('observacion')->nullable();
             $table->dateTime('fecha_inicio')->nullable();
             $table->dateTime('fecha_fin')->nullable();
             $table->foreignIdFor(Attendant::class)->constrained()->nullable();

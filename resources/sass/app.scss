@@ -384,7 +384,7 @@ $gris: #959595;
           }
         }
 
-        .year{
+        .year {
           background-color: white;
           padding: 5px;
           border: 1px solid rgb(139, 139, 139);
@@ -393,12 +393,12 @@ $gris: #959595;
           @include funciones.flex(center);
           gap: 0.6vw;
 
-          p{
+          p {
             color: rgb(79, 79, 79);
             font-weight: bold;
           }
 
-          span{
+          span {
             cursor: pointer;
             color: rgb(42, 42, 42);
           }
@@ -564,7 +564,7 @@ $gris: #959595;
         }
 
         table {
-          width: 90%;
+          width: 95%;
           border: 0.1vw solid gray;
           border-radius: 0.4vw;
           border-collapse: collapse;
@@ -619,6 +619,25 @@ $gris: #959595;
 
               a {
                 text-decoration: none;
+              }
+
+              form {
+
+                @include funciones.flex(center);
+                gap: 2px;
+
+                .save {
+                  height: 27px;
+                  cursor: pointer;
+                }
+
+                .observaciones {
+                  padding: 4px;
+                  box-sizing: border-box;
+                  font-size: 11.4px;
+                  border: 1px solid rgb(129, 129, 129);
+                  outline: none;
+                }
               }
             }
 
@@ -2816,6 +2835,11 @@ $gris: #959595;
           font-size: 16px;
           border: 1px solid $gris;
           text-align: center;
+
+          a {
+            text-decoration: none;
+            color: #000;
+          }
 
           div {
             width: 100%;

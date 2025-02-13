@@ -101,7 +101,7 @@
 
         <div class="student-info">
             <p><strong>Estudiante:</strong> {{ $aprendiz->name . ' ' . $aprendiz->apellido }}</p>
-            <p><strong>Grupo:</strong> {{ $aprendiz->group->name }}</p>
+            <p><strong>Grupo:</strong> {{ $aprendiz->group->name ?? 'Sin grupo'}}</p>
             <p><strong>Modalidad:</strong> {{ $aprendiz->modality->name }}</p>
         </div>
 

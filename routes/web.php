@@ -98,4 +98,4 @@ Route::get('/mercadopago/cancel', [AuthController::class, 'cancelPayment'])->nam
 
 Route::get('Estado-Cuenta/{aprendiz}', [ApprenticeController::class, 'estado'])->middleware('auth')->name('estadoCuenta');
 
-Route::get('Descarga-Informe/{aprendiz}', [descargaController::class, 'descargarInforme'])->middleware('auth')->name('descargarInforme');
+Route::get('Descarga-Informe/{estudiante}', [descargaController::class, 'descargarInforme'])->middleware('auth')->name('descargarInforme');

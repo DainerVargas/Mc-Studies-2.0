@@ -12,7 +12,7 @@ class InformeEstudiante extends Component
 {
     public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00';
 
-    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente, $totalModulos;
+    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente, $totalModulos, $observaciones = [];
     public $filtro = '';
     public $aprendices, $aprendizArray;
     public $vista = 0;
@@ -20,8 +20,10 @@ class InformeEstudiante extends Component
 
     public function mount()
     {
+        $this->observaciones = Apprentice::pluck('observacion', 'id')->toArray();
+
         $this->year = Date::now()->year;
-        $this->informes = Informe::where('fechaRegistro', $this->year );
+        $this->informes = Informe::where('fechaRegistro', $this->year)->get();
         $this->aprendices = Apprentice::all();
     }
 
@@ -134,6 +136,20 @@ class InformeEstudiante extends Component
         }
     }
 
+    public function saveObservacion($id)
+    {
+        $this->validate([
+            "observaciones.$id" => 'required'
+        ]);
+
+        $aprendiz = Apprentice::find($id);
+        if ($aprendiz) {
+            $aprendiz->update([
+                'observacion' => $this->observaciones[$id]
+            ]);
+        }
+    }
+
     public function save(Apprentice $aprendiz)
     {
         $validaciones =  $this->validate([
@@ -164,12 +180,12 @@ class InformeEstudiante extends Component
                     $informe = Informe::create([
                         'apprentice_id' => $inform[0]->apprentice_id,
                         'abono' => $this->abono,
-                        'fecha' => Carbon::now()->toDateString(),
+                        'fecha' => Date::now(),
                     ]);
                 } else {
                     $inform[0]->update([
                         'abono' =>  $this->abono,
-                        'fecha' => Carbon::now()->toDateString(),
+                        'fecha' => Date::now(),
                     ]);
                 }
 
@@ -211,11 +227,12 @@ class InformeEstudiante extends Component
             ->groupBy('apprentice_id')
             ->get();
 
-        $this->informes = $query->selectRaw('MIN(id) as id, apprentice_id')
+        $this->informes = $query->selectRaw('MIN(id) as id, apprentice_id, MIN(fecha) as fecha')
             ->groupBy('apprentice_id')
             ->with('apprentice')
-            ->where('fechaRegistro', $this->year )
+            ->where('fechaRegistro', $this->year)
             ->get();
+
 
         foreach ($this->informes as $informe) {
             $informe->total_abonos = $informesAgrupados

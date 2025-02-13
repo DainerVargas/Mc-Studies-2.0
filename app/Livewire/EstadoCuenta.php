@@ -21,7 +21,7 @@ class EstadoCuenta extends Component
     public function updatedComprobante()
     {
         $this->validate([
-            'comprobante' => 'image|max:2048',
+            'comprobante' => 'required|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         $filePath = $this->comprobante->store('comprobantes', 'public');
@@ -70,7 +70,6 @@ class EstadoCuenta extends Component
 
             $aprendiz->descuento = 0;
             $aprendiz->save();
-
         } else {
             $this->message2 = 'No existe este informe';
         }
@@ -94,7 +93,6 @@ class EstadoCuenta extends Component
             $informe->delete();
             $this->informes = Informe::all();
         }
-        $this->aprendices = Apprentice::all();
     }
 
     public function render()

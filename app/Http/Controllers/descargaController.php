@@ -51,7 +51,6 @@ class descargaController extends Controller
         return $pdf->download('Informe-Estudiantes.pdf');
     }
 
-
     public function informedescarga()
     {
         $informes = Tinforme::all();
@@ -67,13 +66,13 @@ class descargaController extends Controller
         return view('descargaPDF', compact('aprendiz'));
     }
 
-    public function descargarInforme($aprendiz)
+    public function descargarInforme($estudiante)
     {
-        $informes = Informe::where('apprentice_id', $aprendiz)->get();
+        $informes = Informe::where('apprentice_id', $estudiante)->get();
 
         $fecha = Date::now()->format('d-m-Y');
 
-        $aprendiz = Apprentice::with('group')->find($aprendiz);
+        $aprendiz = Apprentice::with('group')->find($estudiante);
 
         $pdf = Pdf::loadView('descargaInforme', ['aprendiz' => $aprendiz, 'informes' => $informes, 'fecha' => $fecha]);
         
