@@ -63,7 +63,7 @@ class InfoTeacher extends Component
             $teacher = Teacher::find($idTeacher);
 
             $informe = Tinforme::where('teacher_id', $teacher->id)->first();
-            if ($informe->abono == 0) {
+            if ( $informe && $informe->abono == 0) {
                 $informe->abono = $this->valor;
                 $informe->fecha = Carbon::now();
                 $informe->save();

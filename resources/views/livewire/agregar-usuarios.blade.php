@@ -78,6 +78,25 @@
                     @endif
                 </div>
             </div>
+            @if ($type == 4)                
+            <div class="containerContents" id="absolute">
+                <div class="conteInput">
+                    <select class="input select" wire:model.live="teacherId" name="" id="">
+                        <option value="" selected hidden>Seleccione...</option>
+                        @foreach ($teachers as $teacher)
+                            <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('type')
+                        <small class="errors" id="left" style="color red">{{ $message }}</small>
+                    @enderror
+                    @if (isset($message))
+                        <small class="errors" id="left" style="color: green">{{ $message }}</small>
+                    @endif
+                </div>
+            </div>
+            @endif
+
             <button type="submit" class="btnActualizar">Añadir {{ $typeName }}</button>
         </form>
     </div>

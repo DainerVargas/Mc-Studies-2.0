@@ -31,19 +31,19 @@ class AttendantController extends Controller
       $path = $request->imagen->store('', 'public');
       $foto = basename($path);
     } else {
-      $foto = $aprendiz->imagen;
+      $foto = $aprendiz->imagen; 
     }
 
     $grupoID = $aprendiz->group_id;
 
-    if ($request->modality_id != $aprendiz->modality_id) {
+   /*  if ($request->modality_id != $aprendiz->modality_id) {
 
       $informe = Informe::where('apprentice_id', $aprendiz->id)->first();
       $informe->update([
         'abono' => 0,
         'fecha' => null
       ]);
-    }
+    } */
 
     $acudiente = Attendant::where('id', $aprendiz->attendant_id)->first();
 
@@ -52,6 +52,7 @@ class AttendantController extends Controller
       'apellido' => $request->apellidoAcudiente,
       'email' => $request->email,
       'telefono' => $request->telefono,
+      'documento' => $request->documentoAcudiente,
     ]);
 
     $grupo = Group::find($request->group_id);
@@ -61,6 +62,7 @@ class AttendantController extends Controller
       'apellido' => $request->apellido,
       'edad' => $request->edad,
       'email' => $request->emailStudent,
+      'documento' => $request->documento,
       'telefono' => $request->telefonoStudent,
       'direccion' => $request->direccion,
       'imagen' => $foto,

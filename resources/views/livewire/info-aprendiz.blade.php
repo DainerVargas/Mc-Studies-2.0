@@ -6,7 +6,7 @@
             </a>
             <div class="conteImage">
                 @if ($aprendiz->imagen)
-                    <img class="perfilImg" src="{{ asset('users/'. $aprendiz->imagen) }}" alt="">
+                    <img class="perfilImg" src="{{ asset('users/' . $aprendiz->imagen) }}" alt="">
                 @else
                     <img class="perfilImg" src="{{ asset('images/perfil.png') }}" alt="">
                 @endif
@@ -25,25 +25,31 @@
             @endphp
             <p>Profesor: <span>{{ $profesor }}</span></p>
         </div>
-        <div class="estado">
-            @if ($aprendiz->estado == 1)
-                <div class="active">
-                    <p class="textestado">Active</p>
-                </div>
-                <div class="botonActive">
-                    <button wire:click="toggleEstado({{ $aprendiz->id }})"
-                        wire:confirm="¿Quieres deshabilitar al aprendiz: {{ $aprendiz->name }}?"></button>
-                </div>
-            @else
-                <div class="inactive">
-                    <p class="textestado">Inactive</p>
-                </div>
-                <div class="botonInactive">
-                    <button wire:click="toggleEstado({{ $aprendiz->id }})"
-                        wire:confirm="¿Quieres habilitar al aprendiz: {{ $aprendiz->name }}?"></button>
-                </div>
-            @endif
-        </div>
+        @if ($user->rol_id == 1)
+            <div class="estado">
+                @if ($aprendiz->estado == 1)
+                    <div class="active">
+                        <p class="textestado">Active</p>
+                    </div>
+                    <div class="botonActive">
+                        <button wire:click="toggleEstado({{ $aprendiz->id }})"
+                            wire:confirm="¿Quieres deshabilitar al aprendiz: {{ $aprendiz->name }}?"></button>
+                    </div>
+                @else
+                    <div class="inactive">
+                        <p class="textestado">Inactive</p>
+                    </div>
+                    <div class="botonInactive">
+                        <button wire:click="toggleEstado({{ $aprendiz->id }})"
+                            wire:confirm="¿Quieres habilitar al aprendiz: {{ $aprendiz->name }}?"></button>
+                    </div>
+                @endif
+            </div>
+        @else
+            <div>
+
+            </div>
+        @endif
     </div>
 
     <div class="mainInfo">
@@ -87,7 +93,11 @@
                 <p>Edad: <span>{{ $aprendiz->edad }}</span> </p>
                 <p>Fecha-Nacimiento: <span>{{ $aprendiz->fecha_nacimiento }}</span> </p>
                 <p>Dirección:
-                    <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : 'No hay dirección' }}</span></p>
+                    <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : 'No hay dirección' }}</span>
+                </p>
+                @if ($aprendiz->edad > 17)
+                    <p>Documento: <span>{{ $aprendiz->documento ?? 'No hay documento' }}</span></p>
+                @endif
                 <p>Fecha-Inicio: <span>{{ $aprendiz->fecha_inicio }}</span></p>
                 <p>Fecha-Finalización: <span>{{ $aprendiz->fecha_fin }}</span></p>
             </div>
@@ -101,11 +111,16 @@
                 </p>
                 <p>Telefono: <span>{{ $aprendiz->attendant->telefono }}</span>
                 </p>
+                @if ($aprendiz->edad < 18)
+                    <p>Documento: <span>{{ $aprendiz->attendant->documento ?? 'No hay documento' }}</span></p>
+                @endif
             </div>
-            <a href="{{ route('viewUpdate', $aprendiz->id) }}"><button> Ir Actualizar <span
-                        class="material-symbols-outlined">
-                        directions_run
-                    </span> </button></a>
+            @if ($user->rol_id == 1)
+                <a href="{{ route('viewUpdate', $aprendiz->id) }}"><button> Ir Actualizar <span
+                            class="material-symbols-outlined">
+                            directions_run
+                        </span> </button></a>
+            @endif
         </div>
         @if ($valor > 0)
             <div class="absolute">

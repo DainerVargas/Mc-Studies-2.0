@@ -12,7 +12,7 @@ class InformeEstudiante extends Component
 {
     public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00';
 
-    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente, $totalModulos, $observaciones = [];
+    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente, $totalModulos, $observaciones = [], $viewplataforma = 0, $fechaPlataforma;
     public $filtro = '';
     public $aprendices, $aprendizArray;
     public $vista = 0;
@@ -26,16 +26,38 @@ class InformeEstudiante extends Component
         $this->informes = Informe::where('fechaRegistro', $this->year)->get();
         $this->aprendices = Apprentice::all();
     }
-
     public function next()
     {
-
         $this->year += 1;
     }
     public function previous()
     {
 
         $this->year -= 1;
+    }
+
+    public function activePlataforma(Apprentice $aprendiz)
+    {
+        $this->viewplataforma = 1;
+        $this->view = 0;
+        $this->vista = 0;
+        $this->viewDescuento = 0;
+        $this->name = $aprendiz->name . ' ' . $aprendiz->apellido;
+        $this->idEstudiante = $aprendiz->id;
+        $this->fechaPlataforma = $aprendiz->fechaPlataforma;
+        $this->aprendices = Apprentice::all();
+    }
+
+    public function savePlataforma(Apprentice $aprendiz)
+    {
+        if ($this->fechaPlataforma == '') {
+            $this->message = 'La fecha es requerida';
+            return;
+        } else {
+            $aprendiz->fechaPlataforma = $this->fechaPlataforma;
+            $aprendiz->save();
+            $this->viewplataforma = 0;
+        }
     }
 
     public function activar($value)
@@ -47,6 +69,8 @@ class InformeEstudiante extends Component
     {
         $this->view = 1;
         $this->vista = 0;
+        $this->viewDescuento = 0;
+        $this->viewplataforma = 0;
         $this->name = $aprendiz->name . ' ' . $aprendiz->apellido;
         $this->idEstudiante = $aprendiz->id;
         $this->aprendices = Apprentice::all();
@@ -55,6 +79,7 @@ class InformeEstudiante extends Component
     public function descuento(Apprentice $aprendiz)
     {
         $this->viewDescuento = 1;
+        $this->viewplataforma = 0;
         $this->view = 0;
         $this->vista = 0;
         $this->aprendizArray = $aprendiz;
@@ -114,6 +139,7 @@ class InformeEstudiante extends Component
         $this->abono = '';
         $this->message = '';
         $this->viewDescuento = 0;
+        $this->viewplataforma = 0;
     }
     public function aumentar(Informe $informe)
     {
@@ -148,6 +174,7 @@ class InformeEstudiante extends Component
                 'observacion' => $this->observaciones[$id]
             ]);
         }
+    
     }
 
     public function save(Apprentice $aprendiz)
@@ -181,6 +208,7 @@ class InformeEstudiante extends Component
                         'apprentice_id' => $inform[0]->apprentice_id,
                         'abono' => $this->abono,
                         'fecha' => Date::now(),
+                        'fechaRegistro' => Date::now()->year,
                     ]);
                 } else {
                     $inform[0]->update([
@@ -213,13 +241,19 @@ class InformeEstudiante extends Component
         $query = Informe::query()->with('apprentice.attendant', 'apprentice.modality');
 
         if (!empty($this->mes) && $this->mes != '00') {
-            $query->whereMonth('fecha', intval($this->mes))->where('fechaRegistro', $this->year);
+            $query->whereNotNull('fecha')
+                ->whereMonth('fecha', intval($this->mes))
+                ->whereYear('fechaRegistro', $this->year);
         }
 
         if (!empty($this->filtro)) {
             $query->whereHas('apprentice', function ($subQuery) {
-                $subQuery->where('name', 'LIKE', '%' . $this->filtro . '%')
-                    ->orWhere('apellido', 'LIKE', '%' . $this->filtro . '%')->where('fechaRegistro', $this->year);
+                $subQuery->where(function ($query) {
+                    $query->where('name', 'LIKE', '%' . $this->filtro . '%')
+                        ->orWhere('apellido', 'LIKE', '%' . $this->filtro . '%');
+                })
+                    ->whereNotNull('fechaRegistro')
+                    ->whereYear('fechaRegistro', $this->year);
             });
         }
 
@@ -230,9 +264,9 @@ class InformeEstudiante extends Component
         $this->informes = $query->selectRaw('MIN(id) as id, apprentice_id, MIN(fecha) as fecha')
             ->groupBy('apprentice_id')
             ->with('apprentice')
-            ->where('fechaRegistro', $this->year)
+            ->whereNotNull('fechaRegistro')
+            ->whereYear('fechaRegistro', $this->year)
             ->get();
-
 
         foreach ($this->informes as $informe) {
             $informe->total_abonos = $informesAgrupados

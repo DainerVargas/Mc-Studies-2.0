@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Rol;
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,11 +17,19 @@ class AgregarUsuarios extends Component
 
     public $user, $image, $name, $rolname, $typeName, $type, $email, $usuario, $password;
 
-    public $rols, $message;
+    public $rols, $message, $teachers, $teacherId;
 
     public function mount()
     {
         $this->rols = Rol::all();
+        $this->teachers = Teacher::all();
+    }
+
+    public function updatedTeacherId() {
+
+        $teacher = Teacher::find($this->teacherId);
+        $this->name = $teacher->name;
+        $this->email = $teacher->email;
     }
 
     public function save()
@@ -41,6 +50,8 @@ class AgregarUsuarios extends Component
             'max' => 'Maximo peso'
         ]);
 
+
+
         if ($this->image) {
             $imageName = time() . '.' . $this->image->extension();
             $this->image->storeAs('/', $imageName);
@@ -57,6 +68,7 @@ class AgregarUsuarios extends Component
             $usuario->password = Hash::make($this->password);
             $usuario->image = $imageName;
             $usuario->rol_id = $this->type;
+            $usuario->teacher_id = $this->teacherId;
             $usuario->save();
 
             $this->message = '🎉 ¡Registro Exitoso! 🎉';

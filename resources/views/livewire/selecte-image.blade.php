@@ -122,6 +122,16 @@
                                     <small class="errors" style="color red">{{ $message }}</small>
                                 @enderror
                             </div>
+                            @if ($aprendiz->edad > 17)
+                                <div class="conteInput">
+                                    <input type="text" class="input" name="documento" placeholder="Documento"
+                                        value="{{ old('documento', $aprendiz->documento ?? '') }}">
+                                    <label for="" class="label">Documento</label>
+                                    @error('documento')
+                                        <small class="errors" style="color red">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -162,6 +172,16 @@
                                 <small style="color: red">{{ $message }}</small>
                             @enderror
                         </div>
+                        @if ($aprendiz->edad < 18)
+                            <div class="conteInput">
+                                <input class="input" type="text" name="documentoAcudiente" placeholder="Nombre"
+                                    value="{{ old('documentoAcudiente', $aprendiz->attendant->documento ?? '') }}">
+                                <label class="label" for="">Documento</label>
+                                @error('documentoAcudiente')
+                                    <small style="color: red">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

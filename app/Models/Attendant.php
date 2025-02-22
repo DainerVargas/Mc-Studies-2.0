@@ -19,6 +19,7 @@ class Attendant extends Model
         'name',
         'apellido',
         'email',
+        'documento',
         'telefono',
     ];
 }

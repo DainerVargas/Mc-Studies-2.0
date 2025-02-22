@@ -8,9 +8,7 @@ use Illuminate\Database\Seeder;
 
 class TypeTeacherSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         TypeTeacher::create([
@@ -19,6 +17,22 @@ class TypeTeacherSeeder extends Seeder
 
         TypeTeacher::create([
             'name' => 'Tutor'
+        ]);
+        TypeTeacher::create([
+            'name' => 'Gerente'
+        ]);
+        TypeTeacher::create([
+            'name' => 'Asistente'
+        ]);
+        
+        TypeTeacher::create([
+            'name' => 'Secretaria'
+        ]);
+        TypeTeacher::create([
+            'name' => 'Administrador'
+        ]);
+        TypeTeacher::create([
+            'name' => 'Servicios Generales'
         ]);
     }
 }

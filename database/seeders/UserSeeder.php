@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
             'usuario' => 'Dainer',
             'email' => 'dainer2607@gmail.com',
             'password' => Hash::make('Vargas2607'),
+            'teacher_id' => null,
             'rol_id' => 1,
         ]);
 
@@ -25,13 +26,15 @@ class UserSeeder extends Seeder
             'usuario' => 'Mcstudies',
             'email' => 'info@mcstudies.com',
             'password' => Hash::make('Mcstudies2024',),
+            'teacher_id' => null,
             'rol_id' => 1,
         ]);
         User::create([
             'name' => 'Secretaria',
             'usuario' => 'secre',
             'email' => 'secre@gmail.com',
-            'password' => Hash::make('secre2025',),
+            'password' => Hash::make('secretaria2025',),
+            'teacher_id' => null,
             'rol_id' => 2,
         ]);
 
@@ -40,6 +43,7 @@ class UserSeeder extends Seeder
             'usuario' => 'asistente',
             'email' => 'asistente@gmail.com',
             'password' => Hash::make('asistente2025',),
+            'teacher_id' => null,
             'rol_id' => 3,
         ]);
 
@@ -47,7 +51,8 @@ class UserSeeder extends Seeder
             'name' => 'Profesor',
             'usuario' => 'Profesor',
             'email' => 'profesor@gmail.com',
-            'password' => Hash::make('Profesor2025',),
+            'password' => Hash::make('profesor2025',),
+            'teacher_id' => 1,
             'rol_id' => 4,
         ]);
 

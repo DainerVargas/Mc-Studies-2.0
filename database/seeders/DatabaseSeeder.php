@@ -9,15 +9,12 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
+
     public function run(): void
     {
 
         $this->call([
             RolSeeder::class,
-            UserSeeder::class,
             AttendantSeeder::class,
             ModalitySeeder::class,
             TypeSeeder::class,
@@ -26,7 +23,9 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             ApprenticeSeeder::class,
             InformeSeeder::class,
-            TinformeSeeder::class
+            TinformeSeeder::class,
+            AsistenciaSeeder::class, 
+            UserSeeder::class,
         ]);
     }
 }

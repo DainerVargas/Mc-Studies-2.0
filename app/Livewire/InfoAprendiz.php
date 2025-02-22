@@ -8,18 +8,16 @@ use App\Models\Group;
 use App\Models\Modality;
 use App\Models\Teacher;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class InfoAprendiz extends Component
 {
-
-
     use WithFileUploads;
 
-
-    public $aprendiz, $image, $grupos, $modalidades, $fechaActual;
-    public $valor  = 0;
+    public $aprendiz, $image, $grupos, $modalidades, $fechaActual, $user;
+    public $valor = 0;
 
     public function mount()
     {
@@ -61,6 +59,7 @@ class InfoAprendiz extends Component
 
     public function render()
     {
+        $this->user = Auth::user();
         $this->fechaActual = Carbon::now()->toDateString();
         return view('livewire.info-aprendiz');
     }

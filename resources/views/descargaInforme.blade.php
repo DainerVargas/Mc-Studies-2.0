@@ -27,7 +27,7 @@
 
     .info {
         text-align: right;
-        margin-top: -80px; 
+        margin-top: -80px;
     }
 
     .info p {
@@ -66,7 +66,8 @@
         margin-top: 30px;
     }
 
-    th, td {
+    th,
+    td {
         padding: 10px;
         border: 1px solid #ddd;
         text-align: center;
@@ -81,7 +82,6 @@
         background: #99BF51;
         font-weight: bold;
     }
-
 </style>
 
 <body>
@@ -101,7 +101,7 @@
 
         <div class="student-info">
             <p><strong>Estudiante:</strong> {{ $aprendiz->name . ' ' . $aprendiz->apellido }}</p>
-            <p><strong>Grupo:</strong> {{ $aprendiz->group->name ?? 'Sin grupo'}}</p>
+            <p><strong>Grupo:</strong> {{ $aprendiz->group->name ?? 'Sin grupo' }}</p>
             <p><strong>Modalidad:</strong> {{ $aprendiz->modality->name }}</p>
         </div>
 
@@ -125,7 +125,7 @@
                     @endphp
 
                     @forelse ($informes as $informe)
-                        <tr>
+                        <tr >
                             <td>${{ number_format($informe->apprentice->valor, 0, ',', '.') }}</td>
                             <td>${{ number_format($informe->apprentice->descuento, 0, ',', '.') }}</td>
                             <td>${{ number_format($informe->abono, 0, ',', '.') }}</td>
@@ -149,8 +149,15 @@
                         <td>${{ number_format($descuento, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalAbono, 0, ',', '.') }}</td>
                         <td>${{ number_format($precio - $descuento - $totalAbono, 0, ',', '.') }}</td>
-                        <td>${{ number_format($aprendiz->plataforma, 0, ',', '.') }}</td>
-                        <td></td>
+                        @if ($count != 0)
+                            <td>${{ number_format($aprendiz->plataforma, 0, ',', '.') }}</td>
+                            <td>${{ number_format($totalAbono + $aprendiz->plataforma + $informe->apprentice->descuento, 0, ',', '.') }}
+                            </td>
+                        @else
+                            <td>El estudiante ya pagó la plataforma</td>
+                            <td>${{ number_format($totalAbono + $informe->apprentice->descuento, 0, ',', '.') }}
+                            </td>
+                        @endif
                     </tr>
                 </tbody>
             </table>

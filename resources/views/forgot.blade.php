@@ -8,7 +8,7 @@
     <title>RECUPERAR CONTRASEÑAS</title>
     <link rel="stylesheet" href="{{asset('build/assets/app-Be1cidhe.css')}}">
 </head>
-
+@vite('resources/sass/app.scss')
 <body class="forgotBody">
     <div class="conteLogin">
         <div class="conteFormLogin">

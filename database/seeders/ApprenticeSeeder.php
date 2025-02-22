@@ -26,9 +26,9 @@ class ApprenticeSeeder extends Seeder
             'telefono' => '3242406307',
             'Attendant_id' => 1,
             'modality_id' => 3,
-            'group_id' => null
+            'group_id' => 1
         ]);
         
-        Apprentice::factory(2)->create();
+        Apprentice::factory(10)->create();
     }
 }

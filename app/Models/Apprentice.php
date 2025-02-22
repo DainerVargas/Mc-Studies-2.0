@@ -28,11 +28,17 @@ class Apprentice extends Model
         return $this->hasMany(Informe::class);
     }
 
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class);
+    }
+
     protected $fillable = [
         'name',
         'apellido',
         'edad',
         'email',
+        'documento',
         'telefono',
         'fecha_nacimiento',
         'estado',

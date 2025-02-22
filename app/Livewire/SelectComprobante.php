@@ -20,11 +20,12 @@ class SelectComprobante extends Component
 
     use WithFileUploads;
 
-    public $name, $apellido, $edad, $telefono, $email, $direccion, $valor, $precio;
+    public $name, $apellido, $edad, $telefono, $email, $documento, $direccion, $valor, $precio;
     public $fecha_nacimiento;
     public $nameAcudiente;
     public $apellidoAcudiente;
-    public $telefonoAcudiente;
+    public $documentoAcudiente;
+    public $telefonoAcudiente; 
     public $emailAcudiente;
     public $modality_id;
     public $imagen;
@@ -80,9 +81,12 @@ class SelectComprobante extends Component
             $this->validate([
                 'telefono' => 'required|numeric',
                 'email' => 'required|email',
+                'documento' => 'required|numeric',
             ], [
                 'telefono.required' => 'El teléfono es requerido',
                 'telefono.numeric' => 'El teléfono debe contener solo números',
+                'documento.required' => 'El docuemnto es requerido',
+                'documento.numeric' => 'El docuemnto debe contener solo números',
                 'email.required' => 'El email es requerido',
                 'email.email' => 'El email no tiene un formato válido',
             ]);
@@ -91,6 +95,7 @@ class SelectComprobante extends Component
                 'nameAcudiente' => 'required',
                 'apellidoAcudiente' => 'required',
                 'telefonoAcudiente' => 'required|numeric',
+                'documentoAcudiente' => 'required|numeric',
                 'emailAcudiente' => 'required|email',
 
             ], [
@@ -98,6 +103,8 @@ class SelectComprobante extends Component
                 'apellidoAcudiente.required' => 'El apellido del acudiente es requerido',
                 'telefonoAcudiente.required' => 'El teléfono es requerido',
                 'telefonoAcudiente.numeric' => 'El teléfono debe contener solo números',
+                'documentoAcudiente.required' => 'El documento es requerido',
+                'documentoAcudiente.numeric' => 'El documento debe contener solo números',
                 'emailAcudiente.required' => 'El email es requerido',
                 'emailAcudiente.email' => 'El email no tiene un formato válido',
             ]);
@@ -118,6 +125,7 @@ class SelectComprobante extends Component
                     'apellido' => $this->apellidoAcudiente,
                     'telefono' => $this->telefonoAcudiente,
                     'email' => $this->emailAcudiente,
+                    'documento' => $this->documentoAcudiente,
                 ]);
                 $acudienteID = $acudiente->id;
             }
@@ -143,6 +151,7 @@ class SelectComprobante extends Component
             'estado' => 0,
             'valor' => $this->valor,
             'email' => $this->email,
+            'documento' => $this->documento,
             'direccion' => $this->direccion,
             'telefono' => $this->telefono,
             'observacion' => null,
@@ -206,6 +215,7 @@ class SelectComprobante extends Component
             'fecha_nacimiento' => $this->fecha_nacimiento,
             'edad' => $this->edad,
             'email' => $this->email,
+            'documento' => $this->documento,
             'telefono' => $this->telefono,
             'direccion' => $this->direccion,
             'nameAcudiente' => $this->nameAcudiente,

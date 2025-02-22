@@ -74,7 +74,11 @@ class descargaController extends Controller
 
         $aprendiz = Apprentice::with('group')->find($estudiante);
 
-        $pdf = Pdf::loadView('descargaInforme', ['aprendiz' => $aprendiz, 'informes' => $informes, 'fecha' => $fecha]);
+        $year = Date::now()->year;
+
+        $count = $informes->where('fechaRegistro', $year)->count();
+
+        $pdf = Pdf::loadView('descargaInforme', ['aprendiz' => $aprendiz, 'informes' => $informes, 'fecha' => $fecha, 'count' => $count]);
         
         return $pdf->download("Informe - $aprendiz->name  $aprendiz->apellido .pdf");
         

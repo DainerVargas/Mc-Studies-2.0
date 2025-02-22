@@ -65,6 +65,17 @@
                         <small class="errors" style="color red">{{ $message }}</small>
                     @enderror
                 </div>
+
+                <div class="containerContents">
+                    <div class="conteInput">
+                        <label for="" class="labels">Documento</label>
+                        <input type="text" class="inputs" wire:model="documento" placeholder="Documento"
+                            value="{{ old('documento') }}">
+                        @error('documento')
+                            <small class="errors" style="color red">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
             </div>
         @endif
         @if ($edad < 18)
@@ -80,8 +91,8 @@
                 </div>
                 <div class="conteInput">
                     <label for="" class="labels">Apellido</label>
-                    <input type="text" class="inputs" wire:model="apellidoAcudiente" placeholder="apellido Acudiente"
-                        value="{{ old('apellidoAcudiente') }}">
+                    <input type="text" class="inputs" wire:model="apellidoAcudiente"
+                        placeholder="apellido Acudiente" value="{{ old('apellidoAcudiente') }}">
                     @error('apellidoAcudiente')
                         <small class="errors" style="color red">{{ $message }}</small>
                     @enderror
@@ -101,6 +112,16 @@
                     <input type="text" class="inputs" wire:model="emailAcudiente" placeholder="Email"
                         value="{{ old('email') }}">
                     @error('emailAcudiente')
+                        <small class="errors" style="color red">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+            <div class="containerContents top">
+                <div class="conteInput">
+                    <label for="" class="labels">Documento</label>
+                    <input type="text" class="inputs" wire:model="documentoAcudiente" placeholder="Documento"
+                        value="{{ old('documentoAcudiente') }}">
+                    @error('documentoAcudiente')
                         <small class="errors" style="color red">{{ $message }}</small>
                     @enderror
                 </div>
@@ -252,12 +273,12 @@
         @if ($comprobante == 2)
             <div class="boton">
                 <button disabled class="btnRegistro">Aun no está dispoblie <small
-                        wire:loading="" >Cargando...</small></button>
+                        wire:loading="">Cargando...</small></button>
             </div>
         @elseif ($comprobante == 1)
             <div class="boton">
                 <button wire:click="createApprentice" class="btnRegistro">¡REGISTRARME! <small
-                    wire:loading="createApprentice" >Cargando...</small></button>
+                        wire:loading="createApprentice">Cargando...</small></button>
             </div>
         @endif
 

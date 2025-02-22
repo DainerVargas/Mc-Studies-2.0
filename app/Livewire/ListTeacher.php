@@ -81,11 +81,19 @@ class ListTeacher extends Component
 
             if (isset($this->image)) {
 
-                $imageName = time() . '.' . $this->image->extension();
-                $this->image->storeAs('/', $imageName);
+                $imageName = $this->image->store('', 'public');
+                $foto = basename($imageName);
             } else {
                 $imageName = '';
             }
+
+        
+            /* if (isset($this->image)) {
+            $path = $this->image->store('', 'public');
+            $foto = basename($path);
+        } else {
+            $foto = $teacher->image;
+        } */
 
             $profesor = Teacher::create([
                 'name' => $this->name,

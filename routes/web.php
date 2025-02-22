@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApprenticeController;
+use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AttendantController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticationController;
@@ -99,3 +100,10 @@ Route::get('/mercadopago/cancel', [AuthController::class, 'cancelPayment'])->nam
 Route::get('Estado-Cuenta/{aprendiz}', [ApprenticeController::class, 'estado'])->middleware('auth')->name('estadoCuenta');
 
 Route::get('Descarga-Informe/{estudiante}', [descargaController::class, 'descargarInforme'])->middleware('auth')->name('descargarInforme');
+
+/* ASISTENCIA */
+
+Route::get('Resgistro-Asistencias', [AsistenciaController::class, 'asistencias'])->middleware('auth')->name('asistencias');
+
+Route::get('descargar-Asistencias/{date}/{grupo}', [AsistenciaController::class, 'descargar'])->middleware('auth')->name('descargarAsistencias');
+

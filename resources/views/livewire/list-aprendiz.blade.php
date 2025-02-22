@@ -1,6 +1,6 @@
 <div class="componente">
     <div class="conteFiltro">
-        <form >
+        <form>
             <div class="conteInput">
                 <label for="filtro">Filtra por el nombre del aprendiz</label>
                 <input type="text" wire:model.live="nameAprendiz" placeholder="Nombre del Aprendiz">
@@ -17,6 +17,7 @@
                 <option value="{{ $grupoItem->id }}">{{ $grupoItem->name }}</option>
             @endforeach
         </select>
+        
         <div class="conteChecks">
             <div class="conteRadio">
                 <input wire:model.live="estado" value="all" type="radio" id="option1">
@@ -31,14 +32,6 @@
                 <label for="option3">Inactive</label>
             </div>
         </div>
-        @if ($user->rol_id == 1)
-            <div class="conteDeleteAll">
-                <button class="delete" wire:click="deleteAll"
-                    wire:confirm="¿Desea elimiar a todos los estudiantes?"><span class="material-symbols-outlined">
-                        delete
-                    </span> Eliminar todos los estudiantes</button>
-            </div>
-        @endif
     </div>
 
     <div class="containerConte">
@@ -50,8 +43,11 @@
                         <th>Aprendiz</th>
                         <th>Grupo</th>
                         <th>Estado</th>
-                        <th>Actualizar</th>
-                        <th>Eliminar</th>
+                        @if ($user->rol_id == 1)
+                            <th>Actualizar</th>
+                            <th>Eliminar</th>
+                        @else
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -93,24 +89,27 @@
                                     <button class="{{ $estado }}">{{ $estado }}</button>
                                 </div>
                             </td>
-                            <td>
-                                <div class="flex">
-                                    <a href="{{ route('viewUpdate', $aprendiz->id) }}"><button class="update">
-                                            <span class="material-symbols-outlined">
-                                                edit
-                                            </span>
-                                            Editar</button></a>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="flex">
-                                    <button class="delete" wire:click="delete({{ $aprendiz->id }})"
-                                        wire:confirm="¿Desea elimiar el aprendiz {{ $aprendiz->name }}?"><span
-                                            class="material-symbols-outlined">
-                                            delete
-                                        </span> Eliminar</button>
-                                </div>
-                            </td>
+                            @if ($user->rol_id == 1)
+                                <td>
+                                    <div class="flex">
+                                        <a href="{{ route('viewUpdate', $aprendiz->id) }}"><button class="update">
+                                                <span class="material-symbols-outlined">
+                                                    edit
+                                                </span>
+                                                Editar</button></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex">
+                                        <button class="delete" wire:click="delete({{ $aprendiz->id }})"
+                                            wire:confirm="¿Desea elimiar el aprendiz {{ $aprendiz->name }}?"><span
+                                                class="material-symbols-outlined">
+                                                delete
+                                            </span> Eliminar</button>
+                                    </div>
+                                </td>
+                            @else
+                            @endif
                         </tr>
                     @empty
                         <tr>

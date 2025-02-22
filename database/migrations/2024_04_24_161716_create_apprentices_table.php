@@ -20,8 +20,10 @@ return new class extends Migration
             $table->string('apellido');
             $table->integer('edad');
             $table->string('email')->nullable();
+            $table->string('documento')->nullable();
             $table->string('telefono')->nullable();
             $table->string('direccion');
+            $table->string('imagen')->nullable();
             $table->date('fecha_nacimiento');
             $table->integer('plataforma')->nullable();
             $table->integer('fechaPlataforma')->nullable();  

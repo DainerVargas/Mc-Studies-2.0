@@ -8,13 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Group extends Model
 {
     use HasFactory;
-
-
+    
     protected $fillable = [
         'name',
         'teacher_id',
         'type_id',
     ];
+
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class);
+    }
 
     public function teacher()
     {

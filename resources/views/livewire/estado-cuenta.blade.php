@@ -22,7 +22,7 @@
             @endphp
             <table>
                 <tr>
-                    <th class="fixed" colspan="8">Modalidad - {{ $aprendiz->modality->name }}</th>
+                    <th class="fixed" colspan="9">Modalidad - {{ $aprendiz->modality->name }}</th>
                 </tr>
                 <tr>
                     <th class="fixed">Precio Modulo</th>
@@ -32,7 +32,10 @@
                     <th class="fixed">Plataforma</th>
                     <th class="fixed">Fecha</th>
                     <th class="fixed">Subir/Ver</th>
-                    <th class="fixed">Eliminar</th>
+                    @if ($user->rol_id == 1)
+                        <th class="fixed">Restablecer</th>
+                        <th class="fixed">Eliminar</th>
+                    @endif
                 </tr>
                 @forelse ($informes as $informe)
                     <tr>
@@ -71,7 +74,8 @@
                                         <img src="{{ asset('images/mostrar.png') }}" alt="">
                                     </div>
                                 @else
-                                    <a href="{{ asset('users/'. $informe->urlImage)}}" download="Comprobante de pago-{{$informe->apprentice->name}}">
+                                    <a href="{{ asset('users/' . $informe->urlImage) }}"
+                                        download="Comprobante de pago-{{ $informe->apprentice->name }}">
                                         <div class="flex">
                                             <label>Descargar</label>
                                             <img src="{{ asset('images/descargar.png') }}" alt="">
@@ -80,16 +84,29 @@
                                 @endif
                             </td>
                         @endif
-                        <td>
-                            <div class="flex">
-                                <button class="delete" wire:click="eliminar({{ $informe->id }})"
-                                    wire:confirm="¿Estás seguro de eliminar?
+                        @if ($user->rol_id == 1)
+                            <td>
+                                <div class="flex">
+                                    <button class="delete"
+                                        wire:click="reseter({{ $informe->id }} , {{ $informe->apprentice_id }})"
+                                        wire:confirm="¿Estás seguro de restablecer los datos?
             Si aceptas los datos se perderan."><span
-                                        class="material-symbols-outlined">
-                                        delete
-                                    </span> Eliminar</button>
-                            </div>
-                        </td>
+                                            class="material-symbols-outlined">
+                                            restart_alt
+                                        </span> Restore</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex">
+                                    <button class="delete" wire:click="eliminar({{ $informe->id }})"
+                                        wire:confirm="¿Estás seguro de eliminar?
+            Si aceptas los datos se perderan."><span
+                                            class="material-symbols-outlined">
+                                            delete
+                                        </span> Eliminar</button>
+                                </div>
+                            </td>
+                        @endif
                     </tr>
                 @empty
                     <td>No hay datos que mostrar</td>
@@ -99,7 +116,11 @@
                     <td>${{ number_format($descuento, 0, ',', '.') }}</td>
                     <td>${{ number_format($totalAbono, 0, ',', '.') }}</td>
                     <td>${{ number_format($precio - $descuento - $totalAbono, 0, ',', '.') }}</td>
-                    <td>${{ number_format($aprendiz->plataforma, 0, ',', '.') }}</td>
+                    @if ($count != 0)
+                        <td>${{ number_format($aprendiz->plataforma, 0, ',', '.') }}</td>
+                    @else
+                        <td>El estudiante ya pagó la plataforma</td>
+                    @endif
                 </tr>
             </table>
             <div class="loader" wire:loading="updatedComprobante">

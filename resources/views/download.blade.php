@@ -52,7 +52,7 @@
 
             </div>
             <div class="footer">
-                <p>Tu equipo {{ config('app.name') }}</p>
+                <p>Tu equipo MC Language Studies</p>
             </div>
         </div>
     </div>

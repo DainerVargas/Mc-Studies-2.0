@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Apprentice;
 use App\Models\Informe;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 
@@ -14,7 +16,7 @@ class EstadoCuenta extends Component
     public $aprendiz, $informes;
     public $comprobante, $informeId, $viewComprobante = 0, $urlImage;
 
-    public $message2, $aprendices;
+    public $message2, $aprendices, $count;
 
     public function mount() {}
 
@@ -60,20 +62,15 @@ class EstadoCuenta extends Component
 
     public function reseter(Informe $informe, Apprentice $aprendiz)
     {
+        $user = Auth::user();
 
-        if ($informe) {
-
+        if ($user->rol_id == 1) {
             $informe->abono = 0;
-            $informe->fecha = null;
             $informe->urlImage = null;
             $informe->save();
-
-            $aprendiz->descuento = 0;
-            $aprendiz->save();
         } else {
-            $this->message2 = 'No existe este informe';
+            $this->message2 = 'No existe este informe o  no estas autorizado para restablecer este informe';
         }
-        $this->message2 = '';
         $this->aprendices = Apprentice::all();
     }
 
@@ -99,6 +96,13 @@ class EstadoCuenta extends Component
     {
         $this->informes = Informe::where('apprentice_id', $this->aprendiz->id)->get();
 
-        return view('livewire.estado-cuenta');
+        $year = Date::now()->year;
+
+        $this->count = $this->informes->where('fechaRegistro', $year)->count();
+
+        $user = Auth::user();
+
+        return view('livewire.estado-cuenta', ['user' => $user]);
     }
 }
+

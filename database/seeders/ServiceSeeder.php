@@ -2,15 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Teacher;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TeacherSeeder extends Seeder
+class ServiceSeeder extends Seeder
 {
-
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        Teacher::factory(3)->create();
+        //
     }
 }

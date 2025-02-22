@@ -13,6 +13,10 @@ class Teacher extends Model
     {
         return $this->hasMany(Group::class);
     }
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class);
+    }
 
     public function type_teacher()
     {
@@ -22,6 +26,11 @@ class Teacher extends Model
     public function tinforme()
     {
         return $this->hasMany(Tinforme::class);
+    }
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
     }
 
     protected $fillable = [

@@ -14,7 +14,6 @@ use Livewire\Component;
 
 class ListAprendiz extends Component
 {
-
     public $aprendices = [];
     public $grupos = [];
     public $nameAprendiz = '';
@@ -33,38 +32,30 @@ class ListAprendiz extends Component
         $this->aprendices = Apprentice::all();
     }
 
-
-    public function deleteAll()
-    {
-        $informes = Informe::all();
-        $aprendices = Apprentice::all();
-
-        foreach ($informes as $value) {
-            $value->delete();
-        }
-
-        foreach ($aprendices as $value) {
-            $value->delete();
-        }
-
-        $this->aprendices = Apprentice::all();
-    }
-
     public function mount()
     {
-        $this->aprendices = Apprentice::all();
-        $this->grupos = Group::all();
+        $usuario = Auth::user();
+
+        if($usuario->rol_id != 4){
+            $this->grupos = Group::all();
+        }else{
+            $this->grupos = Group::where('teacher_id',$usuario->teacher_id)->get();
+        }
     }
 
     public function render()
     {
         $this->user = Auth::user();
 
-        $query = Apprentice::query();
-        /*  dd($this->grupo); */
+        if (isset($this->user->teacher_id)) {
+            $grupos = Group::where('teacher_id', $this->user->teacher_id)->pluck('id');
 
-        if ($this->grupo == 'all') {
+            $query = Apprentice::whereIn('group_id', $grupos);
+        } else {
             $query = Apprentice::query();
+        }
+
+        if ($this->grupo == 'all') { 
         } elseif ($this->grupo == 'none') {
             $query->whereNull('group_id');
         } else {
@@ -81,6 +72,9 @@ class ListAprendiz extends Component
 
         $this->aprendices = $query->get();
 
-        return view('livewire.list-aprendiz', ['user' => $this->user]);
+        return view('livewire.list-aprendiz', [
+            'user' => $this->user,
+            'aprendices' => $this->aprendices
+        ]);
     }
 }

@@ -224,8 +224,9 @@ $gris: #959595;
   }
 
   .links {
-    @include funciones.flex(center);
-    column-gap: 4vw;
+    @include funciones.align(start, center);
+    width: 60vw;
+    gap: 3vw;
 
     a {
       color: white;
@@ -1072,7 +1073,10 @@ $gris: #959595;
     form {
       .conteInput {
         input {
-          width: 50vw;
+          width: 30vw;
+        }
+        label{
+          width: 20vw;
         }
       }
     }
@@ -2444,6 +2448,7 @@ $gris: #959595;
         form {
           @include funciones.flex(center);
           flex-direction: column;
+          position: relative;
 
           .contenedor {
             @include funciones.flex(center);
@@ -2485,6 +2490,16 @@ $gris: #959595;
               #left {
                 left: 35%;
               }
+            }
+          }
+
+          #absolute {
+            position: absolute;
+            right: -45%;
+            top: 0;
+
+            .select {
+              width: 14vw;
             }
           }
 
@@ -2806,7 +2821,7 @@ $gris: #959595;
       position: relative;
 
       table {
-        width: 80%;
+        width: 90%;
         border: 1px solid gray;
         border-radius: 0.4vw;
         border-collapse: collapse;
@@ -2989,6 +3004,136 @@ $gris: #959595;
         transform: translate(-50%, -50%);
         background-color: white;
         cursor: pointer;
+      }
+    }
+  }
+}
+
+/* REGISTRO DE ASISTENCIAS */
+
+.conteListAprendiz {
+
+  .componente {
+    position: relative;
+    #conteFiltro {
+      position: relative;
+
+      form {
+        .conteInput {
+          input {
+            width: 29vw;
+          }
+        }
+      }
+
+      .conteDate {
+        position: absolute;
+        right: -2%;
+        top: 66%;
+        transform: translate(-50%, -50%);
+
+        input {
+          height: 2vw;
+          width: 8.2vw;
+          font-weight: 500;
+          user-select: none;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .alert{
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .containerConte {
+      width: 100%;
+      border: none;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      scrollbar-width: none;
+      height: 26vw;
+
+      .conteTable {
+        width: 100%;
+        @include funciones.flex(center);
+        flex-direction: column;
+
+        table {
+          width: 95%;
+          border: 0.1vw solid gray;
+          border-radius: 0.4vw;
+          border-collapse: collapse;
+          margin-bottom: 2vw;
+
+          .showAssistent{
+            td{
+              height: 3vw;
+            }
+          }
+
+          th {
+            height: 1.7vw;
+            font-size: 1vw;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background-color: #dbdbdb;
+            height: 2vw;
+          }
+
+          td {
+            padding: 0.3vw 0.5vw;
+            box-sizing: border-box;
+            border: 0.1vw solid gray;
+            font-size: 1vw;
+            background-color: white;
+            text-align: center;
+            flex-direction: column;
+
+            .conteRadio{
+              @include funciones.flex(center);
+              gap: 1vw;
+              position: relative;
+
+              .error{
+                position: absolute;
+                top: 150%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+              }
+            }
+
+            .observacion{
+              border: 1px solid #7b7b7b;
+              outline: none;
+              padding: 4px;
+              box-sizing: border-box;
+              font-size: 11px;
+            }
+          }
+        }
+
+        .buttonsave{
+          height: 2.3vw;
+          width: 13vw;
+          margin-bottom: 2vw;
+          background-color: $verde;
+          border: 0.1vw solid $verde;
+          border-radius: 5px;
+          font-weight: 500;
+          font-size: 1.1vw;
+          color: black;
+          cursor: pointer;
+        }
+
+        .buttonsave:hover{
+          transform: scale(1.1);
+        }
       }
     }
   }

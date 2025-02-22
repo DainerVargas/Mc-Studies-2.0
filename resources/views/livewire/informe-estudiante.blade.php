@@ -70,13 +70,34 @@
                             $count = 1;
                             $totalAbono = 0;
                             $plataforma = 0;
+                            $background = 'white';
+                            $plataforma = 0;
                             $color = '#000000';
                             $valorModulo = 0;
                             $fechaPlataforma = Date::now()->year;
                         @endphp
                         @forelse ($informes ?? [] as $informe)
+                        @php
+                        $value = $valorModulo - $informe->apprentice->descuento - $informe->total_abonos;
+
+
+                        if ($informe->total_abonos <= 300000) {
+                            $color = 'red';
+                        }
+                        if ($informe->total_abonos > 300000 && $informe->abono <= 799999) {
+                            $color = 'orange';
+                        }
+                        if ($informe->total_abonos >= 800000) {
+                            $color = 'green';
+                        }
+
+                        if ($value === 0) {
+                            $color = 'green';
+                        }
+                        $totalAbono += $informe->total_abonos;
+                    @endphp
                             <tr>
-                                <td>{{ $count++ }}</td>
+                                <td  style="color: {{$color}}" >{{ $count++ }}</td>
                                 <td class="relative">
                                     {{ $informe->apprentice->attendant->name }}
                                 </td>
@@ -105,27 +126,6 @@
                                         </span>
                                     </div>
                                 </td>
-                                @php
-                                    $value = $valorModulo - $informe->apprentice->descuento - $informe->total_abonos;
-
-                                    if ($value === 0) {
-                                        $color = 'green';
-                                    }
-                                    if ($informe->total_abonos <= 300000) {
-                                        $color = 'red';
-                                    }
-                                    if ($informe->total_abonos > 300000 && $informe->abono <= 799999) {
-                                        $color = 'orange';
-                                    }
-                                    if ($informe->total_abonos >= 800000) {
-                                        $color = 'green';
-                                    }
-
-                                    if ($value === 0) {
-                                        $color = 'green';
-                                    }
-                                    $totalAbono += $informe->total_abonos;
-                                @endphp
 
                                 <td style="color: {{ $color }}">
                                     ${{ number_format($informe->total_abonos, 0, ',', '.') }} </td>
@@ -157,6 +157,10 @@
                                     </div>
                                 @else
                                     ¡Completado!
+                                    <span wire:click="activePlataforma({{ $informe->apprentice->id }})"
+                                        class="material-symbols-outlined editar" title="Actualizar fecha">
+                                        edit
+                                    </span>
                         @endif
                         </td>
                         <td style="color: green">
@@ -184,14 +188,15 @@
                         </td>
                         <td>
                             <div class="flex">
-                                <form wire:submit.prevent="saveObservacion({{ $informe->apprentice->id }})">
-                                    <textarea class="observaciones" wire:model="observaciones.{{ $informe->apprentice->id }}" rows="2"></textarea>
+                                <form>
+                                    <textarea class="observaciones" wire:model.defer="observaciones.{{ $informe->apprentice->id }}" rows="2"></textarea>
 
                                     <img wire:click="saveObservacion({{ $informe->apprentice->id }})"
                                         title="Guardar observaciones" class="save"
                                         src="{{ asset('images/save.png') }}" alt="">
-                                </form> 
+                                </form>
                             </div>
+                            <small wire:loading wire:target="saveObservacion({{ $informe->apprentice->id }})">Cargando...</small>
                         </td>
                         </tr>
                     @empty
@@ -257,6 +262,32 @@
                     <div class="conteInput">
                         <input wire:model="fecha" class="input" type="text" placeholder="fecha">
                         <label class="label" for="">Fecha</label>
+                        @if (isset($message))
+                            <small class="errors message" style="color: red">{{ $message }}</small>
+                        @endif
+                    </div>
+                </div>
+                <button>Guardar</button>
+            </form>
+        </div>
+    @endif
+
+    @if ($viewplataforma == 1)
+        <div class="conteUpdate" id="informe">
+            <div class="close">
+                <span wire:click="ocultar" title="Cerrar" class="material-symbols-outlined">
+                    close
+                </span>
+            </div>
+            <form wire:submit="savePlataforma({{ $idEstudiante }})">
+                <div class="containerContent">
+                    <div class="conteInput">
+                        <input wire:model="name" class="input" readonly type="text" placeholder="nombre">
+                        <label class="label">Estudiante</label>
+                    </div>
+                    <div class="conteInput">
+                        <input wire:model="fechaPlataforma" class="input" type="text" placeholder="plataforma">
+                        <label class="label" for="">Año Plataforma (2025)</label>
                         @if (isset($message))
                             <small class="errors message" style="color: red">{{ $message }}</small>
                         @endif
