@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             TinformeSeeder::class,
             AsistenciaSeeder::class, 
             UserSeeder::class,
+            TypeServiceSeeder::class,
+            ServiceSeeder::class,
         ]);
     }
 }

@@ -10,7 +10,6 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     {{-- <link rel="stylesheet" href="{{ asset('build/assets/app-BvbZW79v.css') }}"> --}}
     <link rel="icon" type="image/png" href="{{ asset('Logo.png') }}">
-
 </head>
 
 <body>
@@ -37,7 +36,7 @@
                         $validat = false;
                     }
                 @endphp
-                <a href="{{ route('listaProfesor') }}" class="{{ $validat ? 'active' : '' }}">Profesores</a>
+                <a href="{{ route('listaProfesor') }}" class="{{ $validat ? 'active' : '' }}">Trabajadores</a>
                 <a href="{{ route('registro') }}">Registro</a>
                 @php
                     if (request()->routeIs('grupo') == true) {
@@ -65,7 +64,14 @@
                 <a href="{{ route('historial') }}" class="{{ $validat ? 'active' : '' }}">Historial</a>
 
                 @if ($user->rol_id == 1)
-                    <a href="{{ route('asistencias') }}" class="{{ $validat ? 'active' : '' }}">Servicios</a>
+                @php
+                    if (request()->routeIs('servicios') == true) {
+                        $validat = true;
+                    } else {
+                        $validat = false;
+                    }
+                @endphp
+                    <a href="{{ route('servicios') }}" class="{{ $validat ? 'active' : '' }}">Servicios</a>
                 @endif
             @else
                 @php

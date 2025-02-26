@@ -9,6 +9,7 @@ use App\Http\Controllers\descargaController;
 use App\Http\Controllers\ForgotController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\InformeController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -106,4 +107,9 @@ Route::get('Descarga-Informe/{estudiante}', [descargaController::class, 'descarg
 Route::get('Resgistro-Asistencias', [AsistenciaController::class, 'asistencias'])->middleware('auth')->name('asistencias');
 
 Route::get('descargar-Asistencias/{date}/{grupo}', [AsistenciaController::class, 'descargar'])->middleware('auth')->name('descargarAsistencias');
+
+
+/* SERVICIOS */
+
+Route::get('Servicios', [ServiceController::class, 'index'])->middleware('auth')->name('servicios');
 

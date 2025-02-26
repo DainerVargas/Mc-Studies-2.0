@@ -2,8 +2,8 @@
     <div class="conteFiltro" id="conteProfesor">
         <form wire:submit="filtrar">
             <div class="conteInput">
-                <label for="filtro">Filtra por el nombre del Profesor o Tutor</label>
-                <input type="text" wire:model.live="filtro" placeholder="Nombre del Profesor o Tutor">
+                <label for="filtro">Filtra por el nombre</label>
+                <input type="text" wire:model.live="filtro" placeholder="Nombre">
             </div>
         </form>
 

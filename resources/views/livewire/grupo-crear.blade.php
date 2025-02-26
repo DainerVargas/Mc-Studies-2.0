@@ -67,17 +67,19 @@
                             <td>
                                 <div class="flex">
                                     <a><button type="button" class="update"
-                                            wire:click="actualizar({{ $grupo->id }})"><span class="material-symbols-outlined">
+                                            wire:click="actualizar({{ $grupo->id }})"><span
+                                                class="material-symbols-outlined">
                                                 edit
-                                                </span> Editar</button></a>
+                                            </span> Editar</button></a>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex">
                                     <button class="delete" wire:click="delete({{ $grupo->id }})"
-                                        wire:confirm="¿Desea elimiar el grupo {{ $grupo->name }} ?"><span class="material-symbols-outlined">
+                                        wire:confirm="¿Desea elimiar el grupo {{ $grupo->name }} ?"><span
+                                            class="material-symbols-outlined">
                                             delete
-                                            </span> Eliminar</button>
+                                        </span> Eliminar</button>
                                 </div>
                             </td>
                         </tr>
@@ -118,8 +120,10 @@
                     <select name="teacher_id" wire:model="teacher_id" id="">
                         <option value="">Seleccione...</option>
                         @foreach ($profesores as $profesor)
-                            <option value="{{ $profesor->id }}">{{ $profesor->name }} -
-                                {{ $profesor->type_teacher->name }}</option>
+                            @if ($profesor->type_teacher_id == 1 || $profesor->type_teacher_id == 2)
+                                <option value="{{ $profesor->id }}">{{ $profesor->name }} -
+                                    {{ $profesor->type_teacher->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                     @error('teacher_id')

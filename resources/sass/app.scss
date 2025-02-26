@@ -1075,9 +1075,6 @@ $gris: #959595;
         input {
           width: 30vw;
         }
-        label{
-          width: 20vw;
-        }
       }
     }
 
@@ -1428,6 +1425,20 @@ $gris: #959595;
             padding: 0 0.2vw;
             box-sizing: border-box;
             border-radius: 0.2vw;
+          }
+
+          .conteInput {
+            select {
+              height: 1.7vw;
+              width: 10vw;
+              font-size: 0.9vw;
+              background-color: #ffffff;
+              border: 0.1vw solid gray;
+              font-weight: 500;
+              padding: 0 0.2vw;
+              box-sizing: border-box;
+              border-radius: 0.2vw;
+            }
           }
 
           input {
@@ -3015,6 +3026,7 @@ $gris: #959595;
 
   .componente {
     position: relative;
+
     #conteFiltro {
       position: relative;
 
@@ -3042,7 +3054,7 @@ $gris: #959595;
       }
     }
 
-    .alert{
+    .alert {
       position: absolute;
       top: 20%;
       left: 50%;
@@ -3069,8 +3081,8 @@ $gris: #959595;
           border-collapse: collapse;
           margin-bottom: 2vw;
 
-          .showAssistent{
-            td{
+          .showAssistent {
+            td {
               height: 3vw;
             }
           }
@@ -3094,12 +3106,12 @@ $gris: #959595;
             text-align: center;
             flex-direction: column;
 
-            .conteRadio{
+            .conteRadio {
               @include funciones.flex(center);
               gap: 1vw;
               position: relative;
 
-              .error{
+              .error {
                 position: absolute;
                 top: 150%;
                 left: 50%;
@@ -3108,7 +3120,7 @@ $gris: #959595;
               }
             }
 
-            .observacion{
+            .observacion {
               border: 1px solid #7b7b7b;
               outline: none;
               padding: 4px;
@@ -3118,7 +3130,7 @@ $gris: #959595;
           }
         }
 
-        .buttonsave{
+        .buttonsave {
           height: 2.3vw;
           width: 13vw;
           margin-bottom: 2vw;
@@ -3131,10 +3143,236 @@ $gris: #959595;
           cursor: pointer;
         }
 
-        .buttonsave:hover{
+        .buttonsave:hover {
           transform: scale(1.1);
         }
       }
+    }
+  }
+}
+
+/* SERVICIOS */
+.component {
+  position: relative;
+
+  .conteFilter {
+    @include funciones.align(space-between, center);
+    margin: 0;
+    padding: 20px 12px;
+    box-sizing: border-box;
+
+    .create {
+      button {
+        height: 2.1vw;
+        width: 12vw;
+        background-color: $azul;
+        border: 0.1vw solid $azul;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        transform: scale(1.1);
+        color: white;
+      }
+    }
+
+    .conteInput {
+      @include funciones.align(start, start);
+
+      input {
+        height: 2.2vw;
+        width: 32vw;
+        font-size: 14px;
+        border: 0.1vw solid #707070;
+        border-radius: 7px;
+        padding: 4px;
+        box-sizing: border-box;
+        outline: none;
+      }
+    }
+
+    .typeService {
+      @include funciones.flex(center);
+      gap: 2vw;
+
+      select {
+        height: 2.2vw;
+        width: 12vw;
+        padding: 4px;
+        box-sizing: border-box;
+        background-color: white;
+        border: 0.1vw solid #747474;
+        border-radius: 7px;
+      }
+
+      button {
+        height: 2.2vw;
+        width: 12vw;
+        background-color: $verde;
+        border: 0.1vw solid $verde;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        transform: scale(1.1);
+        color: white;
+      }
+    }
+
+    .rigth{
+      @include funciones.align(right, center);
+      width: 90%;
+    }
+  }
+
+  .containerConte {
+    width: 100%;
+    border: none;
+    margin-top: 3vw;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    height: 25vw;
+    z-index: -9;
+
+    .conteTable {
+      width: 100%;
+      @include funciones.flex(center);
+
+      .teacher {
+        th {
+          font-size: 1vw;
+        }
+      }
+
+      table {
+        width: 95%;
+        border: 0.1vw solid gray;
+        border-radius: 0.4vw;
+        border-collapse: collapse;
+
+        th {
+          height: 1.7vw;
+          font-size: 1vw;
+          position: sticky;
+          top: 0;
+          z-index: 999;
+          background-color: #dbdbdb;
+          height: 2vw;
+        }
+
+        td {
+          padding: 0.3vw 0.5vw;
+          box-sizing: border-box;
+          border: 0.1vw solid gray;
+          font-size: 1vw;
+          background-color: white;
+          text-align: center;
+          flex-direction: column;
+          text-align: center;
+
+          .flex {
+
+            @include funciones.flex(center);
+
+            button {
+              height: 2vw;
+              width: 6.5vw;
+              border: 0.1vw solid gray;
+              border-radius: 0.3vw;
+              cursor: pointer;
+              font-size: 0.9vw;
+              font-weight: 500;
+              @include funciones.flex(center);
+              column-gap: 0.3vw;
+            }
+
+            .delete:hover {
+              background-color: #ff1717;
+              color: white;
+              border: none;
+            }
+
+            .update:hover {
+              background-color: #01b901;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .conteCreateService, .conteCreateCategory {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    background-color: white;
+    width: 50vw;
+    @include funciones.flex(center);
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid gray;
+    gap: 2vw;
+    border-radius: 8px;
+
+    h3{
+      color: $verde;
+      font-size: 26px
+    }
+
+    .conteDivs {
+      @include funciones.align(space-between, end);
+      gap: 1vw;
+      width: 40vw;
+
+      .conteInput {
+        @include funciones.align(center, start);
+        gap: 0.3vw;
+
+        input,
+        select {
+          height: 2.2vw;
+          width: 18vw;
+          border: 0.1vw solid gray;
+          border-radius: 6px;
+          padding: 5px;
+          box-sizing: border-box;
+          font-size: 16px;
+          outline: none;
+        }
+      }
+    }
+
+    button {
+      height: 2.2vw;
+      width: 18vw;
+      background-color: $azul;
+      border: 0.1vw solid $azul;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      color: white;
+    }
+
+    .close{
+      position: absolute;
+      height: 2.3vw;
+      top: 8%;
+      right: 0;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+    .close:hover{
+      height: 2.4vw;
     }
   }
 }
