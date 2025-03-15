@@ -288,8 +288,6 @@ $gris: #959595;
       }
     }
   }
-
-
 }
 
 /* LISTA-APRENDIZ */
@@ -356,7 +354,7 @@ $gris: #959595;
 
           input {
             height: 2.4vw;
-            width: 120%;
+            width: 100%;
             padding: 0 0.3vw;
             border: 0.1vw solid rgb(123, 123, 123);
             border-radius: 0.7vw;
@@ -569,6 +567,12 @@ $gris: #959595;
           border: 0.1vw solid gray;
           border-radius: 0.4vw;
           border-collapse: collapse;
+
+          .active{
+            td{
+              background-color: #e1e1e1;
+            }
+          }
 
           th {
             height: 1.7vw;
@@ -1654,7 +1658,6 @@ $gris: #959595;
     }
   }
 }
-
 
 /* REGISTRO Header*/
 .registro {

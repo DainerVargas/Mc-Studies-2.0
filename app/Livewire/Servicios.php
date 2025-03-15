@@ -30,6 +30,7 @@ class Servicios extends Component
         $this->showS = false;
         $this->showC = false;
         $this->showU = false;
+        $this->reset(['name', 'valor', 'type_service_id']);
     }
     public function showCategory()
     {
@@ -73,6 +74,7 @@ class Servicios extends Component
             $this->showS = false;
             $this->showC = false;
             $this->showU = false;
+            $this->service_id = '';
         }
 
     }

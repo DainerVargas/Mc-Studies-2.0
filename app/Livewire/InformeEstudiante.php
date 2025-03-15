@@ -32,7 +32,6 @@ class InformeEstudiante extends Component
     }
     public function previous()
     {
-
         $this->year -= 1;
     }
 
@@ -174,7 +173,6 @@ class InformeEstudiante extends Component
                 'observacion' => $this->observaciones[$id]
             ]);
         }
-    
     }
 
     public function save(Apprentice $aprendiz)
@@ -286,6 +284,7 @@ class InformeEstudiante extends Component
                     - $informe->total_abonos
                     - (optional($informe->apprentice)->descuento ?? 0)
             );
+
 
         return view('livewire.informe-estudiante');
     }

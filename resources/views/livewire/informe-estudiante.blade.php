@@ -77,27 +77,27 @@
                             $fechaPlataforma = Date::now()->year;
                         @endphp
                         @forelse ($informes ?? [] as $informe)
-                        @php
-                        $value = $valorModulo - $informe->apprentice->descuento - $informe->total_abonos;
+                            @php
+                                $value =
+                                    $informe->apprentice->valor -
+                                    $informe->apprentice->descuento -
+                                    $informe->total_abonos;
 
+                                if ($informe->total_abonos <= 300000) {
+                                    $color = 'red';
+                                }
+                                if ($informe->total_abonos > 300000 && $informe->abono <= 799999) {
+                                    $color = 'orange';
+                                }
+                                if ($informe->total_abonos >= 800000) {
+                                    $color = 'green';
+                                }
 
-                        if ($informe->total_abonos <= 300000) {
-                            $color = 'red';
-                        }
-                        if ($informe->total_abonos > 300000 && $informe->abono <= 799999) {
-                            $color = 'orange';
-                        }
-                        if ($informe->total_abonos >= 800000) {
-                            $color = 'green';
-                        }
-
-                        if ($value === 0) {
-                            $color = 'green';
-                        }
-                        $totalAbono += $informe->total_abonos;
-                    @endphp
-                            <tr>
-                                <td  style="color: {{$color}}" >{{ $count++ }}</td>
+                                $totalAbono += $informe->total_abonos;
+                            @endphp
+                            <tr class="{{ $value == 0 ? 'active' : '' }}">
+                                <td style="color: {{ $color }}">{{ $count++ }}
+                                </td>
                                 <td class="relative">
                                     {{ $informe->apprentice->attendant->name }}
                                 </td>
@@ -196,7 +196,8 @@
                                         src="{{ asset('images/save.png') }}" alt="">
                                 </form>
                             </div>
-                            <small wire:loading wire:target="saveObservacion({{ $informe->apprentice->id }})">Cargando...</small>
+                            <small wire:loading
+                                wire:target="saveObservacion({{ $informe->apprentice->id }})">Cargando...</small>
                         </td>
                         </tr>
                     @empty
