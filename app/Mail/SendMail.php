@@ -9,34 +9,32 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PasswordResetMail extends Mailable
+class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $aprendiz;
-  
-    public function __construct($aprendiz)
+    public $asunto, $text;
+
+    public function __construct($asunto, $text)
     {
-        $this->aprendiz = $aprendiz;
+        $this->asunto = $asunto;
+        $this->text = $text;
     }
-    
+
     public function build()
     {
-        
-        return $this->subject('Recordatorio de pago')->view('emails.password_reset')
-            ->with(['aprendiz' => $this->aprendiz]);
+        return $this->subject($this->asunto)->view('emails.send-mail')
+        ->with(['text' => $this->text, 'asunto' => $this->asunto]);
     }
  
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Recordatorio de pago',
+            subject: $this->asunto,
         );
     }
 
-
     /**
-
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array

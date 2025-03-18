@@ -5,8 +5,9 @@
                 <label for="filtro">Filtra por el nombre del aprendiz</label>
                 <input type="text" wire:model.live="nameAprendiz" placeholder="Nombre del Aprendiz">
             </div>
-            <button type="submit" class="btnFiltro">Buscar</button>
+            <small></small>
         </form>
+        <button type="button" wire:click="sendEmail" class="btnFiltro">Enviar Email</button>
     </div>
 
     <div class="conteSelect">
@@ -17,7 +18,7 @@
                 <option value="{{ $grupoItem->id }}">{{ $grupoItem->name }}</option>
             @endforeach
         </select>
-        
+
         <div class="conteChecks">
             <div class="conteRadio">
                 <input wire:model.live="estado" value="all" type="radio" id="option1">

@@ -113,6 +113,7 @@
         @yield('historial')
         @yield('asistencia')
         @yield('servicios')
+        @yield('send')
     </main>
 
 </body>

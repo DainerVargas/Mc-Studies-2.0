@@ -425,24 +425,28 @@ $gris: #959595;
             color: #fff;
           }
         }
+      }
 
-        .btnFiltro {
-          height: 2.4vw;
-          width: 8vw;
-          font-size: 1.1vw;
-          font-weight: 500;
-          border: 0.1vw solid $verde;
-          border-radius: 0.4vw;
-          cursor: pointer;
-          background-color: $verde;
+      .btnFiltro {
+        height: 2.4vw;
+        width: 8vw;
+        font-size: 1.1vw;
+        font-weight: 500;
+        border: 0.1vw solid $verde;
+        border-radius: 0.4vw;
+        cursor: pointer;
+        background-color: $verde;
+        transition: all 0.1s ease-in-out;
+        margin-top: 1vw;
+
+        a {
+          text-decoration: none;
           color: white;
-          transition: all 0.1s ease-in-out;
-          margin-top: 1vw;
         }
+      }
 
-        .btnFiltro:hover {
-          transform: scale(1.1);
-        }
+      .btnFiltro:hover {
+        transform: scale(1.1);
       }
 
     }
@@ -568,8 +572,8 @@ $gris: #959595;
           border-radius: 0.4vw;
           border-collapse: collapse;
 
-          .active{
-            td{
+          .active {
+            td {
               background-color: #e1e1e1;
             }
           }
@@ -3224,7 +3228,7 @@ $gris: #959595;
       }
     }
 
-    .rigth{
+    .rigth {
       @include funciones.align(right, center);
       width: 90%;
     }
@@ -3308,7 +3312,8 @@ $gris: #959595;
     }
   }
 
-  .conteCreateService, .conteCreateCategory {
+  .conteCreateService,
+  .conteCreateCategory {
     position: absolute;
     top: 45%;
     left: 50%;
@@ -3324,7 +3329,7 @@ $gris: #959595;
     gap: 2vw;
     border-radius: 8px;
 
-    h3{
+    h3 {
       color: $verde;
       font-size: 26px
     }
@@ -3366,7 +3371,7 @@ $gris: #959595;
       color: white;
     }
 
-    .close{
+    .close {
       position: absolute;
       height: 2.3vw;
       top: 8%;
@@ -3374,10 +3379,450 @@ $gris: #959595;
       transform: translate(-50%, -50%);
       cursor: pointer;
     }
-    .close:hover{
+
+    .close:hover {
       height: 2.4vw;
     }
   }
+}
+
+/* SendEmail */
+
+#sendEmail {
+  @include funciones.flex(center);
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+
+  .conteFilter {
+    @include funciones.flex(space-between);
+    width: 100%;
+    padding: 0px 10px;
+    box-sizing: border-box;
+
+    .conteInput {
+      @include funciones.align(center, start);
+
+      input {
+        height: 32px;
+        border-radius: 6px;
+        border: 1px solid #858585;
+        padding: 3px;
+        box-sizing: border-box;
+        font-size: 15px;
+        outline: none;
+        width: 410px;
+      }
+    }
+
+    select {
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid #858585;
+      padding: 3px;
+      box-sizing: border-box;
+      font-size: 15px;
+      outline: none;
+      width: 210px;
+      background-color: white;
+    }
+
+    .conteMessage {
+      padding: 3px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 1;
+
+      .text {
+        height: 30px;
+        width: 190px;
+        @include funciones.flex(center);
+        gap: 10px;
+        background-color: $azul;
+        padding: 4px;
+        border-radius: 6px;
+        box-sizing: border-box;
+        cursor: pointer;
+
+        span {
+          color: white;
+          transition: 0.1s ease;
+        }
+
+        .rotate {
+          transform: rotate(90deg);
+        }
+      }
+
+      .messages {
+        position: absolute;
+        border: 1px solid #ccc;
+        width: 140%;
+        padding: 6px;
+        box-sizing: border-box;
+        top: 110%;
+        left: -20%;
+        background-color: white;
+        height: 200px;
+
+        small {
+          font-weight: 600;
+        }
+
+        .scroll {
+          height: 90%;
+          width: 98%;
+          margin-top: 2px;
+          border-top: 1px solid #ccc;
+          overflow-y: scroll;
+          gap: 12px;
+          padding-top: 5px;
+          padding-right: 10px;
+          @include funciones.flex(start);
+          flex-direction: column;
+
+          .message {
+            width: 100%;
+            @include funciones.flex(space-between);
+
+            p {
+              font-size: 12px;
+            }
+
+            span {
+              font-size: 16px;
+              cursor: pointer;
+              user-select: none
+            }
+
+            .delete {
+              color: red;
+            }
+
+            .copy {
+              color: $verde;
+            }
+          }
+        }
+      }
+    }
+
+    button {
+      height: 34px;
+      width: 140px;
+      background-color: $verde;
+      border: 1px solid $verde;
+      font-size: 15px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+  }
+
+.container {
+  @include funciones.align(space-between, start);
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-top: 16px;
+  position: relative;
+
+  .conteList {
+    width: 30%;
+    height: 400px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+
+    .title {
+      border-bottom: 1px solid #ccc;
+      @include funciones.align(space-between, center);
+      padding: 10px;
+      box-sizing: border-box;
+
+      h3 {
+        color: #454545;
+      }
+
+      .check {
+
+        button {
+          height: 20px;
+          width: 70px;
+          background-color: #f34848;
+          border: 1px solid #f34848;
+          color: white;
+          border-radius: 4px;
+          font-weight: 500;
+          cursor: pointer;
+        }
+
+        button:hover {
+          background-color: #ee1313;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .scroll {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      gap: 5px;
+      @include funciones.align(start, start);
+      flex-direction: column;
+      overflow: scroll;
+      height: 89%;
+
+      .list {
+        @include funciones.flex(space-between);
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+        padding: 5px;
+        box-sizing: border-box;
+      }
+    }
+  }
+
+    .sendEmail {
+      @include funciones.align(space-between, start);
+      flex-direction: column;
+      width: 60%;
+      border: 1px solid #ccc;
+      height: 400px;
+      padding: 10px;
+      box-sizing: border-box;
+
+      .asunto {
+        @include funciones.flex(center);
+        gap: 10px;
+        border-bottom: 1px solid #a8a8a8;
+        padding-bottom: 10px;
+        box-sizing: border-box;
+        width: 100%;
+
+        p {
+          font-size: 20px;
+        }
+
+        input {
+          height: 36px;
+          width: 89%;
+          border-radius: 7px;
+          border: 1px solid #929292;
+          padding: 5px;
+          box-sizing: border-box;
+          outline: none;
+          font-size: 16px;
+        }
+      }
+
+      .conteFor {
+        @include funciones.align(start, center);
+        gap: 10px;
+        width: 100%;
+
+        p {
+          font-size: 20px;
+        }
+
+        .students {
+          @include funciones.align(start, center);
+          gap: 5px;
+          height: 45px;
+          width: 92%;
+          border: 1px solid #ccc;
+          border-radius: 7px;
+          border: 1px solid #929292;
+          padding: 5px;
+          box-sizing: border-box;
+          outline: none;
+          background-color: white;
+          overflow: hidden;
+
+          .conteName {
+            @include funciones.align(start, start);
+            overflow-x: auto;
+            white-space: nowrap;
+            max-width: 100%;
+            height: 100%;
+            padding-top: 5px;
+            /* scrollbar-width: none; */
+          }
+
+          p {
+            font-size: 14px;
+            display: inline-block;
+            margin-right: 10px;
+          }
+        }
+      }
+
+
+      .conteArea {
+        width: 100%;
+
+        textarea {
+          width: 100%;
+          height: 230px;
+          padding: 5px;
+          box-sizing: border-box;
+          outline: none;
+          border-radius: 7px;
+          border: 1px solid #858585;
+        }
+      }
+
+      .conteBtn {
+        @include funciones.flex(end);
+        width: 100%;
+
+        button {
+          height: 32px;
+          width: 100px;
+          border: 1px solid $verde;
+          border-radius: 5px;
+          background-color: $verde;
+          color: white;
+          font-weight: bold;
+          letter-spacing: 1px;
+          cursor: pointer;
+        }
+
+        button:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+
+.createMessage {
+  position: absolute;
+  top: 50%;
+  left: 25%;
+  transform: translate(50%, -50%);
+  @include funciones.flex(space-between);
+  flex-direction: column;
+  border: 1px solid #636363;
+  background-color: white;
+  padding: 12px;
+  height: 200px;
+  width: 330px;
+  border-radius: 7px;
+  box-sizing: border-box;
+
+  h3 {
+    color: $verde;
+    font-size: 22px;
+  }
+
+  textarea {
+    height: 100px;
+    max-height: 100px;
+    width: 90%;
+    max-width: 90%;
+    outline: none;
+    border: 1px solid $gris;
+    padding: 4px;
+    box-sizing: border-box;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+
+  button {
+    width: 50%;
+    height: 30px;
+    background-color: $verde;
+    border: 1px solid $verde;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #121212;
+    cursor: pointer;
+  }
+
+  button:hover {
+    color: white;
+  }
+
+  img {
+    height: 25px;
+    right: 5px;
+    top: 3px;
+    position: absolute;
+    user-select: none;
+    cursor: pointer;
+  }
+}
+
+.card {
+  width: 330px;
+  height: 80px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 15px;
+  position: absolute;
+  top: 16%;
+}
+.wave {
+  position: absolute;
+  transform: rotate(90deg);
+  left: -31px;
+  top: 32px;
+  width: 80px;
+  fill: #04e4003a;
+}
+.icon-container {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #04e40048;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+.icon {
+  width: 17px;
+  height: 17px;
+  color: #269b24;
+}
+.message-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+.message-text,
+.sub-text {
+  margin: 0;
+  cursor: default;
+}
+.message-text {
+  color: #269b24;
+  font-size: 17px;
+  font-weight: 700;
+}
+.sub-text {
+  font-size: 14px;
+  color: #555;
+}
+.cross-icon {
+  width: 18px;
+  height: 18px;
+  color: #555;
+  cursor: pointer;
+}
+
 }
 
 @media (max-width: 817px) {

@@ -12,7 +12,7 @@ class InformeEstudiante extends Component
 {
     public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00';
 
-    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente, $totalModulos, $observaciones = [], $viewplataforma = 0, $fechaPlataforma;
+    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente = 0, $totalModulos, $observaciones = [], $viewplataforma = 0, $fechaPlataforma;
     public $filtro = '';
     public $aprendices, $aprendizArray;
     public $vista = 0;
@@ -278,12 +278,12 @@ class InformeEstudiante extends Component
         $this->totalDescuento = $this->informes
             ->sum(fn($informe) => optional($informe->apprentice)->descuento ?? 0);
 
-        $this->totalPendiente = $this->informes
-            ->sum(
-                fn($informe) => (optional($informe->apprentice)->valor ?? 0)
-                    - $informe->total_abonos
-                    - (optional($informe->apprentice)->descuento ?? 0)
-            );
+            $this->totalPendiente = $this->informes
+            ->sum(function ($informe) {
+                $valor = optional($informe->apprentice->modality)->valor ?? 0;
+                
+                return $valor - $informe->total_abonos - (optional($informe->apprentice)->descuento ?? 0);
+            });
 
 
         return view('livewire.informe-estudiante');

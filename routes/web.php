@@ -14,6 +14,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+
 /* LOGIN */
 Route::get('/', [AuthenticationController::class, 'index'])->middleware('guest')->name('index');
 
@@ -112,4 +113,8 @@ Route::get('descargar-Asistencias/{date}/{grupo}', [AsistenciaController::class,
 /* SERVICIOS */
 
 Route::get('Servicios', [ServiceController::class, 'index'])->middleware('auth')->name('servicios');
+
+Route::get('Enviar-Email', [ApprenticeController::class, 'sendEmail'])->middleware('auth')->name('sendEmail');
+
+Route::get('Enviando email', [ApprenticeController::class, 'send'])->middleware('auth')->name('send');
 

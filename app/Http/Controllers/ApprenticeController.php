@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\PasswordResetMail;
 use App\Mail\RecordatorioVirtualMail;
+use App\Mail\SendMail;
 use App\Models\Apprentice;
 use App\Models\Informe;
 use Carbon\Carbon;
@@ -62,5 +63,39 @@ class ApprenticeController extends Controller
         $user = Auth::user();
 
         return view('layouts.estadoCuenta', compact('aprendiz', 'user'));
+    }
+
+    public function sendEmail()
+    {
+        $user = Auth::user();
+        return view('layouts.sendEmail', compact('user'));
+    }
+
+    public function send()
+    {
+        $asunto = session()->get('asunto');
+        $text = session()->get('text');
+        $selectEstudents = session()->get('selectEstudents');
+
+        $estudiantes = Apprentice::whereIn('id', $selectEstudents)->get();
+
+        foreach ($estudiantes as $estudiant) {
+
+            if ($estudiant->edad >= 18) {
+                $email = $estudiant->email;
+            } else {
+                $email = $estudiant->attendant->email;
+            }
+
+
+            if (!empty($email)) {
+                try {
+                    Mail::to($email)->send(new SendMail($asunto, $text));
+                    return redirect()->route('sendEmail')->with('success', 'Email enviado satisfactoriamente');
+                } catch (\Throwable $th) {
+                    return redirect()->route('sendEmail')->with('error', 'Ha ocurrido un error');
+                }
+            }
+        }
     }
 }

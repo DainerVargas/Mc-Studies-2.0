@@ -43,6 +43,11 @@ class ListAprendiz extends Component
         }
     }
 
+    public function sendEmail(){
+
+        return redirect('/Enviar-Email');
+    }
+
     public function render()
     {
         $this->user = Auth::user();
