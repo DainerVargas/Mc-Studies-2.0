@@ -13,7 +13,8 @@
         "livewire/livewire": "*",
         "mercadopago/dx-php": "^3.0",
         "mpdf/mpdf": "^8.2",
-        "scss/scss": "^1.4"
+        "scss/scss": "^1.4",
+        "twilio/sdk": "^8.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

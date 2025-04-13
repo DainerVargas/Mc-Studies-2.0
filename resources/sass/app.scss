@@ -115,19 +115,16 @@ $gris: #959595;
 
 /* LO@GIN - FORGOT */
 .conteLogin {
-  @include funciones.flex(center);
-  height: 45vw;
+  @include funciones.flex(space-between);
+  height: 99.6vh;
+  width: 100%;
 
   .conteFormLogin {
     @include funciones.flex(center);
     flex-direction: column;
-    width: 28.4722vw;
+    width: 50%;
     height: 31.25vw;
     border: none;
-    border-radius: 8px;
-    box-shadow: 0.0694vw 0.0694vw 1vw rgb(142, 142, 142);
-    padding: 2.0833vw 0;
-    box-sizing: border-box;
 
     .infoLogo {
       @include funciones.flex(center);
@@ -141,6 +138,7 @@ $gris: #959595;
       p {
         font-weight: 600;
         font-size: 1.1vw;
+        color: $verde;
       }
     }
 
@@ -148,15 +146,60 @@ $gris: #959595;
       margin-top: 2.7778vw;
       text-align: center;
 
+      .conte {
+        position: relative;
+
+        .input {
+          height: 35px;
+          width: 225px;
+          font-size: 12px;
+          color: #000;
+          background-color: #ebebeb;
+          border: 1px solid #ebebeb;
+          padding-left: 30px;
+          box-sizing: border-box;
+          outline: none;
+        }
+
+        .absolute {
+          position: absolute;
+          top: 50%;
+          left: 7%;
+          font-size: 22px;
+          transform: translate(-50%, -50%);
+          color: rgb(139, 139, 139);
+        }
+
+        .material-symbols-outlined{
+          font-variation-settings:
+          'FILL' 1,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+        }
+
+        .errors {
+          font-size: 0.7292vw;
+          color: red;
+          margin-top: 0.3472vw;
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+        }
+      }
+
       .contePassword {
         margin-top: 2.0833vw;
         margin-bottom: 1.5278vw;
       }
 
       .forgot {
-        color: #1062CC;
+        color: #424242;
         font-weight: 500;
-        font-size: 1vw;
+        font-size: 12px;
+        text-decoration: none;
       }
 
 
@@ -165,35 +208,65 @@ $gris: #959595;
 
         .btnLogin {
           height: 2.3611vw;
-          width: 100%;
+          width: 130px;
           font-size: 0.9722vw;
-          border-radius: 0.4861vw;
+          border-radius: 14px;
           cursor: pointer;
           border: 0.0694vw solid gray;
           font-weight: 500;
           transition: all 0.1s ease-in-out;
+          background-color: #06b8bb;
+          color: white;
+          border: none;
         }
 
         #top {
           margin-top: 1vw;
-        }
-
-        .btnLogin:hover {
-          background-color: #05CCD1;
-          color: white;
-          border: none;
         }
       }
     }
   }
 
   .conteImagen {
-    width: 22.2222vw;
-    height: 31.25vw;
+    width: 50%;
     border: none;
-    border-radius: 8px;
-    box-shadow: 0.0694vw 0.0694vw 1vw rgb(142, 142, 142);
     position: relative;
+    height: 100%;
+
+    .background {
+      background-color: #0F8B8B;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 100%;
+      width: 100%;
+      @include funciones.flex(center);
+      flex-direction: column;
+      opacity: 0.6;
+    }
+
+    .text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      @include funciones.flex(center);
+      flex-direction: column;
+      width: 100%;
+      gap: 15px;
+
+      h3 {
+        font-size: 24px;
+        color: white;
+      }
+
+      p {
+        color: rgb(228, 228, 228);
+        width: 60%;
+        text-align: center;
+      }
+    }
 
     img {
       height: 100%;
@@ -1541,7 +1614,7 @@ $gris: #959595;
     top: 46%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 40vw;
+    height: 41vw;
     width: 35%;
     box-shadow: 0.1vw 0.1vw 1vw gray;
     z-index: 999;
@@ -1612,6 +1685,11 @@ $gris: #959595;
           }
         }
 
+        .container{
+          @include funciones.flex(space-around);
+          width: 100%;
+        }
+
         .conteInput {
           margin-top: 1vw;
           margin-left: 1vw;
@@ -1626,6 +1704,7 @@ $gris: #959595;
 
           .input {
             font-size: 1.2vw;
+            width: 150px;
           }
         }
 
@@ -3520,69 +3599,69 @@ $gris: #959595;
     }
   }
 
-.container {
-  @include funciones.align(space-between, start);
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-  margin-top: 16px;
-  position: relative;
+  .container {
+    @include funciones.align(space-between, start);
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 16px;
+    position: relative;
 
-  .conteList {
-    width: 30%;
-    height: 400px;
-    border: 1px solid #ccc;
-    overflow: hidden;
+    .conteList {
+      width: 30%;
+      height: 400px;
+      border: 1px solid #ccc;
+      overflow: hidden;
 
-    .title {
-      border-bottom: 1px solid #ccc;
-      @include funciones.align(space-between, center);
-      padding: 10px;
-      box-sizing: border-box;
-
-      h3 {
-        color: #454545;
-      }
-
-      .check {
-
-        button {
-          height: 20px;
-          width: 70px;
-          background-color: #f34848;
-          border: 1px solid #f34848;
-          color: white;
-          border-radius: 4px;
-          font-weight: 500;
-          cursor: pointer;
-        }
-
-        button:hover {
-          background-color: #ee1313;
-          font-weight: 600;
-        }
-      }
-    }
-
-    .scroll {
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-      gap: 5px;
-      @include funciones.align(start, start);
-      flex-direction: column;
-      overflow: scroll;
-      height: 89%;
-
-      .list {
-        @include funciones.flex(space-between);
-        width: 100%;
+      .title {
         border-bottom: 1px solid #ccc;
-        padding: 5px;
+        @include funciones.align(space-between, center);
+        padding: 10px;
         box-sizing: border-box;
+
+        h3 {
+          color: #454545;
+        }
+
+        .check {
+
+          button {
+            height: 20px;
+            width: 70px;
+            background-color: #f34848;
+            border: 1px solid #f34848;
+            color: white;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+          }
+
+          button:hover {
+            background-color: #ee1313;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .scroll {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        gap: 5px;
+        @include funciones.align(start, start);
+        flex-direction: column;
+        overflow: scroll;
+        height: 89%;
+
+        .list {
+          @include funciones.flex(space-between);
+          width: 100%;
+          border-bottom: 1px solid #ccc;
+          padding: 5px;
+          box-sizing: border-box;
+        }
       }
     }
-  }
 
     .sendEmail {
       @include funciones.align(space-between, start);
@@ -3696,132 +3775,140 @@ $gris: #959595;
     }
   }
 
-.createMessage {
-  position: absolute;
-  top: 50%;
-  left: 25%;
-  transform: translate(50%, -50%);
-  @include funciones.flex(space-between);
-  flex-direction: column;
-  border: 1px solid #636363;
-  background-color: white;
-  padding: 12px;
-  height: 200px;
-  width: 330px;
-  border-radius: 7px;
-  box-sizing: border-box;
-
-  h3 {
-    color: $verde;
-    font-size: 22px;
-  }
-
-  textarea {
-    height: 100px;
-    max-height: 100px;
-    width: 90%;
-    max-width: 90%;
-    outline: none;
-    border: 1px solid $gris;
-    padding: 4px;
-    box-sizing: border-box;
-    font-size: 12px;
-    border-radius: 4px;
-  }
-
-  button {
-    width: 50%;
-    height: 30px;
-    background-color: $verde;
-    border: 1px solid $verde;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #121212;
-    cursor: pointer;
-  }
-
-  button:hover {
-    color: white;
-  }
-
-  img {
-    height: 25px;
-    right: 5px;
-    top: 3px;
+  .createMessage {
     position: absolute;
-    user-select: none;
+    top: 50%;
+    left: 25%;
+    transform: translate(50%, -50%);
+    @include funciones.flex(space-between);
+    flex-direction: column;
+    border: 1px solid #636363;
+    background-color: white;
+    padding: 12px;
+    height: 200px;
+    width: 330px;
+    border-radius: 7px;
+    box-sizing: border-box;
+
+    h3 {
+      color: $verde;
+      font-size: 22px;
+    }
+
+    textarea {
+      height: 100px;
+      max-height: 100px;
+      width: 90%;
+      max-width: 90%;
+      outline: none;
+      border: 1px solid $gris;
+      padding: 4px;
+      box-sizing: border-box;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 50%;
+      height: 30px;
+      background-color: $verde;
+      border: 1px solid $verde;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #121212;
+      cursor: pointer;
+    }
+
+    button:hover {
+      color: white;
+    }
+
+    img {
+      height: 25px;
+      right: 5px;
+      top: 3px;
+      position: absolute;
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+
+  .card {
+    width: 330px;
+    height: 80px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 15px;
+    position: absolute;
+    top: 16%;
+  }
+
+  .wave {
+    position: absolute;
+    transform: rotate(90deg);
+    left: -31px;
+    top: 32px;
+    width: 80px;
+    fill: #04e4003a;
+  }
+
+  .icon-container {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #04e40048;
+    border-radius: 50%;
+    margin-left: 8px;
+  }
+
+  .icon {
+    width: 17px;
+    height: 17px;
+    color: #269b24;
+  }
+
+  .message-text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex-grow: 1;
+  }
+
+  .message-text,
+  .sub-text {
+    margin: 0;
+    cursor: default;
+  }
+
+  .message-text {
+    color: #269b24;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .sub-text {
+    font-size: 14px;
+    color: #555;
+  }
+
+  .cross-icon {
+    width: 18px;
+    height: 18px;
+    color: #555;
     cursor: pointer;
   }
-}
-
-.card {
-  width: 330px;
-  height: 80px;
-  border-radius: 8px;
-  box-sizing: border-box;
-  padding: 10px 15px;
-  background-color: #ffffff;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 15px;
-  position: absolute;
-  top: 16%;
-}
-.wave {
-  position: absolute;
-  transform: rotate(90deg);
-  left: -31px;
-  top: 32px;
-  width: 80px;
-  fill: #04e4003a;
-}
-.icon-container {
-  width: 35px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #04e40048;
-  border-radius: 50%;
-  margin-left: 8px;
-}
-.icon {
-  width: 17px;
-  height: 17px;
-  color: #269b24;
-}
-.message-text-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  flex-grow: 1;
-}
-.message-text,
-.sub-text {
-  margin: 0;
-  cursor: default;
-}
-.message-text {
-  color: #269b24;
-  font-size: 17px;
-  font-weight: 700;
-}
-.sub-text {
-  font-size: 14px;
-  color: #555;
-}
-.cross-icon {
-  width: 18px;
-  height: 18px;
-  color: #555;
-  cursor: pointer;
-}
 
 }
 

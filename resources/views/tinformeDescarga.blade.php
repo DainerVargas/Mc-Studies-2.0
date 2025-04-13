@@ -5,28 +5,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informe Profesores</title>
-    <link rel="stylesheet" href="{{asset('build/assets/app-Be1cidhe.css')}}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .descarga {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            border: 1px solid #000;
+        }
+
+        .titulo {
+            background-color: #009C91;
+            color: white;
+            font-size: 20px;
+        }
+
+        .subtitulo {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .fecha {
+            font-style: italic;
+        }
+
+        .nodatos {
+            text-align: center;
+            font-weight: bold;
+            color: red;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
-    @vite('resources/sass/app.scss')
     <div class="descarga">
         <div class="container">
             <div class="content">
                 @php
                     $total = 0;
                 @endphp
-                <table width="100%" border="1px">
+                <table>
                     <thead>
                         <tr>
-                            <th colspan="4">Informe Estudiantes</th>
+                            <th colspan="4" class="titulo">Informe Profesores</th>
                         </tr>
                         <tr>
-                            <td colspan="2">MC Language studies</td>
+                            <td colspan="4" class="subtitulo">MC Language studies</td>
                         </tr>
                         <tr>
-                            <td>Fecha:</td>
-                            <td>{{ $fecha }}</td>
+                            <td colspan="4" class="fecha">Fecha: {{ $fecha }}</td>
                         </tr>
                         <tr>
                             <th>No.</th>
@@ -44,7 +96,7 @@
                             <tr>
                                 <td>{{ $count++ }}</td>
                                 <td>{{ $informe->teacher->name }}</td>
-                                <td>${{ $informe->abono }}</td>
+                                <td>${{ number_format($informe->abono, 0, ',', '.') }}</td>
                                 @php
                                     $total += $informe->abono;
                                     $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
@@ -53,17 +105,18 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9">
+                                <td colspan="4">
                                     <p class="nodatos">No hay datos</p>
                                 </td>
                             </tr>
                         @endforelse
-    
-                        <td colspan="2">Total: </td>
-                        <td>${{ $total }}</td>
+
+                        <tr>
+                            <td colspan="2"><strong>Total:</strong></td>
+                            <td colspan="2"><strong>${{ number_format($total, 0, ',', '.') }}</strong></td>
+                        </tr>
                     </tbody>
                 </table>
-
             </div>
             <div class="footer">
                 <p>Tu equipo {{ config('app.name') }}</p>

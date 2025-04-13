@@ -165,9 +165,15 @@
                     @error('message')
                         <small class="errors" style="color:green">{{ $message }}</small>
                     @enderror
-                    <div class="conteInput">
-                        <label for="valor">Valor a pagar</label>
-                        <input type="text" wire:model="valor" id="valor" class="input">
+                    <div class="container">
+                        <div class="conteInput">
+                            <label for="valor">Valor a pagar</label>
+                            <input type="text" wire:model="valor" id="valor" class="input">
+                        </div>
+                        <div class="conteInput">
+                            <label for="valor">Periodo del pago</label>
+                            <input type="text" wire:model="periodo" id="valor" class="input">
+                        </div>
                     </div>
                     <input type="file" name="file" hidden wire:model="comprobante" id="imagen">
                     <div class="boton">

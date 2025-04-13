@@ -14,54 +14,37 @@ class ComprobanteMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $teacher;
-    public $comprobante;
-    public $valor;
+    public $teacher, $comprobante, $valor, $periodo;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($teacher, $comprobante, $valor)
+    public function __construct($teacher, $comprobante, $valor, $periodo)
     {
         $this->teacher = $teacher;
         $this->comprobante = $comprobante;
         $this->valor = $valor;
+        $this->periodo = $periodo;
     }
 
-    /**
-     * Get the message envelope.
-     */
+
     public function envelope(): Envelope
     {
         return new Envelope(
             subject: 'Comprobante de Pago',
         );
     }
-    /**
-     * Get the message content definition.
-     */
+
     public function build()
     {
         return $this->subject('Comprobante de Pago')->view('emails.comprobante')
             ->with([
                 'teacher' => $this->teacher,
                 'valor' => $this->valor,
+                'periodo' => $this->periodo,
                 ]
             );
     }
 
-    /*     public function content(): Content
-    {
-        return new Content(
-            view: 'emails.comprobante',
-            with: [
-                'teacher' => $this->teacher
-            ]
-        );
-    } */
     /**
-     * Get the attachments for the message.
-     *
+
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array

@@ -20,7 +20,7 @@ class InfoTeacher extends Component
 
     public $teacher, $type, $name, $apellido, $email, $group, $telefono;
     public $grupos, $type_teachers, $view;
-    public $image, $comprobante, $valor;
+    public $image, $comprobante, $valor, $periodo;
 
     public $idTeacher;
 
@@ -47,6 +47,7 @@ class InfoTeacher extends Component
         $this->view = 0;
         $this->comprobante = '';
         $this->valor = '';
+        $this->periodo = '';
     }
 
     public function sendEmail($idTeacher)
@@ -76,7 +77,7 @@ class InfoTeacher extends Component
             }
 
             try {
-                Mail::to('dainer2607@gmail.com')->send(new ComprobanteMail($teacher, $comprobante, $this->valor));
+                Mail::to('dainer2607@gmail.com')->send(new ComprobanteMail($teacher, $comprobante, $this->valor, $this->periodo));
                 /* Mail::to($teacher->email)->send(new ComprobanteMail($teacher, $comprobante, $this->valor)); */
                 session()->flash('message', 'Email enviado con éxito!');
             } catch (\Throwable $th) {
@@ -88,6 +89,7 @@ class InfoTeacher extends Component
             $this->view = 0;
             $this->comprobante = '';
             $this->valor = '';
+            $this->periodo = '';
         }
     }
 

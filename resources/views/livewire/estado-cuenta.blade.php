@@ -39,11 +39,11 @@
                 </tr>
                 @forelse ($informes as $informe)
                     <tr>
-                        <td>${{ number_format($informe->apprentice->valor, 0, ',', '.') }}</td>
+                        <td>${{ number_format($informe->apprentice->modality->valor, 0, ',', '.') }}</td>
                         <td>${{ number_format($informe->apprentice->descuento, 0, ',', '.') }}</td>
                         <td>${{ number_format($informe->abono, 0, ',', '.') }}</td>
                         @php
-                            $precio = $informe->apprentice->valor;
+                            $precio = $informe->apprentice->modality->valor;
                             $descuento = $informe->apprentice->descuento;
                             $totalAbono += $informe->abono;
                         @endphp

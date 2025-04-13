@@ -33,8 +33,10 @@ class ApprenticeController extends Controller
         $aprendices = Apprentice::all();
         $dia_semana = date("N");
         foreach ($aprendices as $key => $aprendiz) {
-            if (Carbon::now()->toDateString() . ' 00:00:00' >= $aprendiz->fecha_fin && $aprendiz->fecha_inicio != null) {
+            if (Carbon::now()->toDateString() . ' 00:00:00' >= $aprendiz->fecha_fin && $aprendiz->fecha_inicio != null && $aprendiz->estado != true) {
                 $aprendiz->estado = false;
+                $aprendiz->fecha_inicio = null;
+                $aprendiz->fecha_fin = null;
                 $aprendiz->save();
 
                 if ($aprendiz->email != null) {

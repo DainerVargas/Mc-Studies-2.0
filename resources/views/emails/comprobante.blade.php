@@ -84,6 +84,7 @@
             <ul>
                 <li><strong>Fecha de Pago:</strong> {{ date('d-m-Y') }}</li>
                 <li><strong>Valor:</strong> ${{ number_format($valor, 0, ',', '.') }} pesos</li>
+                <li><strong>Periodo del Pago:</strong> {{ $periodo }}</li>
             </ul>
             <p>Gracias por tu dedicación y excelente trabajo en nuestra academia de aprendizaje de inglés. Si tienes alguna pregunta o necesitas más información, no dudes en ponerte en contacto con nosotros.</p>
             <p>Atentamente,</p>

@@ -37,7 +37,7 @@
                         <tr>
                             <td>{{ $count++ }}</td>
                             <td>{{ $informe->teacher->name }}</td>
-                            <td>${{ $informe->abono }}</td>
+                            <td>${{ number_format($informe->abono, 0, ',', '.') }}</td>
                             @php
                                 $total += $informe->abono;
                                 $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
