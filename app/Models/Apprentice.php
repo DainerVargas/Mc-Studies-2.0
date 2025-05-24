@@ -11,7 +11,7 @@ class Apprentice extends Model
 
     public function attendant()
     {
-        return $this->belongsTo(Attendant::class);
+        return $this->belongsTo(Attendant::class, 'attendant_id'); 
     }
 
     public function modality()

@@ -14,6 +14,11 @@ class Tinforme extends Model
         return $this->belongsTo(Teacher::class);
     }
 
+    public function apprentice()
+    {
+        return $this->belongsTo(Apprentice::class);
+    }
+
     protected $fillable = [
         'teacher_id',
         'abono',

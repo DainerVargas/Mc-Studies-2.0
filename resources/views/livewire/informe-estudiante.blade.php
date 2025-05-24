@@ -5,7 +5,7 @@
     </div>
     @if ($active == 1)
         <div class="conteFiltro">
-            <form wire:submit="filtrar">
+            <form>
                 <div class="conteInput">
                     <label for="filtro">Filtra por el nombre del Estudiante</label>
                     <input type="text" wire:model.live="filtro" placeholder="Nombre del estudiante">
@@ -36,6 +36,14 @@
                     <span class="material-symbols-outlined" wire:click="next">
                         skip_next
                     </span>
+                </div>
+
+                <div class="mes">
+                    <select wire:model.live="estado" title="Filtrar por estado">
+                        <option value="0" selected="">Todos</option>
+                        <option value="1">Pagado</option>
+                        <option value="2">Pendiente</option>
+                    </select>
                 </div>
 
                 <div class="contelink">
@@ -75,6 +83,8 @@
                             $color = '#000000';
                             $valorModulo = 0;
                             $fechaPlataforma = Date::now()->year;
+
+                            dump($informes);
                         @endphp
                         @forelse ($informes ?? [] as $informe)
                             @php
