@@ -10,7 +10,7 @@ class Tinforme extends Component
 {
     public $tinformes, $profesores, $filtro = '', $informe = [], $view;
 
-    public $name, $abono, $teacher, $message2;
+    public $name, $abono, $teacher, $selectTeachers = [] ,$message2;
 
     public function mount()
     {
@@ -22,6 +22,25 @@ class Tinforme extends Component
         $infor = ModelsTinforme::find($value);
         $this->teacher = Teacher::where('id', $infor->teacher_id)->first();
         $this->view = 1;
+    }
+    
+    public function select($teacherId)
+    {
+        if (in_array($teacherId, $this->selectTeachers)) {
+
+            $this->selectTeachers = array_values(array_diff($this->selectTeachers, [$teacherId]));
+        } else {
+            $this->selectTeachers[] = $teacherId;
+        }
+    }
+
+    public function download(){
+
+        if($this->selectTeachers != []){
+            session()->flash('selectTeachers', $this->selectTeachers);
+        }
+        
+        return redirect()->route('informedescarga');
     }
 
     public function eliminar(ModelsTinforme $informe)
@@ -69,4 +88,3 @@ class Tinforme extends Component
         ]);
     }
 }
-

@@ -22,6 +22,8 @@ class descargaController extends Controller
     }
     public function descargap(Teacher $teacher)
     {
+
+        /* return view('download', compact('teacher')); */
         $pdf = Pdf::loadView('download', ['teacher' => $teacher]);
         return $pdf->download("Informe - $teacher->name  $teacher->apellido .pdf");
     }

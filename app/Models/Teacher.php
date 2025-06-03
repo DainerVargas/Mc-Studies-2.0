@@ -45,6 +45,11 @@ class Teacher extends Model
         'fecha_fin',
     ];
 
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
     public function image()
     {
         return asset('users/' . $this->imageName);

@@ -72,19 +72,20 @@
                 <table>
                     <thead>
                         <tr>
-                            <th colspan="4" class="titulo">Informe Profesores</th>
+                            <th colspan="5" class="titulo">Informe Profesores</th>
                         </tr>
                         <tr>
-                            <td colspan="4" class="subtitulo">MC Language studies</td>
+                            <td colspan="5" class="subtitulo">MC Language studies</td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="fecha">Fecha: {{ $fecha }}</td>
+                            <td colspan="5" class="fecha">Fecha: {{ $fecha }}</td>
                         </tr>
                         <tr>
                             <th>No.</th>
                             <th>Profesor</th>
                             <th>Valor Pagado</th>
                             <th>Fecha de Pago</th>
+                            <th>Periodo</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,6 +103,7 @@
                                     $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
                                 @endphp
                                 <td>{{ $fecha }}</td>
+                                <td>{{ $informe->periodo ?? 'No registrado'}}</td>
                             </tr>
                         @empty
                             <tr>
@@ -112,8 +114,8 @@
                         @endforelse
 
                         <tr>
-                            <td colspan="2"><strong>Total:</strong></td>
-                            <td colspan="2"><strong>${{ number_format($total, 0, ',', '.') }}</strong></td>
+                            <td colspan="3"><strong>Total:</strong></td>
+                            <td colspan="3"><strong>${{ number_format($total, 0, ',', '.') }}</strong></td>
                         </tr>
                     </tbody>
                 </table>

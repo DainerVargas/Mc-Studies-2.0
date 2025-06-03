@@ -20,6 +20,10 @@
                 <p><strong>Nombre:</strong> {{ $teacher->name }} {{ $teacher->apellido }}</p>
                 <p><strong>Email:</strong> {{ $teacher->email }}</p>
                 <p><strong>Telefono:</strong> {{ $teacher->telefono }}</p>
+                <h2>Detalles de la cuenta</h2>
+                <p><strong>Nombre:</strong> {{ $teacher->accounts[0]->name}}</p>
+                <p><strong>Tipo:</strong> {{ $teacher->accounts[0]->type_account }}</p>
+                <p><strong>Número:</strong> {{ $teacher->accounts[0]->number }}</p>
             </div>
 
             <div class="content">

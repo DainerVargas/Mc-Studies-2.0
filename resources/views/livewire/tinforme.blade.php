@@ -24,8 +24,9 @@
                         <th>Profesor</th>
                         <th>Valor Pagado</th>
                         <th>Fecha de Pago</th>
-                        <th>Restablecer</th>
+                        <th>periodo</th>
                         <th>Eliminar</th>
+                        <th>seleccionar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,16 +44,7 @@
                                 $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
                             @endphp
                             <td>{{ $fecha }}</td>
-                            <td>
-                                <div class="flex">
-                                    <button class="delete" wire:click="reseter({{ $informe->id }})"
-                                        wire:confirm="¿Estás seguro de restablecer los datos?
-    Si aceptas los datos se perderan."><span
-                                            class="material-symbols-outlined">
-                                            restart_alt
-                                        </span> Restore</button>
-                                </div>
-                            </td>
+                            <td>{{ $informe->periodo ?? 'No registrado'}}</td>
                             <td>
                                 <div class="flex">
                                     <button class="delete" wire:click="eliminar({{ $informe->id }})"
@@ -61,6 +53,12 @@
                                             class="material-symbols-outlined">
                                             delete
                                         </span> Eliminar</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex">
+                                 <input type="checkbox" wire:click="select({{ $informe->id }})"
+                                 {{ is_array($selectTeachers) && in_array($informe->id, $selectTeachers) ? 'checked' : '' }}>
                                 </div>
                             </td>
                         </tr>

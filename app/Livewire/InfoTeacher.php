@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Mail\ComprobanteMail;
 use App\Mail\ConfirmacionMail;
+use App\Models\Account;
 use App\Models\Group;
 use App\Models\Informe;
 use App\Models\Teacher;
@@ -18,7 +19,7 @@ class InfoTeacher extends Component
 {
     use WithFileUploads;
 
-    public $teacher, $type, $name, $apellido, $email, $group, $telefono;
+    public $teacher, $type, $name, $apellido, $email, $group, $telefono, $name_acount, $type_account, $number_account;
     public $grupos, $type_teachers, $view;
     public $image, $comprobante, $valor, $periodo;
 
@@ -64,15 +65,17 @@ class InfoTeacher extends Component
             $teacher = Teacher::find($idTeacher);
 
             $informe = Tinforme::where('teacher_id', $teacher->id)->first();
-            if ( $informe && $informe->abono == 0) {
+            if ($informe && $informe->abono == 0) {
                 $informe->abono = $this->valor;
                 $informe->fecha = Carbon::now();
+                $informe->periodo = $this->periodo;
                 $informe->save();
-            }else{
+            } else {
                 Tinforme::create([
                     'teacher_id' => $teacher->id,
                     'abono' => $this->valor,
                     'fecha' => Carbon::now(),
+                    'periodo' => $this->periodo,
                 ]);
             }
 
@@ -102,6 +105,16 @@ class InfoTeacher extends Component
         $this->email = $teacher->email;
         $this->telefono = $teacher->telefono;
         $this->type = $teacher->type_teacher_id;
+        $acount = Account::where('teacher_id', $teacher->id)->first();
+        if ($acount) {
+            $this->name_acount = $acount->name;
+            $this->type_account = $acount->type_account;
+            $this->number_account = $acount->number;
+        } else {
+            $this->name_acount = '';
+            $this->type_account = '';
+            $this->number_account = '';
+        }
     }
 
     public function update(Teacher $teacher)
@@ -111,6 +124,22 @@ class InfoTeacher extends Component
             $foto = basename($path);
         } else {
             $foto = $teacher->image;
+        }
+
+        $acount = Account::where('teacher_id', $teacher->id)->first();
+        if ($acount) {
+            $acount->name = $this->name_acount;
+            $acount->type_account = $this->type_account;
+            $acount->number = $this->number_account;
+            $acount->save();
+        }else{
+
+            Account::create([
+                'name' => $this->name_acount,
+                'type_account' => $this->type_account,
+                'number' => $this->number_account,
+                'teacher_id' => $teacher->id,
+            ]);
         }
 
         $teacher->update([

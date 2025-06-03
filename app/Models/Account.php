@@ -2,22 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tinforme extends Model
+class Account extends Model
 {
-    use HasFactory;
-
     public function teacher()
     {
         return $this->belongsTo(Teacher::class);
     }
 
     protected $fillable = [
+        'name',
+        'type_account',
+        'number',
         'teacher_id',
-        'abono',
-        'fecha',
-        'periodo'
     ];
 }

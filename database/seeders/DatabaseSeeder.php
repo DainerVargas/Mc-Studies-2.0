@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TypeServiceSeeder::class,
             ServiceSeeder::class,
+            AccountSeeder::class,
         ]);
     }
 }

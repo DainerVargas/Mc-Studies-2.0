@@ -9,18 +9,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tinformes', function (Blueprint $table) {
+        Schema::create('accounts', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('type_account');
+            $table->string('number');
             $table->foreignIdFor(Teacher::class)->constrained();
-            $table->integer('abono');
-            $table->date('fecha')->nullable();
-            $table->string('periodo')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tinformes');
+        Schema::dropIfExists('accounts');
     }
 };
