@@ -4,25 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Asistencia;
 use App\Models\Group;
+use App\Models\Teacher;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AsistenciaController extends Controller
 {
-    public function asistencias(){
-
+    public function asistencias($userId){
+        $teacher = Teacher::findOrFail($userId);
         $user = Auth::user();
-        return view('layouts.asistencia', compact('user'));
+        return view('layouts.asistencia', compact('teacher', 'user'));
     }
 
 
-    public function descargar($date,  Group $grupo){
+    public function descargar(Teacher $teacher,  $date,  Group $grupo){
 
         $user = Auth::user();
 
         $asistencias = Asistencia::with('apprentice')
-        ->where('teacher_id', $user->teacher_id)
+        ->where('teacher_id', $teacher->id)
         ->where('fecha', $date)
         ->where('group_id', $grupo->id)
         ->get();

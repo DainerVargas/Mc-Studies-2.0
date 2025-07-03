@@ -100,7 +100,9 @@
                         @endforeach
                     </tbody>
                 </table>
-                <button class="buttonsave" wire:click="guardarAsistencia">Guardar Asistencia</button>
+                @if ($user->teacher_id)
+                    <button class="buttonsave" wire:click="guardarAsistencia">Guardar Asistencia</button>
+                @endif
             </div>
         </div>
     @endif
@@ -150,7 +152,7 @@
                     </tbody>
                 </table>
                 @if ($selectGrupo != 'all' && $date)
-                    <a href="{{ route('descargarAsistencias', ['date' => $date, 'grupo' => $selectGrupo]) }}">
+                    <a href="{{ route('descargarAsistencias', ['teacher' => $teacher->id,'date' => $date, 'grupo' => $selectGrupo]) }}">
                         <button class="buttonsave">Descargar Asistencia</button>
                     </a>
                 @endif

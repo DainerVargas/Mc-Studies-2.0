@@ -4,6 +4,6 @@
 
 @section('asistencia')
     <div class="conteListAprendiz">
-        @livewire('asistencia')
+        @livewire('asistencia', ['teacher' => $teacher])
     </div>
 @endsection

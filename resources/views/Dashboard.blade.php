@@ -81,7 +81,7 @@
                         $validat = false;
                     }
                 @endphp
-                <a href="{{ route('asistencias') }}" class="{{ $validat ? 'active' : '' }}">Registro de Asistencia</a>
+                <a href="{{ route('asistencias', $user->teacher_id) }}" class="{{ $validat ? 'active' : '' }}">Registro de Asistencia</a>
             @endif
         </div>
         <div class="conteUsuario">

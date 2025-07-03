@@ -18,7 +18,6 @@
 
         .container {
             width: 100%;
-            max-width: 900px;
             margin: auto;
         }
 
@@ -26,11 +25,13 @@
             width: 100%;
             border-collapse: collapse;
             text-align: center;
+            border: 1px solid #000;
         }
 
         th,
         td {
             padding: 8px;
+            box-sizing: border-box;
             border: 1px solid #000;
         }
 
@@ -69,7 +70,7 @@
                 @php
                     $total = 0;
                 @endphp
-                <table>
+                <table border="1px">
                     <thead>
                         <tr>
                             <th colspan="5" class="titulo">Informe Profesores</th>
@@ -114,7 +115,7 @@
                         @endforelse
 
                         <tr>
-                            <td colspan="3"><strong>Total:</strong></td>
+                            <td colspan="2"><strong>Total:</strong></td>
                             <td colspan="3"><strong>${{ number_format($total, 0, ',', '.') }}</strong></td>
                         </tr>
                     </tbody>

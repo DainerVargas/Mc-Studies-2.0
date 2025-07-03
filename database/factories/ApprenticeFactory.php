@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Attendant;
+use App\Models\Becado;
 use App\Models\Modality;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,6 +25,8 @@ class ApprenticeFactory extends Factory
             'edad' => rand(4,40),
             'fecha_nacimiento' => fake()->date('y-m-d'),
             'estado' => fake()->randomElement([1,0]),
+            'nivel' => fake()->randomElement(['B4','B1','B2','A4','A1','A2','A3','B3',]),
+            'becado_id' => Becado::pluck('id')->random(), 
             'plataforma' => 0,
             'fechaPlataforma' => fake()->date('Y'),
             'valor' => fake()->randomElement([900000, 810000]),

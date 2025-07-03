@@ -11,7 +11,7 @@ use Livewire\Component;
 class InformeEstudiante extends Component
 {
     public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00', $estado = 0;
-    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente = 0, $totalModulos, $observaciones = [], $viewplataforma = 0, $fechaPlataforma;
+    public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente = 0, $totalModulos, $observaciones = [], $viewplataforma = 0, $fechaPlataforma, $modulo;
     public $filtro = '';
     public $aprendices, $aprendizArray;
     public $vista = 0;
@@ -22,7 +22,7 @@ class InformeEstudiante extends Component
         $this->observaciones = Apprentice::pluck('observacion', 'id')->toArray();
         $this->year = Date::now()->year;
         $this->informes = Informe::whereYear('fechaRegistro', $this->year)->get();
-        $this->aprendices = Apprentice::all();
+        $this->aprendices = Apprentice::where('estado', true)->get();
     }
 
     public function next()
@@ -194,17 +194,31 @@ class InformeEstudiante extends Component
         $aprendiz->plataforma = 140000;
         $aprendiz->save();
         $this->informes = Informe::all();
-        $this->aprendices = Apprentice::all();
+        $this->aprendices = Apprentice::where('estado', true)->get();
     }
 
     public function render()
     {
         $query = Informe::query()->with('apprentice.attendant', 'apprentice.modality');
 
+        if (!empty($this->modulo)) {
+            $query->whereHas('apprentice', function ($subQuery) {
+                if ($this->modulo == '1') {
+                    $subQuery->where(function ($query) {
+                        $query->whereMonth('fecha_inicio', '<=', 6);
+                    });
+                } elseif ($this->modulo == '2') {
+                    $subQuery->where(function ($query) {
+                        $query->whereMonth('fecha_inicio', '>=', 7);
+                    });
+                }
+            });
+        }
+
         if (!empty($this->mes) && $this->mes != '00') {
             $query->whereNotNull('fecha')
                 ->whereMonth('fecha', intval($this->mes))
-                ->whereYear('fechaRegistro', $this->year);
+                ->where('fechaRegistro', $this->year);
         }
 
         if (!empty($this->filtro)) {
@@ -220,6 +234,10 @@ class InformeEstudiante extends Component
                 });
             });
         }
+
+        $query->whereHas('apprentice', function ($subQuery) {
+            $subQuery->where('estado', 1);
+        });
 
         $informesAgrupados = (clone $query)
             ->selectRaw('apprentice_id, SUM(abono) as total_abonos')
@@ -251,9 +269,23 @@ class InformeEstudiante extends Component
             });
         }
 
-        $this->totalModulos = $this->informes->sum(fn($informe) => optional($informe->apprentice)->valor ?? 0);
-        $this->totalDescuento = $this->informes->sum(fn($informe) => optional($informe->apprentice)->descuento ?? 0);
-        $this->totalPendiente = $this->informes->sum(fn($informe) => (optional($informe->apprentice)->valor ?? 0) - (optional($informe->apprentice)->descuento ?? 0) - $informe->total_abonos);
+        $this->totalModulos = $this->informes->sum(function ($informe) {
+            return optional($informe->apprentice)->becado_id != 1 && optional($informe->apprentice)->estado == 1
+                ? optional($informe->apprentice)->valor ?? 0
+                : 0;
+        });
+
+        $this->totalDescuento = $this->informes->sum(function ($informe) {
+            return optional($informe->apprentice)->becado_id != 1 && optional($informe->apprentice)->estado == 1
+                ? optional($informe->apprentice)->descuento ?? 0
+                : 0;
+        });
+
+        $this->totalPendiente = $this->informes->sum(function ($informe) {
+            return optional($informe->apprentice)->becado_id != 1 && optional($informe->apprentice)->estado == 1
+                ? (optional($informe->apprentice)->valor ?? 0) - (optional($informe->apprentice)->descuento ?? 0) - $informe->total_abonos
+                : 0;
+        });
 
         return view('livewire.informe-estudiante');
     }

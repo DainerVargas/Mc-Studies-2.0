@@ -30,6 +30,7 @@
                                 <small style="color: red">{{ $message }}</small>
                             @enderror
                         </div>
+
                         <div class="conteInput">
                             <input class="input" type="text" name="apellido" placeholder="Apellido"
                                 value="{{ old('apellido', $aprendiz->apellido) }}">
@@ -38,9 +39,10 @@
                                 <small style="color: red">{{ $message }}</small>
                             @enderror
                         </div>
+
                         <div class="conteInput">
                             <input class="input" type="text" name="edad" placeholder="edad"
-                                value="{{ old('edad', $aprendiz->edad) }}">
+                                value="{{ old('edad', $edadActualizada) }}">
                             <label class="label" for="">Edad</label>
                             @error('edad')
                                 <small style="color: red">{{ $message }}</small>
@@ -59,6 +61,14 @@
                                 value="{{ old('direccion', $aprendiz->direccion) }}">
                             <label class="label" for="">Dirección</label>
                             @error('direccion')
+                                <small style="color: red">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="conteInput">
+                            <input class="input" type="text" name="nivel" placeholder="Nivel"
+                                value="{{ old('nivel', $aprendiz->nivel) }}">
+                            <label class="label" for="">Nivel</label>
+                            @error('nivel')
                                 <small style="color: red">{{ $message }}</small>
                             @enderror
                         </div>
@@ -132,7 +142,22 @@
                                     @enderror
                                 </div>
                             @endif
-                        @endif
+                            @endif
+                            <div class="conteInput">
+                                <select class="input" name="becado_id" id="">
+                                    <option value="{{ $aprendiz->becado->id}}">{{ $aprendiz->becado->name ?? 'No'}}
+                                    </option>
+                                    @foreach ($becados as $becado)
+                                        @if ($becado->id != $aprendiz->becado->id)
+                                            <option value="{{ $becado->id }}">{{ $becado->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <label class="label" for="">Becado</label>
+                                @error('becado_id')
+                                    <small style="color: red">{{ $message }}</small>
+                                @enderror
+                            </div>
                     </div>
                 </div>
             </div>

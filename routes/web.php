@@ -105,9 +105,9 @@ Route::get('Descarga-Informe/{estudiante}', [descargaController::class, 'descarg
 
 /* ASISTENCIA */
 
-Route::get('Resgistro-Asistencias', [AsistenciaController::class, 'asistencias'])->middleware('auth')->name('asistencias');
+Route::get('Resgistro-Asistencias/{userId}', [AsistenciaController::class, 'asistencias'])->middleware('auth')->name('asistencias');
 
-Route::get('descargar-Asistencias/{date}/{grupo}', [AsistenciaController::class, 'descargar'])->middleware('auth')->name('descargarAsistencias');
+Route::get('descargar-Asistencias/{teacher}/{date}/{grupo}', [AsistenciaController::class, 'descargar'])->middleware('auth')->name('descargarAsistencias');
 
 
 /* SERVICIOS */

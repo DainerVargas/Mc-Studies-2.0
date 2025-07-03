@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\Modality;
 use App\Models\Teacher;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,13 +17,16 @@ class InfoAprendiz extends Component
 {
     use WithFileUploads;
 
-    public $aprendiz, $image, $grupos, $modalidades, $fechaActual, $user;
+    public $aprendiz, $image, $grupos, $modalidades, $fechaActual, $user, $edadActualizada;
     public $valor = 0;
 
     public function mount()
     {
         $this->grupos = Group::all();
         $this->modalidades = Modality::all();
+        $fechaNacimiento = new DateTime($this->aprendiz->fecha_nacimiento);
+        $hoy = new DateTime();
+        $this->edadActualizada = $hoy->diff($fechaNacimiento)->y;
     }
 
     public function toggleEstado(Apprentice $aprendiz)

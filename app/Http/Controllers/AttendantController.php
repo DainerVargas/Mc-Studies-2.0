@@ -65,6 +65,8 @@ class AttendantController extends Controller
       'documento' => $request->documento,
       'telefono' => $request->telefonoStudent,
       'direccion' => $request->direccion,
+      'nivel' => $request->nivel,
+      'becado_id' => $request->becado_id,
       'imagen' => $foto,
       'comprobante' => $aprendiz->comprobante,
       'fecha_nacimiento' => $request->fecha_nacimiento,

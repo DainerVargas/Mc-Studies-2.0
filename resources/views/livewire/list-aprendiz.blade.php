@@ -42,6 +42,7 @@
                     <tr>
                         <th>No.</th>
                         <th>Aprendiz</th>
+                        <th>Nivel</th>
                         <th>Grupo</th>
                         <th>Estado</th>
                         @if ($user->rol_id == 1)
@@ -56,6 +57,7 @@
                         $count = 1;
                     @endphp
                     @forelse ($aprendices as $aprendiz)
+                    
                         <tr>
                             <td>{{ $count++ }}</td>
                             <td class="relative">
@@ -74,6 +76,7 @@
                                     </div>
                                 @endif
                             </td>
+                            <td>{{$aprendiz->nivel}}</td>
                             @php
                                 if ($aprendiz->group_id == null) {
                                     $grupo = 'Sin grupo';

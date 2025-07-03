@@ -28,7 +28,7 @@
             <a><button wire:click="update"><img src="/images/agregar.png" alt="">
                     añadir</button></a>
         </div>
-        
+
     </div>
 
     <div class="containerConte">
@@ -39,6 +39,7 @@
                         <th>No.</th>
                         <th>Profesor</th>
                         <th>email</th>
+                        <th>Registro asistencia</th>
                         <th>Estado</th>
                         <th>Actualizar</th>
                         <th>Eliminar</th>
@@ -66,6 +67,18 @@
                             @php
                                 $estado = $profesor->estado == 1 ? 'active' : 'inactive';
                             @endphp
+                            <td>
+                                <div class="flex">
+                                    @if ($profesor->type_teacher_id == 1 || $profesor->type_teacher_id == 2)
+                                        <a href="{{ route('asistencias', $profesor->id) }}">
+                                            <button>Ir al registro </button>
+                                        </a>
+
+                                        @else
+                                        No aplica
+                                    @endif
+                                </div>
+                            </td>
                             <td>
                                 <div class="flex">
                                     <button class="{{ $estado }}">{{ $estado }}</button>

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Asistencia as Asistent;
 use App\Models\Group;
 use App\Models\Apprentice;
+use App\Models\Teacher;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -13,10 +14,11 @@ class Asistencia extends Component
 {
     public $asistencias, $user, $estado = [], $date, $message, $observaciones = [];
     public $estudiantes, $filter = 'null', $nameAprendiz = '', $groups, $grupos, $selectGrupo = 'all';
+    public Teacher $teacher;
 
-
-    public function mount()
+    public function mount($teacher)
     {
+        $this->teacher = $teacher;
         $this->user = Auth::user();
         $this->date = now()->format('Y-m-d');
 
@@ -35,16 +37,20 @@ class Asistencia extends Component
 
     public function updatedFilter()
     {
-        if ($this->date <= now()->format('Y-m-d') && !empty($this->asistencias->toArray())) {
-            $this->cargarAsistencias();
-        } else {
-            $this->message = "Debes guardar la asistencia.";
+        try {
+            if ($this->date <= now()->format('Y-m-d') && !empty($this->asistencias->toArray())) {
+                $this->cargarAsistencias();
+            } else {
+                $this->message = "Debes guardar la asistencia.";
+            }
+        } catch (\Throwable $th) {
+            dd('Por favor guarde asistencias.');
         }
     }
 
     public function updatedNameAprendiz()
     {
-        $grupos = Group::where('teacher_id', $this->user->teacher_id)->pluck('id');
+        $grupos = Group::where('teacher_id', $this->teacher->id)->pluck('id');
         if ($this->nameAprendiz != '') {
             $estudiantes = Apprentice::whereIn('group_id', $grupos)
                 ->where('name', 'LIKE', "%{$this->nameAprendiz}%")
@@ -69,10 +75,10 @@ class Asistencia extends Component
 
     private function cargarAsistencias()
     {
-        $query = Asistent::where('teacher_id', $this->user->teacher_id)
+        $query = Asistent::where('teacher_id', $this->teacher->id)
             ->where('fecha', $this->date);
 
-        $this->grupos = Group::where('teacher_id', $this->user->teacher_id)->get();
+        $this->grupos = Group::where('teacher_id', $this->teacher->id)->get();
 
         if ($this->selectGrupo != 'all') {
             $query->where('group_id', $this->selectGrupo);
@@ -96,7 +102,7 @@ class Asistencia extends Component
         $this->asistencias = $query->get();
 
         if ($this->asistencias->isEmpty()) {
-            $this->groups = Group::where('teacher_id', $this->user->teacher_id)->pluck('id');
+            $this->groups = Group::where('teacher_id', $this->teacher->id)->pluck('id');
 
             if ($this->selectGrupo != 'all') {
                 $this->estudiantes = Apprentice::where('group_id', $this->selectGrupo)->get();
@@ -133,7 +139,7 @@ class Asistencia extends Component
             Asistent::create(
                 [
                     'apprentice_id' => $estudiante->id,
-                    'teacher_id' => $this->user->teacher_id,
+                    'teacher_id' => $this->teacher->id,
                     'fecha' => $this->date,
                     'group_id' => $this->selectGrupo,
                     'estado' => $this->estado[$estudiante->id],
@@ -142,13 +148,13 @@ class Asistencia extends Component
             );
         }
 
-        return redirect('Resgistro-Asistencias');
+        return redirect('Resgistro-Asistencias/'. $this->teacher->id);
     }
 
     public function descarga()
     {
         $asistencias = Asistent::with('apprentice')
-        ->where('teacher_id', $this->user->teacher_id)
+        ->where('teacher_id', $this->teacher->id)
         ->where('fecha', $this->date)
         ->where('group_id', $this->selectGrupo)
         ->get();
@@ -157,6 +163,7 @@ class Asistencia extends Component
    /*  $pdf = Pdf::loadView('descargaAsistencia', ['asistencias' => $asistencias]);
     
     return $pdf->download("Registro_Asistencia.pdf"); */
+    dd($asistencias);
 
    return view('descargaAsistencia' , compact('asistencias'));
     

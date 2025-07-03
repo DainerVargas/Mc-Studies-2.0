@@ -11,7 +11,7 @@ class Apprentice extends Model
 
     public function attendant()
     {
-        return $this->belongsTo(Attendant::class, 'attendant_id'); 
+        return $this->belongsTo(Attendant::class, 'attendant_id');
     }
 
     public function modality()
@@ -33,6 +33,11 @@ class Apprentice extends Model
         return $this->hasMany(Asistencia::class);
     }
 
+    public function becado()
+    {
+        return $this->belongsTo(Becado::class);
+    }
+
     protected $fillable = [
         'name',
         'apellido',
@@ -42,6 +47,8 @@ class Apprentice extends Model
         'telefono',
         'fecha_nacimiento',
         'estado',
+        'nivel',
+        'becado_id',
         'imagen',
         'modality_id',
         'plataforma',

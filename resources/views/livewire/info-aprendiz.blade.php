@@ -21,7 +21,6 @@
                 } else {
                     $profesor = 'Sin profesor';
                 }
-
             @endphp
             <p>Profesor: <span>{{ $profesor }}</span></p>
         </div>
@@ -90,7 +89,7 @@
             <div class="datos">
                 <p>Nombre: <span>{{ $aprendiz->name }}</span> </p>
                 <p>Apellido: <span>{{ $aprendiz->apellido }}</span> </p>
-                <p>Edad: <span>{{ $aprendiz->edad }}</span> </p>
+                <p>Edad: <span>{{ $edadActualizada }}</span> </p>
                 <p>Fecha-Nacimiento: <span>{{ $aprendiz->fecha_nacimiento }}</span> </p>
                 <p>Dirección:
                     <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : 'No hay dirección' }}</span>
