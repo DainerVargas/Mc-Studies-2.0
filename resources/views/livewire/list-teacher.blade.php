@@ -40,6 +40,7 @@
                         <th>Profesor</th>
                         <th>email</th>
                         <th>Registro asistencia</th>
+                        <th>Calificaciones</th>
                         <th>Estado</th>
                         <th>Actualizar</th>
                         <th>Eliminar</th>
@@ -72,6 +73,17 @@
                                     @if ($profesor->type_teacher_id == 1 || $profesor->type_teacher_id == 2)
                                         <a href="{{ route('asistencias', $profesor->id) }}">
                                             <button>Ir al registro </button>
+                                        </a>
+                                        @else
+                                        No aplica
+                                    @endif
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex">
+                                    @if ($profesor->type_teacher_id == 1 || $profesor->type_teacher_id == 2)
+                                        <a href="{{ route('qualification', $profesor->id) }}">
+                                            <button>Ir a calificacion </button>
                                         </a>
 
                                         @else

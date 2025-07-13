@@ -17,7 +17,7 @@ class ApprenticeSeeder extends Seeder
             'edad' => '20',
             'fecha_nacimiento' => '2003/07/26',
             'estado' => '0',
-            'nivel' => 'B4',
+            'level_id' => 5,
             'becado_id' => 1, 
             'email' => '',
             'plataforma' => 0,

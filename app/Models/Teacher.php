@@ -18,6 +18,11 @@ class Teacher extends Model
         return $this->hasMany(Asistencia::class);
     }
 
+    public function qualification()
+    {
+        return $this->hasMany(Qualification::class);
+    }
+
     public function type_teacher()
     {
         return $this->belongsTo(TypeTeacher::class);
@@ -53,5 +58,10 @@ class Teacher extends Model
     public function image()
     {
         return asset('users/' . $this->imageName);
+    }
+
+    public function qualifications()
+    {
+        return $this->hasMany(Qualification::class);
     }
 }

@@ -4,6 +4,7 @@ use App\Models\Attendant;
 use App\Models\Becado;
 use App\Models\Comprobante;
 use App\Models\Group;
+use App\Models\Level;
 use App\Models\Modality;
 use App\Models\Type;
 use Illuminate\Database\Migrations\Migration;
@@ -29,7 +30,7 @@ return new class extends Migration
             $table->integer('plataforma')->nullable();
             $table->integer('fechaPlataforma')->nullable();  
             $table->boolean('estado')->nullable();
-            $table->string('nivel')->nullable();
+            $table->foreignIdFor(Level::class)->nullable();
             $table->foreignIdFor(Becado::class)->constrained();
             $table->integer('valor')->nullable();
             $table->integer('descuento')->nullable()->defaultValue(0);

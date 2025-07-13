@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Apprentice;
 use App\Models\Attendant;
 use App\Models\Group;
+use App\Models\Level;
 use App\Models\Modality;
 use App\Models\Teacher;
 use Carbon\Carbon;

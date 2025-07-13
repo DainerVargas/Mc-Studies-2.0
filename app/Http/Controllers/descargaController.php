@@ -62,6 +62,27 @@ class descargaController extends Controller
         return $pdf->download("Informe-Profesores.pdf");
     }
 
+    public function qualificationDownload()
+    {
+        $qualifications = session()->get('qualifications');
+        $semestre = session()->get('number');
+
+         $pdf = Pdf::loadView('qualificationDownload', compact('qualifications', 'semestre'));
+         return $pdf->download("Calificaciones-".$qualifications[0]->apprentice->name." ".$qualifications[0]->apprentice->apellido.".pdf");
+        /* return view('qualificationDownload', compact('qualifications', 'semestre')); */
+    }
+
+    public function copiaseguridad()
+    {
+        $securityInforme = session()->get('copiaseguridad');
+        $fecha = Date::now();
+
+        $pdf = Pdf::loadView('copiaseguridadDescarga', compact('securityInforme', 'fecha'));
+        return $pdf->download("Copia Seguridad " . $fecha . " .pdf");
+        /*  return view('copiaseguridadDescarga', compact('securityInforme', 'fecha')); */
+    }
+
+
     public function descarga(Apprentice $aprendiz)
     {
 
@@ -81,10 +102,10 @@ class descargaController extends Controller
         $count = $informes->where('fechaRegistro', $year)->count();
 
         $pdf = Pdf::loadView('descargaInforme', ['aprendiz' => $aprendiz, 'informes' => $informes, 'fecha' => $fecha, 'count' => $count]);
-        
-        return $pdf->download("Informe - $aprendiz->name  $aprendiz->apellido .pdf");
-        
 
-       /*  return view('descargaInforme', compact('informes', 'aprendiz', 'fecha')); */
+        return $pdf->download("Informe - $aprendiz->name  $aprendiz->apellido .pdf");
+
+
+        /*  return view('descargaInforme', compact('informes', 'aprendiz', 'fecha')); */
     }
 }

@@ -7,6 +7,7 @@ use App\Mail\RecordatorioVirtualMail;
 use App\Mail\SendMail;
 use App\Models\Apprentice;
 use App\Models\Informe;
+use App\Models\Teacher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,5 +100,11 @@ class ApprenticeController extends Controller
                 }
             }
         }
+    }
+
+    public function qualification(Teacher $teacher)
+    {
+        $user = Auth::user();
+        return view('layouts.qualification', compact('user', 'teacher'));
     }
 }

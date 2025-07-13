@@ -65,10 +65,23 @@
                             @enderror
                         </div>
                         <div class="conteInput">
-                            <input class="input" type="text" name="nivel" placeholder="Nivel"
-                                value="{{ old('nivel', $aprendiz->nivel) }}">
-                            <label class="label" for="">Nivel</label>
-                            @error('nivel')
+                            @php
+                                $aprendizLevelId = $aprendiz->level->id ?? 0;
+                            @endphp
+
+                            <select class="input" name="nivel_id" id="">
+                                <option value="{{ $aprendizLevelId }}">
+                                    {{ $aprendiz->level->name ?? 'Ingrese el nivel' }}
+                                </option>
+                                @foreach ($levels as $level)
+                                    @if ($level->id != $aprendizLevelId)
+                                        <option value="{{ $level->id }}">{{ $level->name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+
+                            <label class="label" for="">level</label>
+                            @error('level_id')
                                 <small style="color: red">{{ $message }}</small>
                             @enderror
                         </div>
@@ -142,22 +155,22 @@
                                     @enderror
                                 </div>
                             @endif
-                            @endif
-                            <div class="conteInput">
-                                <select class="input" name="becado_id" id="">
-                                    <option value="{{ $aprendiz->becado->id}}">{{ $aprendiz->becado->name ?? 'No'}}
-                                    </option>
-                                    @foreach ($becados as $becado)
-                                        @if ($becado->id != $aprendiz->becado->id)
-                                            <option value="{{ $becado->id }}">{{ $becado->name }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                                <label class="label" for="">Becado</label>
-                                @error('becado_id')
-                                    <small style="color: red">{{ $message }}</small>
-                                @enderror
-                            </div>
+                        @endif
+                        <div class="conteInput">
+                            <select class="input" name="becado_id" id="">
+                                <option value="{{ $aprendiz->becado->id }}">{{ $aprendiz->becado->name ?? 'No' }}
+                                </option>
+                                @foreach ($becados as $becado)
+                                    @if ($becado->id != $aprendiz->becado->id)
+                                        <option value="{{ $becado->id }}">{{ $becado->name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            <label class="label" for="">Becado</label>
+                            @error('becado_id')
+                                <small style="color: red">{{ $message }}</small>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>

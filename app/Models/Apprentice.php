@@ -33,9 +33,24 @@ class Apprentice extends Model
         return $this->hasMany(Asistencia::class);
     }
 
+    public function qualification()
+    {
+        return $this->hasMany(Qualification::class);
+    }
+
     public function becado()
     {
         return $this->belongsTo(Becado::class);
+    }
+
+    public function level()
+    {
+        return $this->belongsTo(Level::class);
+    }
+
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class);
     }
 
     protected $fillable = [
@@ -47,7 +62,6 @@ class Apprentice extends Model
         'telefono',
         'fecha_nacimiento',
         'estado',
-        'nivel',
         'becado_id',
         'imagen',
         'modality_id',
@@ -59,5 +73,6 @@ class Apprentice extends Model
         'descuento',
         'direccion',
         'observacion',
+        'level_id',
     ];
 }

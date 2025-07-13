@@ -21,7 +21,7 @@
         </div>
     </div>
 
-   {{--  <div class="conteFilter">
+    {{--  <div class="conteFilter">
         <div class="typeService rigth">
             <button>Descargar</button>
         </div>
@@ -57,7 +57,8 @@
                             <td>{{ $service->typeService->name }} </td>
                             <td>
                                 <div class="flex">
-                                    <button wire:click="showUpdate({{ $service->id }})" class="update">Actualizar</button>
+                                    <button wire:click="showUpdate({{ $service->id }})"
+                                        class="update">Actualizar</button>
                                 </div>
                             </td>
                             <td>
@@ -65,121 +66,120 @@
                                     <button class="delete" wire:click="delete({{ $service->id }})"
                                         wire:confirm="¿Desea eliminar el servicio?">Eliminar</button>
                             </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td class="center" colspan="7">
+                                <p class="nodatos">No hay datos</p>
+                                <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
+                                    <source src="/videos/video2.mp4" type="">
+                                </video>
+                            </td>
+                        </tr>
+                    @endforelse
+                    <tr class="total">
+                        <td colspan="2">Total:</td>
+                        <td>${{ number_format($suma, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        </tr>
-    @empty
-        <tr>
-            <td class="center" colspan="7">
-                <p class="nodatos">No hay datos</p>
-                <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
-                    <source src="/videos/video2.mp4" type="">
-                </video>
-            </td>
-        </tr>
-        @endforelse
-        <tr class="total">
-            <td colspan="2">Total:</td>
-            <td>${{ number_format($suma, 0, ',', '.') }}</td>
-        </tr>
-        </tbody>
-        </table>
     </div>
-</div>
 
-<div class="conteCreate">
+    <div class="conteCreate">
 
-    @if ($showS)
-        <div class="conteCreateService">
-            <h3>Crear Servicio</h3>
+        @if ($showS)
+            <div class="conteCreateService">
+                <h3>Crear Servicio</h3>
 
-            <div class="conteDivs">
-                <div class="conteInput">
-                    <label for="">Servicio</label>
-                    <input type="text" wire:model="name">
+                <div class="conteDivs">
+                    <div class="conteInput">
+                        <label for="">Servicio</label>
+                        <input type="text" wire:model="name">
+                    </div>
+                    <div class="conteInput">
+                        <label for="">Valor:</label>
+                        <input type="text" wire:model="valor">
+                    </div>
                 </div>
-                <div class="conteInput">
-                    <label for="">Valor:</label>
-                    <input type="text" wire:model="valor">
+                <div class="conteDivs">
+                    <div class="conteInput">
+                        <label for="">Fecha:</label>
+                        <input type="date" wire:model="fecha">
+                    </div>
+                    <div class="conteInput">
+                        <label for="">Categoria:</label>
+                        <select wire:model="type_service_id" id="">
+                            <option value="null" selected hidden>Seleccione...</option>
+                            @forelse ($typeService as $type)
+                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                            @empty
+                                <p>Sin categoria</p>
+                            @endforelse
+                        </select>
+                    </div>
                 </div>
+
+                <button wire:click="saveService">Crear servicio</button>
+
+                <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
+
             </div>
-            <div class="conteDivs">
-                <div class="conteInput">
-                    <label for="">Fecha:</label>
-                    <input type="date" wire:model="fecha">
+        @endif
+
+        @if ($showC)
+            <div class="conteCreateCategory">
+                <h3>Crear Categoria</h3>
+                <div class="conteDivs">
+                    <div class="conteInput">
+                        <label for="">Categoria</label>
+                        <input type="text" wire:model="name">
+                    </div>
                 </div>
-                <div class="conteInput">
-                    <label for="">Categoria:</label>
-                    <select wire:model="type_service_id" id="">
-                        <option value="null" selected hidden>Seleccione...</option>
-                        @forelse ($typeService as $type)
-                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                        @empty
-                            <p>Sin categoria</p>
-                        @endforelse
-                    </select>
-                </div>
+
+                <button wire:click="saveCategory">Crear servicio</button>
+
+                <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
             </div>
+        @endif
 
-            <button wire:click="saveService">Crear servicio</button>
+        @if ($showU)
+            <div class="conteCreateService">
+                <h3>Crear Servicio</h3>
 
-            <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
-
-        </div>
-    @endif
-
-    @if ($showC)
-        <div class="conteCreateCategory">
-            <h3>Crear Categoria</h3>
-            <div class="conteDivs">
-                <div class="conteInput">
-                    <label for="">Categoria</label>
-                    <input type="text" wire:model="name">
+                <div class="conteDivs">
+                    <div class="conteInput">
+                        <label for="">Servicio</label>
+                        <input type="text" wire:model="name">
+                    </div>
+                    <div class="conteInput">
+                        <label for="">Valor:</label>
+                        <input type="text" wire:model="valor">
+                    </div>
                 </div>
+                <div class="conteDivs">
+                    <div class="conteInput">
+                        <label for="">Fecha:</label>
+                        <input type="date" wire:model="fecha">
+                    </div>
+                    <div class="conteInput">
+                        <label for="">Categoria:</label>
+                        <select wire:model="type_service_id" id="">
+                            <option value="null" selected hidden>Seleccione...</option>
+                            @forelse ($typeService as $type)
+                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                            @empty
+                                <p>Sin categoria</p>
+                            @endforelse
+                        </select>
+                    </div>
+                </div>
+
+                <button wire:click="updateService({{ $service_id }})">Actualizar servicio</button>
+
+                <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
+
             </div>
-
-            <button wire:click="saveCategory">Crear servicio</button>
-
-            <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
-        </div>
-    @endif
-
-    @if ($showU)
-        <div class="conteCreateService">
-            <h3>Crear Servicio</h3>
-
-            <div class="conteDivs">
-                <div class="conteInput">
-                    <label for="">Servicio</label>
-                    <input type="text" wire:model="name">
-                </div>
-                <div class="conteInput">
-                    <label for="">Valor:</label>
-                    <input type="text" wire:model="valor">
-                </div>
-            </div>
-            <div class="conteDivs">
-                <div class="conteInput">
-                    <label for="">Fecha:</label>
-                    <input type="date" wire:model="fecha">
-                </div>
-                <div class="conteInput">
-                    <label for="">Categoria:</label>
-                    <select wire:model="type_service_id" id="">
-                        <option value="null" selected hidden>Seleccione...</option>
-                        @forelse ($typeService as $type)
-                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                        @empty
-                            <p>Sin categoria</p>
-                        @endforelse
-                    </select>
-                </div>
-            </div>
-
-            <button wire:click="updateService({{$service_id}})">Actualizar servicio</button>
-
-            <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
-
-        </div>
-    @endif
-</div>
+        @endif
+    </div>
 </div>

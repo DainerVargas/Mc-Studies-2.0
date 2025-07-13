@@ -5,58 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Informe de los estudiantes</title>
-    {{-- <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .descarga {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #f1f1f1;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-        }
-        .container {
-            width: 100%;
-            margin: 0 auto;
-        }
-        .content {
-            padding: 20px;
-        }
-        .tableInforme {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .tableInforme th,
-        .tableInforme td {
-            border: 1px solid #ccc;
-            padding: 8px 12px;
-            text-align: center;
-        }
-        .tableInforme th {
-            background-color: #009C91;
-            color: white;
-        }
-        .tableInforme tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-        }
-        .nodatos {
-            text-align: center;
-            color: red;
-        }
-        .totalRow {
-            font-weight: bold;
-        }
-    </style> --}}
 </head>
 <body>
     <main>

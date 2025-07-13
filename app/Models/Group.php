@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Group extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'teacher_id',
@@ -18,6 +18,10 @@ class Group extends Model
     public function asistencias()
     {
         return $this->hasMany(Asistencia::class);
+    }
+    public function qualification()
+    {
+        return $this->hasMany(Qualification::class);
     }
 
     public function teacher()

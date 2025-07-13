@@ -2,6 +2,7 @@
     <div class="links">
         <a wire:click="activar(1)" class="activea{{ $active }}">Aprendices</a>
         <a wire:click="activar(2)" class="activep{{ $active }}">Profesores</a>
+        <a wire:click="activar(3)" class="active{{ $active }}">Copia de seguridad</a>
     </div>
     @if ($active == 1)
         <div class="conteFiltro">
@@ -39,18 +40,24 @@
                 </div>
 
                 <div class="mes">
-                    <select wire:model.live="modulo" title="Filtrar por modulo">
-                        <option value="" selected="">Módulo</option>
-                        <option value="1">Módulo 1</option>
-                        <option value="2">Módulo 2</option>
-                    </select>
-                </div>
-                <div class="mes">
                     <select wire:model.live="estado" title="Filtrar por estado">
                         <option value="0" selected="">Todos</option>
                         <option value="1">Pagado</option>
                         <option value="2">Pendiente</option>
                     </select>
+                </div>
+                <div class="new_modulo">
+                    <div style="cursor: pointer" class="contelink"
+                        wire:confirm="Estas seguro?, Se guardará la información para luego eliminar la información del informe."
+                        wire:click="saveInforme">
+                        Nuevo Módulo
+
+                    </div>
+                    {{-- <select wire:model.live="modulo" title="Filtrar por modulo">
+                        <option value="" selected="">Módulo</option>
+                        <option value="1">Módulo 1</option>
+                        <option value="2">Módulo 2</option>
+                    </select> --}}
                 </div>
 
                 <div class="contelink">
@@ -238,7 +245,8 @@
                                     @endphp
                                     <td>
                                         <div class="flex">
-                                            {{ $fecha }} <span wire:click="aumentar({{ $informe->id }})"
+                                            {{ $fecha }} <span
+                                                wire:click="aumentar({{ $informe->id }})"
                                                 class="material-symbols-outlined editar" title="Actualizar fecha">
                                                 edit
                                             </span>
@@ -397,7 +405,189 @@
                 </form>
             </div>
         @endif
-    @else
+    @elseif($active == 2)
         @livewire('tinforme')
+    @else
+        <div class="conteFiltro">
+            <form>
+                <div class="conteInput">
+                    <label for="filtro">Filtra por el nombre del Estudiante</label>
+                    <input type="text" wire:model.live="nameApprentice" placeholder="Nombre del estudiante">
+                </div>
+                <div class="mes">
+                    <select wire:model.live="month" title="Filtrar por mes">
+                        <option value="00" selected="">Mes</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+
+                <div class="year">
+                    <span class="material-symbols-outlined" wire:click="previous">
+                        skip_previous
+                    </span>
+                    <p>{{ $yearCopia }}</p>
+                    <span class="material-symbols-outlined" wire:click="next">
+                        skip_next
+                    </span>
+                </div>
+                <div class="new_modulo mes">
+                    {{-- <div style="cursor: pointer" class="contelink"
+                        wire:confirm="Estas seguro?, Se guardará la información para luego eliminar la información del informe."
+                        wire:click="saveInforme">
+                        Nuevo Módulo
+
+                    </div> --}}
+                    <select wire:model.live="module" title="Filtrar por modulo">
+                        <option value="" selected="">Módulo</option>
+                        <option value="1">Módulo 1</option>
+                        <option value="2">Módulo 2</option>
+                    </select>
+                </div>
+
+                <div class="contelink">
+                    <a style="cursor: pointer" wire:click="donwload"> Descargar Informe
+                        <span class="material-symbols-outlined" title="Descargar documento">
+                            download
+                        </span>
+                    </a>
+                </div>
+            </form>
+        </div>
+        <div class="containerConte">
+            <div class="conteTable">
+                <table class="tableInforme">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Acudiente</th>
+                            <th>Estudiante</th>
+                            <th>Becado</th>
+                            <th>Valor Modulo</th>
+                            <th>Descuento</th>
+                            <th>Abono</th>
+                            <th>Pendiente</th>
+                            <th>Plataforma de Pago</th>
+                            <th>Fecha</th>
+                            <th>Comprobante</th>
+                            <th>Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $totalModulos = 0;
+                            $totalAbono = 0;
+                            $totalDescuento = 0;
+                            $totalPendiente = 0;
+                            $totalplataforma = 0;
+                        @endphp
+
+                        @forelse ($securityInforme as $key => $informe)
+                            @php
+                                $totalModulos += $informe->valor;
+                                $totalAbono += $informe->abono;
+                                $totalDescuento += $informe->descuento;
+                                $totalPendiente += $informe->pendiente;
+                                $totalplataforma += $informe->plataforma;
+                            @endphp
+
+                            <tr>
+                                <td>
+                                    {{ $key + 1 }}
+                                </td>
+                                <td class="relative">
+                                    {{ $informe->acudiente }}
+                                </td>
+                                <td>
+                                    {{ $informe->estudiante }}
+                                </td>
+                                <td class="relative">
+                                    {{ $informe->becado }}
+                                </td>
+                                <td>$
+                                    {{ number_format($informe->valor, 0, ',', '.') }}
+                                </td>
+                                <td>
+                                    <div class="flex">
+                                        ${{ number_format($informe->descuento, 0, ',', '.') }}
+                                    </div>
+                                </td>
+                                <td>
+                                    ${{ number_format($informe->abono, 0, ',', '.') }}
+                                </td>
+                                <td>${{ number_format($informe->pendiente, 0, ',', '.') }}
+                                </td>
+                                <td>${{ number_format($informe->plataforma, 0, ',', '.') }}
+                                </td>
+                                <td>
+                                    {{ $informe->fecha ?? 'Sin fecha' }}
+                                </td>
+                                @php
+                                    $extension = pathinfo($informe->comprobante, PATHINFO_EXTENSION);
+                                @endphp
+                                <td>
+                                    {{-- @if ($extension != 'pdf')
+                                    <div style="cursor: pointer" wire:click="show({{ $informe->id }})"
+                                     class="flex">
+                                                <span class="material-symbols-outlined">
+                                                    eye_tracking
+                                                </span>
+                                                <label>Mostrar</label>
+                                            </div>
+
+                                            @else
+                                            No hay Comprobante
+                                        @endif
+                                    @else --}}
+                                    @if ($extension)
+                                        <a href="{{ asset('users/' . $informe->comprobante) }}"
+                                            download="Comprobante de pago-{{ $informe->estudiante }}">
+                                            <div class="flex">
+                                                <label>Descargar <span class="material-symbols-outlined">
+                                                        play_for_work
+                                                    </span></label>
+                                            </div>
+                                        </a>
+                                    @else
+                                        No hay Comprobante
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="flex">{{ $informe->observacion }}
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="12">
+                                    <p class="nodatos">No hay datos</p>
+                                    <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
+                                        <source src="/videos/video2.mp4" type="">
+                                    </video>
+                                </td>
+                            </tr>
+                        @endforelse
+                        <td colspan="4">Total: </td>
+                        <td>${{ number_format($totalModulos, 0, ',', '.') }}</td>
+                        <td>${{ number_format($totalDescuento, 0, ',', '.') }}</td>
+                        <td>${{ number_format($totalAbono, 0, ',', '.') }}</td>
+                        <td>${{ number_format($totalPendiente, 0, ',', '.') }}</td>
+                        <td>${{ number_format($totalplataforma, 0, ',', '.') }}</td>
+                        <td colspan="3">
+                            ${{ number_format($totalplataforma + $totalModulos, 0, ',', '.') }}</td>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     @endif
 </div>

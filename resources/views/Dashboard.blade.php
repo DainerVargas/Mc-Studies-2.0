@@ -64,13 +64,13 @@
                 <a href="{{ route('historial') }}" class="{{ $validat ? 'active' : '' }}">Historial</a>
 
                 @if ($user->rol_id == 1)
-                @php
-                    if (request()->routeIs('servicios') == true) {
-                        $validat = true;
-                    } else {
-                        $validat = false;
-                    }
-                @endphp
+                    @php
+                        if (request()->routeIs('servicios') == true) {
+                            $validat = true;
+                        } else {
+                            $validat = false;
+                        }
+                    @endphp
                     <a href="{{ route('servicios') }}" class="{{ $validat ? 'active' : '' }}">Servicios</a>
                 @endif
             @else
@@ -81,7 +81,17 @@
                         $validat = false;
                     }
                 @endphp
-                <a href="{{ route('asistencias', $user->teacher_id) }}" class="{{ $validat ? 'active' : '' }}">Registro de Asistencia</a>
+                <a href="{{ route('asistencias', $user->teacher_id) }}"
+                    class="{{ $validat ? 'active' : '' }}">Registro de Asistencia</a>
+                @php
+                    if (request()->routeIs('qualification') == true) {
+                        $validat = true;
+                    } else {
+                        $validat = false;
+                    }
+                @endphp
+                <a href="{{ route('qualification', $user->teacher_id) }}"
+                    class="{{ $validat ? 'active' : '' }}">Registro de calificaciones</a>
             @endif
         </div>
         <div class="conteUsuario">
@@ -114,6 +124,7 @@
         @yield('asistencia')
         @yield('servicios')
         @yield('send')
+        @yield('qualification')
     </main>
 
 </body>

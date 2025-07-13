@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             TeacherSeeder::class,
             GroupSeeder::class,
             BecadoSeeder::class,
+            LevelSeeder::class,
             ApprenticeSeeder::class,
             InformeSeeder::class,
             TinformeSeeder::class,

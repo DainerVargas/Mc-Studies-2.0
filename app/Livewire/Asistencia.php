@@ -148,25 +148,24 @@ class Asistencia extends Component
             );
         }
 
-        return redirect('Resgistro-Asistencias/'. $this->teacher->id);
+        return redirect('Resgistro-Asistencias/' . $this->teacher->id);
     }
 
     public function descarga()
     {
         $asistencias = Asistent::with('apprentice')
-        ->where('teacher_id', $this->teacher->id)
-        ->where('fecha', $this->date)
-        ->where('group_id', $this->selectGrupo)
-        ->get();
+            ->where('teacher_id', $this->teacher->id)
+            ->where('fecha', $this->date)
+            ->where('group_id', $this->selectGrupo)
+            ->get();
 
-    
-   /*  $pdf = Pdf::loadView('descargaAsistencia', ['asistencias' => $asistencias]);
+
+        /*  $pdf = Pdf::loadView('descargaAsistencia', ['asistencias' => $asistencias]);
     
     return $pdf->download("Registro_Asistencia.pdf"); */
-    dd($asistencias);
+        dd($asistencias);
 
-   return view('descargaAsistencia' , compact('asistencias'));
-    
+        return view('descargaAsistencia', compact('asistencias'));
     }
 
     public function render()

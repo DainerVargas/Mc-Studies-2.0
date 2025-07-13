@@ -118,3 +118,9 @@ Route::get('Enviar-Email', [ApprenticeController::class, 'sendEmail'])->middlewa
 
 Route::get('Enviando email', [ApprenticeController::class, 'send'])->middleware('auth')->name('send');
 
+/* qualification */
+Route::get('Calificación/{teacher}', [ApprenticeController::class, 'qualification'])->middleware('auth')->name('qualification');
+
+Route::get('Calificación/download/informe', [DescargaController::class, 'qualificationDownload'])->middleware('auth')->name('qualificationDownload');
+
+Route::get('Copia-Seguridad', [DescargaController::class, 'copiaseguridad'])->middleware('auth')->name('copiaseguridad');
