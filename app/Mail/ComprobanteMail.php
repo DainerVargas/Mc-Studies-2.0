@@ -24,7 +24,6 @@ class ComprobanteMail extends Mailable
         $this->periodo = $periodo;
     }
 
-
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -34,17 +33,17 @@ class ComprobanteMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Comprobante de Pago')->view('emails.comprobante')
-            ->with([
-                'teacher' => $this->teacher,
-                'valor' => $this->valor,
-                'periodo' => $this->periodo,
+        return $this->subject('Comprobante de Pago')->view('emails.send-mail')
+            ->with(
+                [
+                    'asunto' => $this->teacher,
+                    'text' => $this->valor,
+                    'periodo' => $this->periodo,
                 ]
             );
     }
 
     /**
-
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array

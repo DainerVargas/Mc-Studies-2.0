@@ -5,17 +5,45 @@ namespace App\Livewire;
 use App\Models\Service;
 use App\Models\typeService;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 class Servicios extends Component
 {
+    use WithFileUploads;
+
     public $showS = false, $showC = false;
-    public $type = 'null', $nameService = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $service_id;
+    public $type = 'null', $nameService = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $date = '';
 
     public function mount()
     {
         $this->fecha = now()->format('Y-m-d');
         $this->services = Service::all();
         $this->typeService = typeService::all();
+    }
+
+    public $comprobante, $service_id;
+
+    public function setServiceIdAndSave($id)
+    {
+        $this->service_id = $id;
+    }
+
+    public function updatedComprobante()
+    {
+        $this->validate([
+            'comprobante' => 'required|mimes:pdf,jpg,jpeg,png',
+        ]);
+
+        $filePath = $this->comprobante->store('comprobantes', 'public');
+        $service = Service::find($this->service_id);
+        if ($service) {
+            $service->comprobante = $filePath;
+            $service->save();
+        }
+
+        $this->comprobante = null;
+
+        session()->flash('message', 'Comprobante guardado con éxito.');
     }
 
     public function showService()
@@ -76,7 +104,6 @@ class Servicios extends Component
             $this->showU = false;
             $this->service_id = '';
         }
-
     }
 
     public function saveService()
@@ -139,6 +166,15 @@ class Servicios extends Component
 
         if ($this->type != 'null') {
             $query->where('type_service_id', '=', $this->type);
+        }
+
+        if ($this->type != 'null') {
+            $query->where('type_service_id', '=', $this->type);
+        }
+        if (!empty($this->date)) {
+            $fecha = \Carbon\Carbon::parse($this->date);
+            $query->whereYear('fecha', $fecha->year)
+                ->whereMonth('fecha', $fecha->month);
         }
 
         $this->services = $query->get();

@@ -2,16 +2,21 @@
 
 namespace App\Livewire;
 
+use App\Mail\SendMail;
 use App\Models\Apprentice;
 use App\Models\Group;
 use App\Models\Message;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class SendEmail extends Component
 {
+    use  WithFileUploads;
+
     public $estudiantes, $hidden = false, $hidden2 = false, $messages, $groups, $selectEstudents = [], $check = false;
 
-    public $asunto, $text, $message, $group = 'false', $name, $selects;
+    public $asunto, $text, $message, $group = 'false', $name, $selects, $documento;
 
     public function mount()
     {
@@ -51,7 +56,6 @@ class SendEmail extends Component
 
     public function delete(Message $message)
     {
-
         $message->delete();
         $this->messages = Message::all();
     }
@@ -80,13 +84,23 @@ class SendEmail extends Component
 
     public function send()
     {
-
         if ($this->asunto != '' && $this->text != '' && $this->selectEstudents != []) {
-            session()->flash('asunto', $this->asunto);
-            session()->flash('text', $this->text);
-            session()->flash('selectEstudents', $this->selectEstudents);
 
-            return redirect()->route('send');
+            $documento = $this->documento->store('', 'public');
+
+            $estudiantes = Apprentice::whereIn('id', $this->selectEstudents)->get();
+
+            foreach ($estudiantes as $estudiant) {
+                try {
+                    $email = $estudiant->edad >= 18 ? $estudiant->email : $estudiant->attendant->email;
+                    Mail::to($email)->send(new SendMail($this->asunto, $this->text, $documento));
+                } catch (\Throwable $th) {
+
+                    return redirect()->route('sendEmail')->with('error', 'Ha ocurrido un error');
+                }
+            }
+
+            return redirect()->route('sendEmail')->with('success', 'Emails enviados satisfactoriamente');
         } else {
             dd('llena los campos');
         }

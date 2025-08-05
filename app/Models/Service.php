@@ -13,6 +13,7 @@ class Service extends Model
         'name',
         'fecha',
         'valor',
+        'combrobante',
         'type_service_id',
     ];
 

@@ -132,7 +132,7 @@ class InfoTeacher extends Component
             $acount->type_account = $this->type_account;
             $acount->number = $this->number_account;
             $acount->save();
-        }else{
+        } else {
 
             Account::create([
                 'name' => $this->name_acount,

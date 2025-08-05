@@ -66,10 +66,15 @@ class descargaController extends Controller
     {
         $qualifications = session()->get('qualifications');
         $semestre = session()->get('number');
-
-         $pdf = Pdf::loadView('qualificationDownload', compact('qualifications', 'semestre'));
-         return $pdf->download("Calificaciones-".$qualifications[0]->apprentice->name." ".$qualifications[0]->apprentice->apellido.".pdf");
-        /* return view('qualificationDownload', compact('qualifications', 'semestre')); */
+        if ($semestre == 'Final') {
+            $pdf = Pdf::loadView('qualificationDownload', compact('qualifications', 'semestre'));
+            return $pdf->download("Calificaciones-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
+        } elseif ($semestre == 'Primer') {
+            $pdf = Pdf::loadView('qualificationFirst', compact('qualifications', 'semestre'));
+            return $pdf->download("Reporte-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
+        } elseif ($semestre == 'Segundo') {
+        }
+        /* return view('qualificationFirst', compact('qualifications', 'semestre')); */
     }
 
     public function copiaseguridad()

@@ -79,27 +79,22 @@ class ApprenticeController extends Controller
         $asunto = session()->get('asunto');
         $text = session()->get('text');
         $selectEstudents = session()->get('selectEstudents');
+        $documento = session()->get('documento');
 
         $estudiantes = Apprentice::whereIn('id', $selectEstudents)->get();
 
         foreach ($estudiantes as $estudiant) {
+            try {
+                $email = $estudiant->edad >= 18 ? $estudiant->email : $estudiant->attendant->email;
+                Mail::to('dainer2607@gmail.com')->send(new SendMail($asunto, $text, $documento));
+                
+            } catch (\Throwable $th) {
 
-            if ($estudiant->edad >= 18) {
-                $email = $estudiant->email;
-            } else {
-                $email = $estudiant->attendant->email;
-            }
-
-
-            if (!empty($email)) {
-                try {
-                    Mail::to($email)->send(new SendMail($asunto, $text));
-                    return redirect()->route('sendEmail')->with('success', 'Email enviado satisfactoriamente');
-                } catch (\Throwable $th) {
-                    return redirect()->route('sendEmail')->with('error', 'Ha ocurrido un error');
-                }
+                return redirect()->route('sendEmail')->with('error', 'Ha ocurrido un error');
             }
         }
+
+        return redirect()->route('sendEmail')->with('success', 'Emails enviados satisfactoriamente');
     }
 
     public function qualification(Teacher $teacher)

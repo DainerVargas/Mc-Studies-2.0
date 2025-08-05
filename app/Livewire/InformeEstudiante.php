@@ -339,9 +339,12 @@ class InformeEstudiante extends Component
 		}
 
 		$this->totalModulos = $this->informes->sum(function ($informe) {
-			return optional($informe->apprentice)->becado_id != 1 && optional($informe->apprentice)->estado == 1
-				? optional($informe->apprentice)->valor ?? 0
-				: 0;
+			$apprentice = optional($informe->apprentice);
+
+			if ($apprentice->becado_id != 1 && $apprentice->estado == 1) {
+				return optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
+			}
+			return 0;
 		});
 
 		$this->totalDescuento = $this->informes->sum(function ($informe) {
@@ -351,10 +354,18 @@ class InformeEstudiante extends Component
 		});
 
 		$this->totalPendiente = $this->informes->sum(function ($informe) {
-			return optional($informe->apprentice)->becado_id != 1 && optional($informe->apprentice)->estado == 1
-				? (optional($informe->apprentice)->valor ?? 0) - (optional($informe->apprentice)->descuento ?? 0) - $informe->total_abonos
-				: 0;
+			$apprentice = optional($informe->apprentice);
+
+			if ($apprentice->becado_id != 1 && $apprentice->estado == 1) {
+				$valor = optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
+				$descuento = $apprentice->descuento ?? 0;
+
+				return $valor - $descuento - $informe->total_abonos;
+			}
+
+			return 0;
 		});
+
 
 		$this->securityInformes();
 

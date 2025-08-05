@@ -155,7 +155,7 @@
                                     @endphp
                                     @if ($informe->apprentice->becado_id != 1)
                                         <td>$
-                                            {{ number_format($valorModulo - $informe->apprentice->descuento, 0, ',', '.') }}
+                                            {{ number_format($valorModulo , 0, ',', '.') }}
                                         </td>
                                     @else
                                         <td>$

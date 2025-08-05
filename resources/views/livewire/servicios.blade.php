@@ -7,6 +7,10 @@
             <label for="">Buscar servicio</label>
             <input type="text" wire:model.live="nameService" placeholder="Buscar servicios">
         </div>
+        <div class="conteInput">
+            <label for="">Fecha</label>
+            <input style="width: 200px" type="date" wire:model.live="date">
+        </div>
         <div class="typeService">
             <select wire:model.live="type" id="">
                 <option value="null" selected>Seleccione...</option>
@@ -37,6 +41,7 @@
                         <th>valor</th>
                         <th>fecha</th>
                         <th>Categoria</th>
+                        <th>Comprobante</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
                     </tr>
@@ -55,6 +60,30 @@
                             @endphp
                             <td>{{ $service->fecha }} </td>
                             <td>{{ $service->typeService->name }} </td>
+                            @php
+                                $extension = pathinfo($service->comprobante, PATHINFO_EXTENSION);
+                            @endphp
+                            <td>
+                                @if ($extension)
+                                    <a style="text-decoration: none; color: #99BF51" href="{{ asset('users/' . $service->comprobante) }}"
+                                        download="Comprobante de servicio-{{ $service->name }}">
+                                        <div class="flex">
+                                            <label style="cursor: pointer;">Descargar
+                                                <span class="material-symbols-outlined">
+                                                    play_for_work
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </a>
+                                @else
+                                    <label style="cursor: pointer" wire:change="setServiceIdAndSave({{ $service->id }})">Cargar
+                                        <span class="material-symbols-outlined">
+                                            upload_file
+                                        </span>
+                                        <input type="file" wire:model="comprobante" hidden>
+                                    </label>
+                                @endif
+                            </td>
                             <td>
                                 <div class="flex">
                                     <button wire:click="showUpdate({{ $service->id }})"

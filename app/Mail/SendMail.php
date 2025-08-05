@@ -5,6 +5,7 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -13,20 +14,21 @@ class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $asunto, $text;
+    public $asunto, $text, $documento;
 
-    public function __construct($asunto, $text)
+    public function __construct($asunto, $text, $documento)
     {
         $this->asunto = $asunto;
         $this->text = $text;
+        $this->documento = $documento;
     }
 
     public function build()
     {
         return $this->subject($this->asunto)->view('emails.send-mail')
-        ->with(['text' => $this->text, 'asunto' => $this->asunto]);
+            ->with(['text' => $this->text, 'asunto' => $this->asunto]);
     }
- 
+
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -37,8 +39,13 @@ class SendMail extends Mailable
     /**
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
+
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromPath(public_path('users/' . $this->documento))
+                ->as(basename($this->documento))
+                ->withMime('application/pdf'),
+        ];
     }
 }

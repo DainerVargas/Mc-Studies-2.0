@@ -104,6 +104,8 @@
                 <textarea placeholder="Mensaje:" wire:model="text"></textarea>
             </div>
             <div class="conteBtn">
+                <input type="file" wire:model="documento">
+                <br>
                 <button wire:click="send">Enviar</button>
             </div>
         </div>
