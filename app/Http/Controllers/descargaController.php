@@ -66,13 +66,15 @@ class descargaController extends Controller
     {
         $qualifications = session()->get('qualifications');
         $semestre = session()->get('number');
-        if ($semestre == 'Final') {
+        if ($semestre == 'Final' || $semestre == 'Tercer') {
             $pdf = Pdf::loadView('qualificationDownload', compact('qualifications', 'semestre'));
             return $pdf->download("Calificaciones-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
         } elseif ($semestre == 'Primer') {
             $pdf = Pdf::loadView('qualificationFirst', compact('qualifications', 'semestre'));
             return $pdf->download("Reporte-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
         } elseif ($semestre == 'Segundo') {
+            $pdf = Pdf::loadView('qualificationSecond', compact('qualifications', 'semestre'));
+            return $pdf->download("Reporte-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
         }
         /* return view('qualificationFirst', compact('qualifications', 'semestre')); */
     }

@@ -140,9 +140,9 @@
                     <button class="buttonsave" class="btn btn-success mt-3" wire:click="guardarNotas">
                         Actualizar
                     </button>
-                    <button class="buttonsave" style="background-color: red; color: white; border: 1px solid red;" wire:click="deleteNotas">
+                    <button class="buttonsave" style="background-color: red; color: white; border: 1px solid red;" wire:click="deleteNotas" wire:confirm="¿Estás seguro que deseas eliminar estas notas?">
                         Eliminar
-                    </button>
+                    </button>1
                 </div>
             @else
                 <button class="buttonsave" class="btn btn-success mt-3" wire:click="guardarNotas">
