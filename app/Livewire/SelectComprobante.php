@@ -25,9 +25,9 @@ class SelectComprobante extends Component
     public $nameAcudiente;
     public $apellidoAcudiente;
     public $documentoAcudiente;
-    public $telefonoAcudiente; 
+    public $telefonoAcudiente;
     public $emailAcudiente;
-    public $modality_id;
+    public $modality_id, $sede_id;
     public $imagen;
     public $comprobante;
     public $success, $error;
@@ -56,6 +56,7 @@ class SelectComprobante extends Component
             'apellido' => 'required',
             'edad' => 'required',
             'direccion' => 'required',
+            'sede_id' => 'required',
             'fecha_nacimiento' => 'required',
             'modality_id' => 'required',
             'comprobante' => 'nullable'
@@ -65,6 +66,7 @@ class SelectComprobante extends Component
             'apellido.required' => 'El apellido es requerido',
             'edad.required' => 'La edad es requerida',
             'direccion.required' => 'La dirección es requerida',
+            'sede_id.required' => 'La sede es requerida',
             'fecha_nacimiento.required' => 'La fecha de nacimiento es requerida',
 
             'nameAcudiente.required' => 'El nombre del acudiente es requerido',
@@ -159,6 +161,7 @@ class SelectComprobante extends Component
             'fechaPlataforma' => Date::now()->year,
             'attendant_id' => $acudienteID,
             'modality_id' => $this->modality_id,
+            'sede_id' => $this->sede_id,
         ]);
 
         Informe::create([
@@ -180,7 +183,6 @@ class SelectComprobante extends Component
             Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($aprendiz)); */
 
             Mail::to('dainer2607@gmail.com')->send(new ConfirmacionMail($aprendiz));
-            
         } catch (\Throwable $th) {
             return redirect('Registrate')->with('messageError', 'Hubo un erorr. Por favor revisa tu conexion.');
         }
@@ -190,7 +192,6 @@ class SelectComprobante extends Component
 
     public function stores()
     {
-
         $this->validacion();
 
         if ($this->modality_id == 3) {
@@ -225,6 +226,7 @@ class SelectComprobante extends Component
             'estado' => 0,
             'modality_id' => $this->modality_id,
             'precio' => $this->precio,
+            'sede_id' => $this->modality_id,
         ]);
 
         try {

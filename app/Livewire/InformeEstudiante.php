@@ -17,7 +17,7 @@ class InformeEstudiante extends Component
 	public $filtro = '';
 	public $aprendices, $aprendizArray, $securityInforme;
 	public $vista = 0;
-	public $year, $module, $month, $nameApprentice = '', $yearCopia;
+	public $year, $module, $month, $nameApprentice = '', $yearCopia, $sede_id = '';
 
 	public function mount()
 	{
@@ -280,6 +280,12 @@ class InformeEstudiante extends Component
 						$query->whereMonth('fecha_inicio', '>=', 7);
 					});
 				}
+			});
+		}
+
+		if(!empty($this->sede_id)) {
+			$query->whereHas('apprentice', function ($subQuery) {
+				$subQuery->where('sede_id', $this->sede_id);
 			});
 		}
 

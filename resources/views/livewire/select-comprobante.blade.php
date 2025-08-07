@@ -46,6 +46,17 @@
                     <small class="errors" style="color red">{{ $message }}</small>
                 @enderror
             </div>
+            <div class="conteInput">
+                <label for="" class="labels">Sede</label>
+                <select wire:model="sede_id" id="" style="height: 30px; width: 230px; border-radius: 5px; padding: 5px; border: 1px solid #c4c4c4; background-color: #fff;">
+                    <option selected hidden value="">Selecciona....</option>
+                    <option value="1">Fonseca</option>
+                    <option value="2">San Juan</option>
+                </select>
+                @error('sede_id')
+                    <small class="errors" style="color red">{{ $message }}</small>
+                @enderror
+            </div>
         </div>
         @if ($edad >= 18)
             <div class="containerContents top">

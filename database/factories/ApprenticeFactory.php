@@ -6,6 +6,7 @@ use App\Models\Attendant;
 use App\Models\Becado;
 use App\Models\Level;
 use App\Models\Modality;
+use App\Models\Sede;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -37,7 +38,8 @@ class ApprenticeFactory extends Factory
             'telefono' => $this->faker->phoneNumber(),
             'Attendant_id' => Attendant::pluck('id')->random(),
             'modality_id' => Modality::pluck('id')->random(),
-            'group_id' => fake()->randomElement([1,2])
+            'group_id' => fake()->randomElement([1,2]),
+            'sede_id' => Sede::pluck('id')->random(),
         ];
     }
 }

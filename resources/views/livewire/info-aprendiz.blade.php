@@ -94,6 +94,7 @@
                 <p>Dirección:
                     <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : 'No hay dirección' }}</span>
                 </p>
+                <p>Sede: <span>{{ $aprendiz->sede->sede }}</span> </p>
                 @if ($aprendiz->edad > 17)
                     <p>Documento: <span>{{ $aprendiz->documento ?? 'No hay documento' }}</span></p>
                 @endif

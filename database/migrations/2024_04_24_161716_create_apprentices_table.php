@@ -6,6 +6,7 @@ use App\Models\Comprobante;
 use App\Models\Group;
 use App\Models\Level;
 use App\Models\Modality;
+use App\Models\Sede;
 use App\Models\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,7 +14,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up(): void
     {
         Schema::create('apprentices', function (Blueprint $table) {
@@ -40,6 +40,7 @@ return new class extends Migration
             $table->foreignIdFor(Attendant::class)->constrained()->nullable();
             $table->foreignIdFor(Modality::class)->constrained();
             $table->foreignIdFor(Group::class)->nullable()->constrained();
+            $table->foreignIdFor(Sede::class)->nullable()->constrained();
             $table->timestamps();
         });
     }

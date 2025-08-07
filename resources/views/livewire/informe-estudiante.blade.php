@@ -6,10 +6,17 @@
     </div>
     @if ($active == 1)
         <div class="conteFiltro">
-            <form>
+            <form style="display: flex; gap: 10px; align-items: center; width: 90%;">
                 <div class="conteInput">
                     <label for="filtro">Filtra por el nombre del Estudiante</label>
-                    <input type="text" wire:model.live="filtro" placeholder="Nombre del estudiante">
+                    <input type="text" wire:model.live="filtro" placeholder="Nombre del estudiante" style="width: 200px">
+                </div>
+                <div class="mes">
+                    <select wire:model.live="sede_id" title="Filtrar por mes">
+                        <option value="" selected>Sedes</option>
+                        <option value="1">Fonseca</option>
+                        <option value="2">San Juan</option>
+                    </select>
                 </div>
                 <div class="mes">
                     <select wire:model.live="mes" title="Filtrar por mes">
@@ -46,7 +53,7 @@
                         <option value="2">Pendiente</option>
                     </select>
                 </div>
-                <div class="new_modulo">
+                <div class="new_modulo" style="width:170px">
                     <div style="cursor: pointer" class="contelink"
                         wire:confirm="Estas seguro?, Se guardará la información para luego eliminar la información del informe."
                         wire:click="saveInforme">
@@ -60,7 +67,7 @@
                     </select> --}}
                 </div>
 
-                <div class="contelink">
+                <div class="contelink" style="width: 250px">
                     <a href="{{ route('descargar', $mes) }}"> Descargar Informe
                         <span class="material-symbols-outlined" title="Descargar documento">
                             download
@@ -141,7 +148,7 @@
                                         </a>
                                     </td>
                                     <td class="relative">
-                                        {{ $informe->apprentice->becado->name }}
+                                        {{ $informe->apprentice->becado->name ?? 'N/A' }}
                                     </td>
 
                                     @php
@@ -245,8 +252,8 @@
                                     @endphp
                                     <td>
                                         <div class="flex">
-                                            {{ $fecha }} <span
-                                                wire:click="aumentar({{ $informe->id }})"
+                                            {{ $fecha }} <span 
+                                            wire:click="aumentar({{ $informe->id }})"
                                                 class="material-symbols-outlined editar" title="Actualizar fecha">
                                                 edit
                                             </span>

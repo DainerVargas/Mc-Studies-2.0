@@ -23,6 +23,10 @@ class Apprentice extends Model
     {
         return $this->belongsTo(Group::class);
     }
+    public function sede()
+    {
+        return $this->belongsTo(Sede::class);
+    }
     public function informe()
     {
         return $this->hasMany(Informe::class);
@@ -74,5 +78,6 @@ class Apprentice extends Model
         'direccion',
         'observacion',
         'level_id',
+        'sede_id',
     ];
 }
