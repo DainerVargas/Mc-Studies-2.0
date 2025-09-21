@@ -3329,6 +3329,12 @@ $gris: #959595;
         border-radius: 7px;
       }
 
+      .column{
+        @include funciones.flex(center);
+        flex-direction: column;
+        gap: 5px;
+      }
+      
       button {
         height: 2.2vw;
         width: 12vw;

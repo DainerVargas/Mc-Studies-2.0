@@ -12,6 +12,7 @@ class Pago extends Model
         'metodo_pago_id',
         'dinero', // 'ingreso' o 'egreso'
         'created_at',
+        'egresado',
     ];
     public function apprentice()
     {

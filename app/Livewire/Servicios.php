@@ -241,12 +241,21 @@ class Servicios extends Component
     public function createPay($id = null)
     {
         $this->validate([
-            'idEstudentCreate' => 'required',
             'montoCreate' => 'required|numeric',
             'dateCreate' => 'required',
             'metodoCreate' => 'required',
             'dineroCreate' => 'required',
         ]);
+
+        if ($this->dineroCreate == 'Egresado') {
+            $this->validate([
+                'search' => 'required',
+            ]);
+        } else {
+            $this->validate([
+                'idEstudentCreate' => 'required',
+            ]);
+        }
 
         $pay = Pago::find($id);
 
@@ -256,6 +265,7 @@ class Servicios extends Component
             $pay->created_at = $this->dateCreate;
             $pay->metodo_pago_id = $this->metodoCreate;
             $pay->dinero = $this->dineroCreate;
+            $pay->egresado = $this->search;
             $pay->save();
         } else {
             Pago::create([
@@ -264,6 +274,7 @@ class Servicios extends Component
                 'created_at' => $this->dateCreate,
                 'metodo_pago_id' => $this->metodoCreate,
                 'dinero' => $this->dineroCreate,
+                'egresado' => $this->search,
             ]);
         }
         $this->pagos = Pago::all();
@@ -272,6 +283,11 @@ class Servicios extends Component
         $this->showU = false;
     }
 
+    public function donwload(){
+
+        session()->put('pagos', $this->pagos);
+        return redirect()->route('informe.caja',);
+    }
     public function render()
     {
         $query = Service::query();

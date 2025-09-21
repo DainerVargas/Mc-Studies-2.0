@@ -124,3 +124,5 @@ Route::get('Calificación/{teacher}', [ApprenticeController::class, 'qualificati
 Route::get('Calificación/download/informe', [DescargaController::class, 'qualificationDownload'])->middleware('auth')->name('qualificationDownload');
 
 Route::get('Copia-Seguridad', [DescargaController::class, 'copiaseguridad'])->middleware('auth')->name('copiaseguridad');
+
+Route::get('Informe Caja', [DescargaController::class, 'informeCaja'])->middleware('auth')->name('informe.caja');

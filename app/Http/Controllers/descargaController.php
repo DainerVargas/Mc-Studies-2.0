@@ -89,6 +89,14 @@ class descargaController extends Controller
         /*  return view('copiaseguridadDescarga', compact('securityInforme', 'fecha')); */
     }
 
+    public function informeCaja()
+    {
+        $pagos = session()->get('pagos');
+        $fecha = Date::now()->format('d-m-Y');
+
+        $pdf = Pdf::loadView('downloadServices', compact('pagos', 'fecha'));
+        return $pdf->download("Informe Caja " . $fecha . " .pdf");
+    }
 
     public function descarga(Apprentice $aprendiz)
     {

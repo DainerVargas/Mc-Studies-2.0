@@ -2,7 +2,7 @@
     <div class="links">
         <a wire:click="view(1)" class="{{ $show == 1 ? 'active' : '' }}">Servicios</a>
 
-        <a wire:click="view(2)" class="{{ $show == 2 ? 'active' : '' }}">Pagos</a>
+        <a wire:click="view(2)" class="{{ $show == 2 ? 'active' : '' }}">Caja</a>
     </div>
 
     @if ($show == 1)
@@ -242,10 +242,13 @@
 
                 <select wire:model.live="dinero" id="">
                     <option value="" selected>Dinero</option>
-                    <option value="Ingresado">Ingresado</option>
-                    <option value="Egresado">Egresado</option>
+                    <option value="Ingresado">Ingreso</option>
+                    <option value="Egresado">Egreso</option>
                 </select>
-                <button wire:click="showPay">¡Crear nuevo!</button>
+                <div class="column">
+                    <button wire:click="showPay">¡Crear nuevo!</button>
+                    <button wire:click="donwload" wire:confirm='Confirma para descargar el informe de caja.'>Descargar</button>
+                </div>
             </div>
         </div>
 
@@ -255,7 +258,7 @@
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th>Estudiante</th>
+                            <th>Nombre</th>
                             <th>valor</th>
                             <th>Metodo</th>
                             <th>Ingreso/Egreso</th>
@@ -271,7 +274,13 @@
                         @forelse ($pagos as $key => $pago)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $pago->apprentice->name }} {{ $pago->apprentice->apellido }}</td>
+
+                                @php
+                                    $name = $pago->apprentice
+                                        ? $pago->apprentice->name . ' ' . $pago->apprentice->apellido
+                                        : $pago->egresado;
+                                @endphp
+                                <td>{{ $name }}</td>
                                 <td>${{ number_format($pago->monto, 0, ',', '.') }} </td>
                                 @php
                                     $total += $pago->monto;
@@ -318,7 +327,7 @@
 
                 <div class="conteDivs">
                     <div class="conteInput">
-                        <label for="">Buscar estudiante</label>
+                        <label for="">Crear o Buscar</label>
                         <input type="text" wire:model.live="search">
                     </div>
                     <div class="conteInput">
@@ -329,7 +338,6 @@
                                 <option value="{{ $estudent->id }}">{{ $estudent->name }} {{ $estudent->apellido }}
                                 </option>
                             @endforeach
-                            <option value=""></option>
                         </select>
                     </div>
                 </div>
@@ -359,8 +367,8 @@
                         <label for="">Dinero:</label>
                         <select wire:model="dineroCreate" id="">
                             <option value="null" selected hidden>Seleccione...</option>
-                            <option value="Ingresado">Ingresado</option>
-                            <option value="Egresado">Egresado</option>
+                            <option value="Ingresado">Ingreso</option>
+                            <option value="Egresado">Egreso</option>
                         </select>
                     </div>
                 </div>
