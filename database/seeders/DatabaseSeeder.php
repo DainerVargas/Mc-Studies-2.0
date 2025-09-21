@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             BecadoSeeder::class,
             LevelSeeder::class,
+            SedeSeeder::class,
             ApprenticeSeeder::class,
             InformeSeeder::class,
             TinformeSeeder::class,
@@ -31,6 +32,8 @@ class DatabaseSeeder extends Seeder
             TypeServiceSeeder::class,
             ServiceSeeder::class,
             AccountSeeder::class,
+            MetodoPagoSeeder::class,
+            PagoSeeder::class,
         ]);
     }
 }

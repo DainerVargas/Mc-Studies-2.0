@@ -1,6 +1,6 @@
 <div class="componente">
     <div class="links">
-        <a wire:click="activar(1)" class="activea{{ $active }}">Aprendices</a>
+        <a wire:click="activar(1)" class="activea{{ $active }}">Estudiantes</a>
         <a wire:click="activar(2)" class="activep{{ $active }}">Profesores</a>
         <a wire:click="activar(3)" class="active{{ $active }}">Copia de seguridad</a>
     </div>
@@ -16,6 +16,7 @@
                         <option value="" selected>Sedes</option>
                         <option value="1">Fonseca</option>
                         <option value="2">San Juan</option>
+                        <option value="3">Online</option>
                     </select>
                 </div>
                 <div class="mes">

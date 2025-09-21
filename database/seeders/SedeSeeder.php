@@ -17,5 +17,9 @@ class SedeSeeder extends Seeder
         Sede::create([
             'sede' => 'San juan',
         ]);
+
+        Sede::create([
+            'sede' => 'Online',
+        ]);
     }
 }

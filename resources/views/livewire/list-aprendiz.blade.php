@@ -18,6 +18,12 @@
                 <option value="{{ $grupoItem->id }}">{{ $grupoItem->name }}</option>
             @endforeach
         </select>
+        <select wire:model.live="sede_id">
+            <option value="" selected>Sedes</option>
+            <option value="1">Fonseca</option>
+            <option value="2">San Juan</option>
+            <option value="3">Online</option>
+        </select>
 
         <div class="conteChecks">
             <div class="conteRadio">
@@ -75,7 +81,7 @@
                                     </div>
                                 @endif
                             </td>
-                            <td>{{$aprendiz->level->name ?? 'Sin nivel'}}</td>
+                            <td>{{ $aprendiz->level->name ?? 'Sin nivel' }}</td>
                             @php
                                 if ($aprendiz->group_id == null) {
                                     $grupo = 'Sin grupo';

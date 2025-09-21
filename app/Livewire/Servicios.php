@@ -2,8 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Models\Apprentice;
+use App\Models\MetodoPago;
+use App\Models\Pago;
 use App\Models\Service;
 use App\Models\typeService;
+use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 
@@ -11,23 +15,32 @@ class Servicios extends Component
 {
     use WithFileUploads;
 
-    public $showS = false, $showC = false;
-    public $type = 'null', $nameService = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $date = '';
+    public $showS = false, $showC = false, $show = 1;
+    public $type = 'null', $nameService = '', $nameEstudiante = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $date = '', $pay_id = '';
+    public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate;
 
     public function mount()
     {
         $this->fecha = now()->format('Y-m-d');
         $this->services = Service::all();
         $this->typeService = typeService::all();
+        $this->pagos = Pago::all();
+        $this->show = Session::get('show', 1);
+        $this->metodoPagos = MetodoPago::all();
+        $this->estudents = Apprentice::all();
     }
-
-    public $comprobante, $service_id;
-
+    public function view($option)
+    {
+        $this->show = $option;
+        $this->showU = false;
+        $this->showS = false;
+        $this->showC = false;
+        Session::put('show', $option);
+    }
     public function setServiceIdAndSave($id)
     {
         $this->service_id = $id;
     }
-
     public function updatedComprobante()
     {
         $this->validate([
@@ -45,14 +58,12 @@ class Servicios extends Component
 
         session()->flash('message', 'Comprobante guardado con éxito.');
     }
-
     public function showService()
     {
         $this->showS = true;
         $this->showC = false;
         $this->showU = false;
     }
-
     public function close()
     {
         $this->showS = false;
@@ -78,8 +89,8 @@ class Servicios extends Component
         $this->fecha = $servicio->fecha;
         $this->type_service_id = $servicio->type_service_id;
     }
-
-    public function updateService(Service $servicio){
+    public function updateService(Service $servicio)
+    {
         $validate = $this->validate(
             [
                 'name' => 'required',
@@ -105,7 +116,6 @@ class Servicios extends Component
             $this->service_id = '';
         }
     }
-
     public function saveService()
     {
         /* $this->type_service_id = (int) $this->type_service_id; */
@@ -133,7 +143,6 @@ class Servicios extends Component
             $this->showC = false;
         }
     }
-
     public function saveCategory()
     {
         $validate = $this->validate([
@@ -148,16 +157,123 @@ class Servicios extends Component
             $this->showC = false;
         }
     }
-
     public function delete(Service $service)
     {
         $service->delete();
         $this->services = Service::all();
     }
+    public function deletePay($id)
+    {
+        $pago = Pago::find($id);
+        if ($pago) {
+            $pago->delete();
+            $this->pagos = Pago::all();
+        }
+    }
+    public function updatedNameEstudiante()
+    {
+        $this->showpays();
+    }
+    public function updatedDateInicio()
+    {
+        $this->showpays();
+    }
+    public function updatedDateFinal()
+    {
+        $this->showpays();
+    }
+    public function updatedMetodo()
+    {
+        $this->showpays();
+    }
+    public function updatedDinero()
+    {
+        $this->showpays();
+    }
+    public function showpays()
+    {
+        $query = Pago::query();
+
+        if ($this->nameEstudiante != '') {
+            $query->whereHas('apprentice', function ($q) {
+                $q->where('name', 'LIKE', '%' . $this->nameEstudiante . '%')
+                    ->orWhere('apellido', 'LIKE', '%' . $this->nameEstudiante . '%');
+            });
+        }
+
+        if (!empty($this->dateInicio) && !empty($this->dateFinal)) {
+            $start = \Carbon\Carbon::parse($this->dateInicio)->startOfDay();
+            $end = \Carbon\Carbon::parse($this->dateFinal)->endOfDay();
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+
+        if ($this->metodo != '') {
+            $query->where('metodo_pago_id', '=', $this->metodo);
+        }
+
+        if ($this->dinero != '') {
+            $query->where('dinero', '=', $this->dinero);
+        }
+
+        $this->pagos = $query->get();
+    }
+    public function showPay($id = null)
+    {
+        $pay = Pago::find($id);
+        if ($pay) {
+            $this->idEstudentCreate = $pay->apprentice_id;
+            $this->montoCreate = $pay->monto;
+            $this->dateCreate = $pay->created_at->format('Y-m-d');
+            $this->metodoCreate = $pay->metodo_pago_id;
+            $this->dineroCreate = $pay->dinero;
+            $this->pay_id = $pay->id;
+        } else {
+            $this->reset(['idEstudentCreate', 'montoCreate', 'dateCreate', 'metodoCreate', 'dineroCreate']);
+        }
+        $this->showU = true;
+    }
+    public function updatedSearch()
+    {
+        $this->estudents = Apprentice::where('name', 'LIKE', '%' . $this->search . '%')
+            ->orWhere('apellido', 'LIKE', '%' . $this->search . '%')
+            ->get();
+    }
+    public function createPay($id = null)
+    {
+        $this->validate([
+            'idEstudentCreate' => 'required',
+            'montoCreate' => 'required|numeric',
+            'dateCreate' => 'required',
+            'metodoCreate' => 'required',
+            'dineroCreate' => 'required',
+        ]);
+
+        $pay = Pago::find($id);
+
+        if ($pay) {
+            $pay->apprentice_id = $this->idEstudentCreate;
+            $pay->monto = $this->montoCreate;
+            $pay->created_at = $this->dateCreate;
+            $pay->metodo_pago_id = $this->metodoCreate;
+            $pay->dinero = $this->dineroCreate;
+            $pay->save();
+        } else {
+            Pago::create([
+                'apprentice_id' => $this->idEstudentCreate,
+                'monto' => $this->montoCreate,
+                'created_at' => $this->dateCreate,
+                'metodo_pago_id' => $this->metodoCreate,
+                'dinero' => $this->dineroCreate,
+            ]);
+        }
+        $this->pagos = Pago::all();
+        $this->reset(['idEstudentCreate', 'montoCreate', 'dateCreate', 'metodoCreate', 'dineroCreate', 'search']);
+        $this->pay_id = '';
+        $this->showU = false;
+    }
 
     public function render()
     {
-
         $query = Service::query();
         if ($this->nameService != '') {
             $query->where('name', 'LIKE', '%' . $this->nameService . '%')

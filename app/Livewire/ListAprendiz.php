@@ -19,7 +19,7 @@ class ListAprendiz extends Component
     public $nameAprendiz = '';
     public $grupo = 'all';
     public $estado = 'all';
-    public $count = 0, $user;
+    public $count = 0, $user, $sede_id = '';
 
     public function delete(Apprentice $apprentice)
     {
@@ -66,6 +66,10 @@ class ListAprendiz extends Component
         } else {
             $query->where('group_id', $this->grupo);
         }
+
+        if ($this->sede_id != '') {
+            $query->where('sede_id', $this->sede_id);
+        } 
 
         if ($this->estado == 'active') {
             $query->where('estado', 1);

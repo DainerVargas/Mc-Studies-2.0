@@ -32,6 +32,11 @@ class Apprentice extends Model
         return $this->hasMany(Informe::class);
     }
 
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class);
+    }
+
     public function asistencias()
     {
         return $this->hasMany(Asistencia::class);

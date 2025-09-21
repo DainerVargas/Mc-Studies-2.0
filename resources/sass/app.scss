@@ -170,12 +170,12 @@ $gris: #959595;
           color: rgb(139, 139, 139);
         }
 
-        .material-symbols-outlined{
+        .material-symbols-outlined {
           font-variation-settings:
-          'FILL' 1,
-          'wght' 400,
-          'GRAD' 0,
-          'opsz' 24;
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24;
         }
 
         .errors {
@@ -1685,7 +1685,7 @@ $gris: #959595;
           }
         }
 
-        .container{
+        .container {
           @include funciones.flex(space-around);
           width: 100%;
         }
@@ -2438,7 +2438,6 @@ $gris: #959595;
 }
 
 /* INFORMACIÓN DEL USUSARIO */
-
 .conteInfoUser {
   @include funciones.flex(center);
   flex-direction: column;
@@ -2458,6 +2457,7 @@ $gris: #959595;
       text-decoration: none;
       font-size: 1.2vw;
       color: $gris;
+      cursor: pointer;
     }
 
     a:hover {
@@ -2720,7 +2720,6 @@ $gris: #959595;
 }
 
 /* HISTORIAL */
-
 .contenedorHistorial {
   @include funciones.flex(center);
   flex-direction: column;
@@ -3241,11 +3240,40 @@ $gris: #959595;
 .component {
   position: relative;
 
+  .links {
+    height: 3.5vw;
+    width: 100%;
+    padding: 0.5vw 1vw;
+    border: none;
+    box-sizing: border-box;
+    @include funciones.flex(start);
+    column-gap: 3vw;
+    box-shadow: 0.1vw 0.1vw 0.6vw rgb(186, 186, 186);
+
+    a {
+      text-decoration: none;
+      font-size: 1.2vw;
+      color: $gris;
+      cursor: pointer;
+    }
+
+    a:hover {
+      transform: scale(1.1);
+    }
+
+    .active {
+      color: #000;
+      text-decoration: underline;
+      font-size: 1.4vw
+    }
+  }
+
   .conteFilter {
     @include funciones.align(space-between, center);
     margin: 0;
     padding: 20px 12px;
     box-sizing: border-box;
+    width: 100%;
 
     .create {
       button {
@@ -3263,6 +3291,11 @@ $gris: #959595;
       }
     }
 
+    .container {
+      @include funciones.flex(center);
+      gap: 1vw;
+    }
+
     .conteInput {
       @include funciones.align(start, start);
 
@@ -3275,6 +3308,10 @@ $gris: #959595;
         padding: 4px;
         box-sizing: border-box;
         outline: none;
+      }
+
+      #inputEstudent {
+        width: 20vw;
       }
     }
 
@@ -3466,7 +3503,6 @@ $gris: #959595;
 }
 
 /* SendEmail */
-
 #sendEmail {
   @include funciones.flex(center);
   flex-direction: column;

@@ -160,11 +160,11 @@
         <div class="info_apprentice">
             <strong>Nombre:</strong> {{ $qualifications[0]->apprentice->name }}
             {{ $qualifications[0]->apprentice->apellido }}<br>
-            <strong>Desde:</strong>
+           {{-- <strong>Desde:</strong>
             {{ \Carbon\Carbon::parse($qualifications[0]->apprentice->fecha_inicio)->format('d/m/Y') }}
-            &nbsp;&nbsp;
-            <strong>Hasta:</strong>
-            {{ \Carbon\Carbon::parse($qualifications[0]->apprentice->fecha_fin)->format('d/m/Y') }}
+            &nbsp;&nbsp; --}}
+            <strong>Fecha:</strong>
+            {{ \Carbon\Carbon::parse($qualifications[0]->created_at)->format('d/m/Y') }}
         </div>
 
         @php
