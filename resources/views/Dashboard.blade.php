@@ -125,6 +125,7 @@
         @yield('servicios')
         @yield('send')
         @yield('qualification')
+        @yield('registerHours')
     </main>
 
 </body>

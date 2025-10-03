@@ -14,6 +14,10 @@ class Qualification extends Model
         'reading',
         'writing',
         'listening',
+        'worksheet_entregados',
+        'worksheet_asignados',
+        'actividades_entregados',
+        'actividades_asignados',
         'semestre',
         'observacion',
     ];

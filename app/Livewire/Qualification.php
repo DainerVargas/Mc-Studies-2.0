@@ -16,6 +16,10 @@ class Qualification extends Component
   public $estudiantes, $filter = 'null', $nameAprendiz = '', $groups, $grupos, $selectGrupo = 'all';
   public $semestre = '', $number = '';
   public $speaking = [], $reading = [], $writing = [], $listening = [], $userEsAdmin, $erroresCampo = [], $messageSemestre;
+  public $worksheetEntregados = [];
+  public $worksheetAsignados = [];
+  public $actividadesEntregados = [];
+  public $actividadesAsignados = [];
 
   public Teacher $teacher;
 
@@ -55,6 +59,10 @@ class Qualification extends Component
         $this->writing[$estudiante->id] = $calificacion->writing;
         $this->reading[$estudiante->id] = $calificacion->reading;
         $this->speaking[$estudiante->id] = $calificacion->speaking;
+        $this->worksheetEntregados[$estudiante->id]   = $calificacion->worksheet_entregados;
+        $this->worksheetAsignados[$estudiante->id]    = $calificacion->worksheet_asignados;
+        $this->actividadesEntregados[$estudiante->id] = $calificacion->actividades_entregados;
+        $this->actividadesAsignados[$estudiante->id]  = $calificacion->actividades_asignados;
         $this->observaciones[$this->selectGrupo][$estudiante->id] = $calificacion->observacion;
       }
     }
@@ -203,6 +211,10 @@ class Qualification extends Component
           'writing'      => $this->writing[$id],
           'reading'      => $this->reading[$id],
           'speaking'     => $this->speaking[$id],
+          'worksheet_entregados'   => $this->worksheetEntregados[$id]   ?? null,
+          'worksheet_asignados'    => $this->worksheetAsignados[$id]    ?? null,
+          'actividades_entregados' => $this->actividadesEntregados[$id] ?? null,
+          'actividades_asignados'  => $this->actividadesAsignados[$id]  ?? null,
           'observacion'  => $this->observaciones[$this->selectGrupo][$id] ?? null,
         ]
       );
@@ -224,7 +236,6 @@ class Qualification extends Component
       }
       $this->cargarAsistencias();
       $this->messageSemestre = '';
-      
     } else {
       $this->messageSemestre = 'Seleccione el grupo a elimar la calificación';
     }

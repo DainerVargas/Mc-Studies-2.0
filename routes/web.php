@@ -39,6 +39,8 @@ Route::get('Informacion/{aprendiz}', [ApprenticeController::class, 'info'])->mid
 /* PROFESORES */
 Route::get('Lista-Profesores', [TeacherController::class, 'lista'])->middleware('auth')->name('listaProfesor');
 
+Route::get('Registro-Horas', [TeacherController::class, 'registerHours'])->middleware('auth')->name('registerHours');
+
 Route::get('Informacion-Profesor/{teacher}', [TeacherController::class, 'infoteacher'])->middleware('auth')->name('infoProfesor');
 
 /* REGISTRO */

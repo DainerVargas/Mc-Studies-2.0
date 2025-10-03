@@ -28,6 +28,118 @@
             height: 150px;
         }
 
+        h4 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .cards {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .flex {
+            display: table;
+            margin: 0 auto;
+            border-spacing: 20px;
+        }
+
+        .flex .card {
+            display: table-cell;
+            vertical-align: top;
+            width: 200px;
+        }
+
+        .card {
+            background: #f2f2f2;
+            border-radius: 10px;
+            padding: 20px 30px;
+            text-align: center;
+            min-width: 220px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Títulos */
+        .card .title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .card .title p {
+            font-size: 12px;
+            font-weight: normal;
+            text-align: center;
+            color: #777;
+            margin: 0;
+        }
+
+        /* Número y resultado */
+        .card .number {
+            font-size: 20px;
+            margin-top: 5px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 6px;
+        }
+
+        .greenR {
+            color: #6bb44b;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .greenA {
+            color: #6bb44b;
+            font-weight: bold;
+            font-size: 19px;
+        }
+
+        .green {
+           background-color: #6bb44b;
+        }
+
+
+        .black {
+            color: #333;
+            font-weight: normal;
+        }
+
+        .text {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-top: 3px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Tarjeta de rendimiento general */
+        .cards>.card {
+            min-width: 260px;
+        }
+
+        .cards>.card .title {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .cards>.card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #6bb44b;
+        }
+
+
         .info_apprentice {
             background: #cdcdcd;
             padding: 10px;
@@ -45,10 +157,6 @@
             text-align: justify;
             line-height: 1.5;
             margin-bottom: 15px;
-        }
-
-        .green {
-            background-color: #99BF51;
         }
 
         .red {
@@ -151,27 +259,49 @@
         </div>
 
         <div class="info_apprentice">
-            <strong>Nombre:</strong> {{ $qualifications[0]->apprentice->name }} {{ $qualifications[0]->apprentice->apellido }}<br>
-            {{-- <strong>Desde:</strong>
-            {{ \Carbon\Carbon::parse($qualifications[0]->apprentice->fecha_inicio)->format('d/m/Y') }}
-            &nbsp;&nbsp; --}}
+            <strong>Nombre:</strong> {{ $qualifications[0]->apprentice->name }}
+            {{ $qualifications[0]->apprentice->apellido }}<br>
             <strong>Fecha:</strong>
             {{ \Carbon\Carbon::parse($qualifications[0]->created_at)->format('d/m/Y') }}
         </div>
 
-        @if ($passed)
-            <p><strong>{{ $qualifications[0]->apprentice->name }}{{ $qualifications[0]->apprentice->apellido }}</strong> ha demostrado un nivel de inglés acorde a los requisitos de su curso, evidenciando un sólido desempeño en las cuatro habilidades fundamentales del idioma. Su comprensión oral y escrita es clara y precisa, lo que le permite captar la información con facilidad y responder de manera adecuada en diversos contextos.
-            </p>
-            <p>
-                Asimismo, su expresión oral es fluida y estructurada, mostrando confianza al comunicarse en inglés. En cuanto a la escritura, es capaz de redactar textos coherentes y bien organizados, utilizando una gramática adecuada y un vocabulario variado.
-            </p>
-        @else
-            <p><strong>{{ $qualifications[0]->apprentice->name }}{{ $qualifications[0]->apprentice->apellido }}</strong> ha enfrentado dificultades en las cuatro habilidades del idioma: Listening, Speaking, Reading y Writing, lo que ha afectado su desempeño en el curso. Debido a esto, no ha logrado alcanzar el nivel esperado y requiere un refuerzo significativo en su aprendizaje del inglés.
-            </p>
-            <p>
-                Se recomienda una mayor práctica diaria a través de lectura, escucha y ejercicios específicos que le permitan fortalecer su comprensión y expresión en el idioma. Actividades como escuchar audios en inglés con subtítulos, leer textos adaptados a su nivel y practicar la escritura con oraciones y párrafos sencillos pueden ser de gran ayuda.
-            </p>
-        @endif
+
+        <h4>Rendimiento integral del estudiante</h4>
+
+        <div class="cards">
+            <div class="flex">
+                <div class="card">
+                    <div class="title">
+                        <span>Worksheet entregados</span>
+                        <p>(Peliculas y seriesasignadas)</p>
+                    </div>
+                    <div class="number">
+                        <span class="greenA">{{ $qualifications[0]->worksheet_entregados }} <span class="black">/
+                                {{ $qualifications[0]->worksheet_asignados }}</span> </span>
+                        <span class="text">COMPLETADAS</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="title">
+                        <span>Actividades entregados</span>
+                        <p>(Plataforma de Richmond)</p>
+                    </div>
+                    <div class="number">
+                        <span class="greenA">{{ $qualifications[0]->actividades_entregados }} <span class="black">/
+                                {{ $qualifications[0]->actividades_asignados }}</span> </span>
+                        <span class="text">COMPLETADAS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="title">
+                    <span>Rendimiento General</span>
+                </div>
+                <div class="number">
+                    <span class="greenR">{{ number_format($average, 2) }}%</span>
+                </div>
+            </div>
+        </div>
 
         <div class="range-container">
             <h2>Resultados del test</h2>
@@ -186,43 +316,13 @@
                             <strong>{{ number_format($score, 2) }}%</strong>
                         </div>
                         <div class="bar-container">
-                            <div class="bar-fill {{ $score < 65 ? 'red' : 'green' }}" style="width: {{ $score }}%;"></div>
+                            <div class="bar-fill {{ $score < 65 ? 'red' : 'green' }}"
+                                style="width: {{ $score }}%;"></div>
                         </div>
                     @endforeach
                 </div>
             @endforeach
-
-            <div class="consolidated-box">
-                <div class="average-label">
-                    <span>Promedio General</span>
-                    <strong style="color: {{ $average < 75 ? '#e74c3c' : '#333' }}">{{ number_format($average, 2) }}%</strong>
-                </div>
-                <div class="bar-container">
-                    <div class="bar-fill {{ $average < 75 ? 'red' : 'green' }}" style="width: {{ $average }}%;"></div>
-                </div>
-            </div>
         </div>
-
-        @if ($passed)
-            @if ($allSkillsApproved)
-                <p>
-                    Dado su desempeño, ha logrado aprobar satisfactoriamente las cuatro habilidades lingüísticas esenciales:
-                    Listening, Speaking, Reading y Writing, demostrando así un progreso constante en su aprendizaje del idioma.
-                </p>
-            @else
-                <p>
-                    El estudiante ha aprobado el curso, demostrando progreso general en el aprendizaje del idioma. Sin embargo, se recomienda continuar reforzando las habilidades con menor rendimiento para lograr un dominio más sólido.
-                </p>
-            @endif
-        @else
-            <p>
-                Asimismo, es importante que participe activamente en conversaciones en inglés para mejorar su fluidez y confianza.
-            </p>
-            <p>
-                Con dedicación y esfuerzo constante, <strong>{{ $qualifications[0]->apprentice->name }}{{ $qualifications[0]->apprentice->apellido }}</strong> podrá superar estas dificultades y avanzar en su dominio del inglés. ¡Ánimo, el progreso es posible con práctica y perseverancia!
-            </p>
-        @endif
-
         <p class="note">-MC Studies-</p>
     </div>
 </body>

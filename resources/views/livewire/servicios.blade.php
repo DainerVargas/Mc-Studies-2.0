@@ -252,6 +252,8 @@
             </div>
         </div>
 
+        <h2 class="titlesaldo">SALDO EN CAJA: ${{ number_format($saldoCaja, 0, ',', '.') }}</h2>
+
         <div class="containerConte">
             <div class="conteTable">
                 <table class="teacher">

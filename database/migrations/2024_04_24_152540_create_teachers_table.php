@@ -19,12 +19,14 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('telefono');
             $table->string('estado');
+            $table->decimal('precio_hora', 10, 2)->default(0);
             $table->dateTime('fecha_inicio')->nullable();
             $table->dateTime('fecha_fin')->nullable();
             $table->foreignIdFor(TypeTeacher::class)->constrained();
             $table->timestamps();
         });
-    }    public function down(): void
+    }
+    public function down(): void
     {
         Schema::dropIfExists('teachers');
     }

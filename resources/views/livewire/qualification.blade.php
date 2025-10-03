@@ -52,6 +52,10 @@
                         <th>Writing</th>
                         <th>Reading</th>
                         <th>Speaking</th>
+                        <th>Worksheet A</th>
+                        <th>Worksheet E</th>
+                        <th>Actividades A</th>
+                        <th>Actividades E</th>
                         <th>Observaciones</th>
                         <th>Descargar</th>
                     </tr>
@@ -113,6 +117,22 @@
                                     </small>
                                 @endif
                             </td>
+                            <td>
+                                <input type="number" min="0" max="100"
+                                    wire:model="worksheetAsignados.{{ $estudiante->id }}">
+                            </td>
+                            <td>
+                                <input type="number" min="0" max="100"
+                                    wire:model="worksheetEntregados.{{ $estudiante->id }}">
+                            </td>
+                            <td>
+                                <input type="number" min="0" max="100"
+                                    wire:model="actividadesAsignados.{{ $estudiante->id }}">
+                            </td>
+                            <td>
+                                <input type="number" min="0" max="100"
+                                    wire:model="actividadesEntregados.{{ $estudiante->id }}">
+                            </td>
 
                             <td>
                                 @if (isset($speaking[$estudiante->id]))
@@ -120,7 +140,7 @@
                                         {{ $observaciones[$selectGrupo][$estudiante->id] ?? 'No hay observacion' }}
                                     </div>
                                 @else
-                                    <textarea rows="2" cols="25" wire:model.defer="observaciones.{{ $selectGrupo }}.{{ $estudiante->id }}"
+                                    <textarea rows="2" cols="15" wire:model.defer="observaciones.{{ $selectGrupo }}.{{ $estudiante->id }}"
                                         class="form-control"></textarea>
                                 @endif
                             </td>
@@ -140,9 +160,10 @@
                     <button class="buttonsave" class="btn btn-success mt-3" wire:click="guardarNotas">
                         Actualizar
                     </button>
-                    <button class="buttonsave" style="background-color: red; color: white; border: 1px solid red;" wire:click="deleteNotas" wire:confirm="¿Estás seguro que deseas eliminar estas notas?">
+                    <button class="buttonsave" style="background-color: red; color: white; border: 1px solid red;"
+                        wire:click="deleteNotas" wire:confirm="¿Estás seguro que deseas eliminar estas notas?">
                         Eliminar
-                    </button>1
+                    </button>
                 </div>
             @else
                 <button class="buttonsave" class="btn btn-success mt-3" wire:click="guardarNotas">

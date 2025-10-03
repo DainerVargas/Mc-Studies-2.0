@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Account;
 use App\Models\Group;
 use App\Models\Teacher;
 use App\Models\Tinforme;
@@ -12,7 +13,6 @@ use Livewire\WithFileUploads;
 
 class ListTeacher extends Component
 {
-
     use WithFileUploads;
 
     public $profesores = [];
@@ -21,11 +21,7 @@ class ListTeacher extends Component
 
     public $filtro = '';
     public $type_teacher_id = '';
-    public $name = '';
-    public $email = '';
-    public $apellido = '';
-    public $telefono = '';
-    public $image;
+    public $name = '', $email = '', $apellido = '', $telefono = '', $image;
 
     public $estado = 'all';
 
@@ -50,6 +46,8 @@ class ListTeacher extends Component
             $grupo->teacher_id = null;
             $grupo->save();
         }
+
+        Account::where('teacher_id', $teacher->id)->delete();
         
         foreach ($informes as $informe) {
             $informe->delete();
@@ -87,13 +85,6 @@ class ListTeacher extends Component
                 $imageName = '';
             }
 
-        
-            /* if (isset($this->image)) {
-            $path = $this->image->store('', 'public');
-            $foto = basename($path);
-        } else {
-            $foto = $teacher->image;
-        } */
 
             $profesor = Teacher::create([
                 'name' => $this->name,
@@ -104,6 +95,7 @@ class ListTeacher extends Component
                 'telefono' => $this->telefono,
                 'type_teacher_id' => $this->type_teacher_id,
                 'fecha_inicio' => now(),
+                'precio_hora' => 0,
                 'fecha_fin' => now()->addDays(7),
             ]);
 

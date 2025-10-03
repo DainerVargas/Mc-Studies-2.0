@@ -115,7 +115,7 @@
                             @endif
                         @endforeach
                     </select></p>
-                <p>Fecha-Inicio: <span>{{ $teacher->fecha_inicio }}</span></p>
+                <p>Precio hora: <input type="text" value="{{ $teacher->precio_hora }}" wire:model="precio_hora" id=""></p>
                 {{-- <p>Fecha-Finalización: <span>{{ $teacher->fecha_fin }}</span></p> --}}
             </div>
         </div>
@@ -133,9 +133,9 @@
                     <p>Tipo: <span>{{ $teacher->group[0]->type->name }}</span></p>
                 @endif
 
-                <p>Cuenta: <input type="text" value="{{ $teacher->accounts[0]->name }}" wire:model="name_acount" id=""></p>
-                <p>Tipo: <input type="text" value="{{ $teacher->accounts[0]->type_account }}" wire:model="type_account"></p>
-                <p>Número: <input type="text" value="{{ $teacher->accounts[0]->number }}" wire:model="number_account" id="">
+                <p>Cuenta: <input type="text" value="{{ $teacher->accounts[0]->name ?? 'Sin cuenta'}}" wire:model="name_acount" id=""></p>
+                <p>Tipo: <input type="text" value="{{ $teacher->accounts[0]->type_account ?? 'NO valido'}}" wire:model="type_account"></p>
+                <p>Número: <input type="text" value="{{ $teacher->accounts[0]->number ?? 'No valido' }}" wire:model="number_account" id="">
                 </p>
             </div>
             <button wire:click="update({{ $teacher->id }})">Actualizar Información</button>

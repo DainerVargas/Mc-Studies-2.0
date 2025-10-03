@@ -21,7 +21,7 @@ class InfoTeacher extends Component
 
     public $teacher, $type, $name, $apellido, $email, $group, $telefono, $name_acount, $type_account, $number_account;
     public $grupos, $type_teachers, $view;
-    public $image, $comprobante, $valor, $periodo;
+    public $image, $comprobante, $valor, $periodo, $precio_hora;
 
     public $idTeacher;
 
@@ -105,6 +105,7 @@ class InfoTeacher extends Component
         $this->email = $teacher->email;
         $this->telefono = $teacher->telefono;
         $this->type = $teacher->type_teacher_id;
+        $this->precio_hora = $teacher->precio_hora;
         $acount = Account::where('teacher_id', $teacher->id)->first();
         if ($acount) {
             $this->name_acount = $acount->name;
@@ -148,6 +149,7 @@ class InfoTeacher extends Component
             'email' => $this->email,
             'telefono' => $this->telefono,
             'type_teacher_id' => $this->type,
+            'precio_hora' => $this->precio_hora,
             'image' => $foto,
         ]);
         $this->teacher = $teacher;

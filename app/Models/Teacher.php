@@ -38,6 +38,11 @@ class Teacher extends Model
         return $this->hasMany(User::class);
     }
 
+    public function RegisterHours()
+    {
+        return $this->hasMany(RegisterHours::class);
+    }
+
     protected $fillable = [
         'name',
         'email',
@@ -48,6 +53,7 @@ class Teacher extends Model
         'type_teacher_id',
         'fecha_inicio',
         'fecha_fin',
+        'precio_hora',
     ];
 
     public function accounts()

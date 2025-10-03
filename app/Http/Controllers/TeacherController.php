@@ -32,6 +32,12 @@ class TeacherController extends Controller
         }
     }
 
+    public function registerHours(){
+
+        $user = Auth::user();
+        return view('layouts.registerHours', compact('user'));
+    }
+
     public function comprobante(Teacher $teacher)
     {
         return view('emails.comprobante', compact('teacher'));

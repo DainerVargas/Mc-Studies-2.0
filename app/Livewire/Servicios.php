@@ -17,7 +17,7 @@ class Servicios extends Component
 
     public $showS = false, $showC = false, $show = 1;
     public $type = 'null', $nameService = '', $nameEstudiante = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $date = '', $pay_id = '';
-    public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate;
+    public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate, $saldoCaja = 0;
 
     public function mount()
     {
@@ -25,6 +25,7 @@ class Servicios extends Component
         $this->services = Service::all();
         $this->typeService = typeService::all();
         $this->pagos = Pago::all();
+        $this->saldoCaja = Pago::where('dinero', 'Ingresado')->sum('monto') - Pago::where('dinero', 'Egresado')->sum('monto');
         $this->show = Session::get('show', 1);
         $this->metodoPagos = MetodoPago::all();
         $this->estudents = Apprentice::all();

@@ -1,4 +1,5 @@
 <div class="componente">
+    
     <div class="conteFiltro" id="conteProfesor">
         <form wire:submit="filtrar">
             <div class="conteInput">
@@ -24,9 +25,14 @@
             </div>
         </div>
 
-        <div class="conteBtnCreate">
-            <a><button wire:click="update"><img src="/images/agregar.png" alt="">
-                    añadir</button></a>
+        <div style="gap: 10px" class="conteBtnCreate">
+            <a>
+                <button wire:click="update"><img src="/images/agregar.png" alt="">
+                    añadir</button>
+            </a>
+            <a href="{{route('registerHours')}}">
+                <button class="register">Registro de horas</button>
+            </a>
         </div>
 
     </div>
@@ -74,7 +80,7 @@
                                         <a href="{{ route('asistencias', $profesor->id) }}">
                                             <button>Ir al registro </button>
                                         </a>
-                                        @else
+                                    @else
                                         No aplica
                                     @endif
                                 </div>
@@ -85,8 +91,7 @@
                                         <a href="{{ route('qualification', $profesor->id) }}">
                                             <button>Ir a calificacion </button>
                                         </a>
-
-                                        @else
+                                    @else
                                         No aplica
                                     @endif
                                 </div>
