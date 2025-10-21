@@ -8,11 +8,11 @@ use Livewire\Component;
 
 class RegisterHours extends Component
 {
-    public $registerHours, $profesores, $view = false, $teacher_id = '', $horas = '', $fecha = '', $filtro = '', $id = null;
+    public $registerHours, $profesores, $view = false, $teacher_id = '', $horas = '', $lunes = '', $martes = '', $miercoles = '', $jueves = '', $viernes = '', $sabado = '', $filtro = '', $id = null, $date = '';
 
     public function mount()
     {
-        $this->registerHours = ModelsRegisterHours::all();
+        $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
 
         $this->profesores = Teacher::all();
     }
@@ -26,7 +26,12 @@ class RegisterHours extends Component
             if ($registerHorus) {
                 $this->teacher_id = $registerHorus->teacher_id;
                 $this->horas = $registerHorus->horas;
-                $this->fecha = $registerHorus->fecha;
+                $this->lunes = $registerHorus->lunes;
+                $this->martes = $registerHorus->martes;
+                $this->miercoles = $registerHorus->miercoles;
+                $this->jueves = $registerHorus->jueves;
+                $this->viernes = $registerHorus->viernes;
+                $this->sabado = $registerHorus->sabado;
                 $this->id = $registerHorus->id;
             } else {
                 $this->id = null;
@@ -36,41 +41,69 @@ class RegisterHours extends Component
 
     public function updatedFiltro()
     {
-
-        $this->registerHours = ModelsRegisterHours::whereHas(
-            'teacher',
-            fn($query) =>
-            $query->where('name', 'like', "%{$this->filtro}%")
-        )->get();
+        $this->Filtro();
     }
+
+    public function updatedDate()
+    {
+        $this->Filtro();
+    }
+
+    public function Filtro()
+    {
+        $this->registerHours = ModelsRegisterHours::whereHas('teacher', function ($query) {
+            $query->where('name', 'like', "%{$this->filtro}%");
+        })
+            ->when($this->date, function ($query) {
+                $query->where(function ($q) {
+                    $q->whereDate('lunes', $this->date)
+                        ->orWhereDate('martes', $this->date)
+                        ->orWhereDate('miercoles', $this->date)
+                        ->orWhereDate('jueves', $this->date)
+                        ->orWhereDate('viernes', $this->date)
+                        ->orWhereDate('sabado', $this->date);
+                });
+            })
+            ->orderByDesc('updated_at')
+            ->get();
+    }
+
 
     public function delete($value)
     {
         ModelsRegisterHours::where('id', $value)->delete();
 
-        $this->registerHours = ModelsRegisterHours::all();
+        $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
     }
 
     public function save()
     {
-        $validaciones =  $this->validate([
+        $validaciones = $this->validate([
             'teacher_id' => 'required',
             'horas' => 'required',
-            'fecha' => 'required',
+            'lunes' => 'nullable',
+            'martes' => 'nullable',
+            'miercoles' => 'nullable',
+            'jueves' => 'nullable',
+            'viernes' => 'nullable',
+            'sabado' => 'nullable',
         ], [
             'required' => 'Este campo es requerido.',
         ]);
 
+        foreach (['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'] as $dia) {
+            if (empty($validaciones[$dia])) {
+                $validaciones[$dia] = null;
+            }
+        }
+
         ModelsRegisterHours::updateOrCreate(
-            [
-                'id' => $this->id
-            ],
+            ['id' => $this->id],
             $validaciones
         );
 
         $this->view = false;
-
-        $this->registerHours = ModelsRegisterHours::all();
+        $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
     }
 
     public function render()

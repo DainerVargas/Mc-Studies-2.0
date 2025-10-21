@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class History extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'year',
+        'mes',
+        'cantidad',
+        'total'
+    ];
 }

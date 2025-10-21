@@ -140,7 +140,8 @@ class InformeEstudiante extends Component
 		$this->vista = 0;
 	}
 
-	public function donwload(){
+	public function donwload()
+	{
 		session()->put('copiaseguridad', $this->securityInforme);
 
 		return redirect()->route('copiaseguridad');
@@ -238,32 +239,9 @@ class InformeEstudiante extends Component
 			]);
 		}
 
-		/* $idsToKeep = DB::table('informes')
-			->select(DB::raw('MIN(id) as id'))
-			->groupBy('apprentice_id')
-			->pluck('id');
-
-		DB::table('informes')
-			->whereNotIn('id', $idsToKeep)
-			->delete();
-
-		DB::table('informes')
-			->whereIn('id', $idsToKeep)
-			->update([
-				'abono' => 0,
-				'urlImage' => null,
-				'fecha' => null,
-				'fechaRegistro' => Date::now()->year,
-			]);
-
-		Apprentice::query()->update([
-			'observacion' => null,
-		]); */
-
 		$this->securityInforme = SecurityInforme::get();
 		$this->aprendices = Apprentice::where('estado', true)->get();
 	}
-
 
 	public function render()
 	{
@@ -283,7 +261,7 @@ class InformeEstudiante extends Component
 			});
 		}
 
-		if(!empty($this->sede_id)) {
+		if (!empty($this->sede_id)) {
 			$query->whereHas('apprentice', function ($subQuery) {
 				$subQuery->where('sede_id', $this->sede_id);
 			});
@@ -329,20 +307,26 @@ class InformeEstudiante extends Component
 		}
 
 		if ($this->estado == '1') {
+			// PAGADOS
 			$this->informes = $this->informes->filter(function ($informe) {
-				$valor = optional($informe->apprentice)->valor ?? 0;
-				$descuento = optional($informe->apprentice)->descuento ?? 0;
+				$apprentice = optional($informe->apprentice);
+				$valor = optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
+				$descuento = $apprentice->descuento ?? 0;
 				$pendiente = $valor - $descuento - $informe->total_abonos;
 				return $pendiente <= 0;
 			});
 		} elseif ($this->estado == '2') {
+			// PENDIENTES
 			$this->informes = $this->informes->filter(function ($informe) {
-				$valor = optional($informe->apprentice)->valor ?? 0;
-				$descuento = optional($informe->apprentice)->descuento ?? 0;
+				$apprentice = optional($informe->apprentice);
+				if ($apprentice->becado_id == 1) return false; // No mostrar becados
+				$valor = optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
+				$descuento = $apprentice->descuento ?? 0;
 				$pendiente = $valor - $descuento - $informe->total_abonos;
 				return $pendiente > 0;
 			});
 		}
+
 
 		$this->totalModulos = $this->informes->sum(function ($informe) {
 			$apprentice = optional($informe->apprentice);

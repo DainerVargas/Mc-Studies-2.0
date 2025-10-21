@@ -1,4 +1,104 @@
 <div class="componente">
+    <style>
+        /* Contenedor general */
+        .calificaciones-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px 35px;
+            width: 90%;
+            max-width: 800px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .calificaciones-container h4 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #0a58ca;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .calificaciones-container .between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .between span {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+
+        /* Tabla */
+        .tabla-calificaciones {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .tabla-calificaciones th {
+            background: #0a58ca;
+            color: #fff;
+            font-weight: 600;
+            padding: 12px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .tabla-calificaciones td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+
+        .tabla-calificaciones tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .tabla-calificaciones tr:hover {
+            background-color: #f0f8ff;
+            transition: 0.3s ease;
+        }
+
+        /* Estilo para promedio por fila */
+        .tabla-calificaciones td.promedio {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+
+        /* Fila final (promedios globales) */
+        .tabla-calificaciones tr.fila-total {
+            background: #e8f5e9;
+            font-weight: bold;
+            border-top: 2px solid #0a58ca;
+        }
+
+        .tabla-calificaciones td.promedio-final {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .calificaciones-container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            .tabla-calificaciones th,
+            .tabla-calificaciones td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
     <div class="headerInfo">
         <div class="back">
             <a href="{{ route('listaAprendiz') }}">
@@ -71,6 +171,10 @@
                         download
                     </span>
                 </a>
+                <span title="Ver calificación" wire:click="showQualification" class="material-symbols-outlined">
+                    rewarded_ads
+                </span>
+
                 @if ($aprendiz->comprobante == null && $valor == 1)
                     <small>No hay comprobante de pago</small>
                 @endif
@@ -136,6 +240,90 @@
                         </span>
                     </a>
                 @endif
+            </div>
+        @endif
+
+        @if ($view)
+            <div class="calificaciones-container">
+                <div class="between">
+                    <span></span>
+                    <h4>Calificaciones</h4>
+                    <span wire:click="showQualification" style="color: red" class="material-symbols-outlined">
+                        close
+                    </span>
+                </div>
+
+                <table class="tabla-calificaciones">
+                    <thead>
+                        <tr>
+                            <th>Resultado</th>
+                            <th>Listening</th>
+                            <th>Reading</th>
+                            <th>Speaking</th>
+                            <th>Writing</th>
+                            <th>Promedio Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @php
+                            $totalListening = 0;
+                            $totalReading = 0;
+                            $totalSpeaking = 0;
+                            $totalWriting = 0;
+                            $count = $qualifications->count();
+                        @endphp
+
+                        @forelse ($qualifications as $qualification)
+                            @php
+                                $promedioFila =
+                                    ($qualification->listening +
+                                        $qualification->reading +
+                                        $qualification->speaking +
+                                        $qualification->writing) /
+                                    4;
+
+                                $totalListening += $qualification->listening;
+                                $totalReading += $qualification->reading;
+                                $totalSpeaking += $qualification->speaking;
+                                $totalWriting += $qualification->writing;
+
+                                $resultado = match ($qualification->semestre) {
+                                    1 => 'Resultado 1',
+                                    2 => 'Resultado 2',
+                                    3 => 'Resultado 3',
+                                    default => 'Resultado',
+                                };
+                            @endphp
+
+                            <tr>
+                                <td>{{ $resultado }}</td>
+                                <td>{{ $qualification->listening }}</td>
+                                <td>{{ $qualification->reading }}</td>
+                                <td>{{ $qualification->speaking }}</td>
+                                <td>{{ $qualification->writing }}</td>
+                                <td class="promedio">{{ number_format($promedioFila, 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6">Sin Resultados</td>
+                            </tr>
+                        @endforelse
+
+                        @if ($count > 0)
+                            <tr class="fila-total">
+                                <td>Promedio Global</td>
+                                <td>{{ number_format($totalListening / $count, 2) }}</td>
+                                <td>{{ number_format($totalReading / $count, 2) }}</td>
+                                <td>{{ number_format($totalSpeaking / $count, 2) }}</td>
+                                <td>{{ number_format($totalWriting / $count, 2) }}</td>
+                                <td class="promedio-final">
+                                    {{ number_format(($totalListening + $totalReading + $totalSpeaking + $totalWriting) / ($count * 4), 2) }}
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
             </div>
         @endif
     </div>

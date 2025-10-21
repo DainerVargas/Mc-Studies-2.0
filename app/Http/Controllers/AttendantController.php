@@ -26,24 +26,14 @@ class AttendantController extends Controller
 
   public function update(RegistroRequest $request, Apprentice $aprendiz)
   {
-
     if (isset($request->imagen)) {
       $path = $request->imagen->store('', 'public');
       $foto = basename($path);
     } else {
-      $foto = $aprendiz->imagen; 
+      $foto = $aprendiz->imagen;
     }
 
-    $grupoID = $aprendiz->group_id;
-
-   /*  if ($request->modality_id != $aprendiz->modality_id) {
-
-      $informe = Informe::where('apprentice_id', $aprendiz->id)->first();
-      $informe->update([
-        'abono' => 0,
-        'fecha' => null
-      ]);
-    } */
+    $groupId = $aprendiz->group_id;
 
     $acudiente = Attendant::where('id', $aprendiz->attendant_id)->first();
 
@@ -55,8 +45,6 @@ class AttendantController extends Controller
       'documento' => $request->documentoAcudiente,
     ]);
 
-    $grupo = Group::find($request->group_id);
-    
     $aprendiz->update([
       'name' => $request->name,
       'apellido' => $request->apellido,
@@ -74,9 +62,10 @@ class AttendantController extends Controller
       'group_id' => $request->group_id,
     ]);
 
-    if (isset($request->group_id) && $grupoID == null) {
-      if (isset($grupo->name)) {
+    $grupo = Group::find($request->group_id);
 
+    if (isset($request->group_id) && $groupId == null) {
+      if (isset($grupo->name)) {
         $year = Carbon::now()->format('y');
         /* $year = 25; */
         $mes = Carbon::now()->format('m');
@@ -87,27 +76,28 @@ class AttendantController extends Controller
         $contador = History::where('name', $grupo->name)->count();
 
         if ($history) {
-          if ($mes <= 6) {
 
+          if ($mes <= 6) {
             $history->cantidad += 1;
             $history->save();
           } else {
 
-            $search = History::where('name', $grupo->name)->get();
-            if ($contador > 1) {
+            $search = History::where('name', $grupo->name)
+              ->where('year', $year)
+              ->get();
 
+            if ($contador > 1) {
               $updateHistory = $search[1];
               $updateHistory->cantidad += 1;
               $updateHistory->save();
             } else {
-
-              $historial = new History();
-              $historial->name = $grupo->name;
-              $historial->year = $year;
-              $historial->mes = $mes;
-              $historial->cantidad = 1;
-              $historial->total = $history->cantidad;
-              $historial->save();
+              History::create([
+                'name' => $grupo->name,
+                'year' => $year,
+                'mes' => $mes,
+                'cantidad' => 1,
+                'total' => $history->cantidad
+              ]);
             }
           }
         }

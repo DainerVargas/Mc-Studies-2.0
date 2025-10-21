@@ -6,7 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class RegisterHours extends Model
 {
-    protected $fillable = ['teacher_id', 'fecha', 'horas'];
+    protected $fillable = [
+        'teacher_id',
+        'horas',
+        'lunes',
+        'martes',
+        'miercoles',
+        'jueves',
+        'viernes',
+        'sabado',
+    ];
 
     public function teacher()
     {
