@@ -19,7 +19,7 @@ class InfoAprendiz extends Component
 {
     use WithFileUploads;
 
-    public $aprendiz, $image, $grupos, $modalidades, $fechaActual, $user, $edadActualizada, $view, $qualifications;
+    public $aprendiz, $image, $grupos, $modalidades, $fechaActual, $user, $edadActualizada, $view, $qualifications, $viewCertificate, $textReconocimiento;
     public $valor = 0;
 
     public function mount()
@@ -30,6 +30,7 @@ class InfoAprendiz extends Component
         $hoy = new DateTime();
         $this->edadActualizada = $hoy->diff($fechaNacimiento)->y;
         $this->view = session()->get('view', false);
+        $this->viewCertificate = session()->get('viewCertificate', false);
     }
 
     public function toggleEstado(Apprentice $aprendiz)
@@ -67,6 +68,27 @@ class InfoAprendiz extends Component
     {
         $this->view = !$this->view;
         session()->put('view', $this->view);
+    }
+
+    public function showCertificate()
+    {
+        $this->viewCertificate = !$this->viewCertificate;
+        session()->put('viewCertificate', $this->viewCertificate);
+        $this->textReconocimiento = '';
+    }
+
+    public function generateCertificate($aprendiz){
+
+        $this->validate([
+            'textReconocimiento' => 'required|string|max:500',
+        ], [
+            'textReconocimiento.required' => 'El campo de texto es obligatorio.',
+            'textReconocimiento.string' => 'El campo de texto debe ser una cadena de caracteres.',
+            'textReconocimiento.max' => 'El campo de texto no debe exceder los 500 caracteres.',
+        ]);
+
+        session()->put('textReconocimiento', $this->textReconocimiento);
+        return redirect()->route('certificado', compact('aprendiz'));
     }
 
     public function render()

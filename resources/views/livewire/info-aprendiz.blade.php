@@ -98,6 +98,122 @@
                 font-size: 0.9rem;
             }
         }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        /* Contenedor principal */
+        .conte_certificate {
+            position: relative;
+            background: #ffffff;
+            width: 520px;
+            padding: 30px 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            font-family: 'Poppins', sans-serif;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Encabezado */
+        .between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+
+        .between h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: 0.3px;
+        }
+
+        .between .material-symbols-outlined {
+            cursor: pointer;
+            font-size: 22px;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .between .material-symbols-outlined:hover {
+            color: #ff5a5f;
+            transform: scale(1.1);
+        }
+
+        /* Contenido del modal */
+        .flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            color: #444;
+            outline: none;
+            resize: none;
+            transition: all 0.2s ease-in-out;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        textarea:focus {
+            border-color: #00a9e0;
+            box-shadow: 0 0 0 2px rgba(0, 169, 224, 0.15);
+        }
+
+        /* Botón */
+        .btn_certi {
+            background: linear-gradient(135deg, #00a9e0, #007bbd);
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 10px rgba(0, 169, 224, 0.3);
+        }
+
+        .btn_certi:hover {
+            background: linear-gradient(135deg, #0092c7, #006aa3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 169, 224, 0.4);
+        }
     </style>
     <div class="headerInfo">
         <div class="back">
@@ -173,6 +289,9 @@
                 </a>
                 <span title="Ver calificación" wire:click="showQualification" class="material-symbols-outlined">
                     rewarded_ads
+                </span>
+                <span wire:click="showCertificate" class="material-symbols-outlined">
+                    license
                 </span>
 
                 @if ($aprendiz->comprobante == null && $valor == 1)
@@ -324,6 +443,33 @@
                         @endif
                     </tbody>
                 </table>
+            </div>
+        @endif
+
+        @if ($viewCertificate)
+            <div class="overlay">
+                <div class="conte_certificate">
+                    <div class="between">
+                        <span></span>
+                        <h4>Describe el reconocimiento</h4>
+                        <span wire:click="showCertificate" class="material-symbols-outlined">close</span>
+                    </div>
+
+                    <div class="flex">
+                        <textarea wire:model="textReconocimiento" placeholder="Escribe aquí el texto del reconocimiento..."></textarea>
+                    </div>
+
+                    @error('textReconocimiento')
+                        <span class="error" style="color: red">{{ $message }}</span>
+                    @enderror
+
+                    <div class="flex">
+                        <button class="btn_certi"
+                            wire:click="generateCertificate({{ $aprendiz->id }})">
+                            Generar Certificado
+                        </button>
+                    </div>
+                </div>
             </div>
         @endif
     </div>

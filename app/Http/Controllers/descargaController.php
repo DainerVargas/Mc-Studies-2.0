@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Apprentice;
 use App\Models\Informe;
+use App\Models\RegisterHours;
 use App\Models\Teacher;
 use App\Models\Tinforme;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -98,10 +99,25 @@ class descargaController extends Controller
         return $pdf->download("Informe Caja " . $fecha . " .pdf");
     }
 
+    public function registroHoras(Teacher $teacher)
+    {
+        $hoursDetails = RegisterHours::where('teacher_id', $teacher->id)->get();
+
+        $pdf = Pdf::loadView('registroHoras', compact('hoursDetails'));
+        return $pdf->download("Registro Horas " . $teacher->name . " .pdf");
+    }
+
     public function descarga(Apprentice $aprendiz)
     {
-
         return view('descargaPDF', compact('aprendiz'));
+    }
+
+    public function certificado(Apprentice $aprendiz)
+    {
+        $textReconocimiento = session()->get('textReconocimiento');
+        $pdf = Pdf::loadView('certificado', compact('aprendiz', 'textReconocimiento'));
+        return $pdf->download("Certificado.pdf");
+          /* return view('certificado'); */
     }
 
     public function descargarInforme($estudiante)

@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class RegisterHours extends Component
 {
-    public $registerHours, $profesores, $view = false, $teacher_id = '', $horas = '', $lunes = '', $martes = '', $miercoles = '', $jueves = '', $viernes = '', $sabado = '', $filtro = '', $id = null, $date = '';
+    public $registerHours, $profesores, $view = false, $teacher_id = '', $horas = '', $lunes = '', $martes = '', $miercoles = '', $jueves = '', $viernes = '', $sabado = '', $filtro = '', $id = null, $date = '', $hoursDetails, $showHour = false;
 
     public function mount()
     {
@@ -43,12 +43,10 @@ class RegisterHours extends Component
     {
         $this->Filtro();
     }
-
     public function updatedDate()
     {
         $this->Filtro();
     }
-
     public function Filtro()
     {
         $this->registerHours = ModelsRegisterHours::whereHas('teacher', function ($query) {
@@ -67,15 +65,12 @@ class RegisterHours extends Component
             ->orderByDesc('updated_at')
             ->get();
     }
-
-
     public function delete($value)
     {
         ModelsRegisterHours::where('id', $value)->delete();
 
         $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
     }
-
     public function save()
     {
         $validaciones = $this->validate([
@@ -106,6 +101,16 @@ class RegisterHours extends Component
         $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
     }
 
+    public function donwload($teacher)
+    {
+        return redirect()->route('registroHoras', compact('teacher'));
+    }
+
+    public function showHours($value = null)
+    {
+        $this->hoursDetails = ModelsRegisterHours::where('teacher_id',$value)->get();
+        $this->showHour = !$this->showHour;
+    }   
     public function render()
     {
         return view('livewire.register-hours');
