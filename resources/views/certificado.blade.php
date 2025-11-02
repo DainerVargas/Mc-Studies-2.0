@@ -130,7 +130,7 @@
             {{ $textReconocimiento }}
         </p>
 
-        <h3 class="student-name">{{ $aprendiz->name }} Manuel {{ $aprendiz->apellido }} Jaraba</h3>
+        <h3 class="student-name">{{ $aprendiz->name }} {{ $aprendiz->apellido }}</h3>
 
         <div class="signatures">
             <div class="signature">

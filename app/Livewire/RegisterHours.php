@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\RegisterHours as ModelsRegisterHours;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class RegisterHours extends Component
@@ -49,7 +50,7 @@ class RegisterHours extends Component
     }
     public function Filtro()
     {
-        $this->registerHours = ModelsRegisterHours::whereHas('teacher', function ($query) {
+       /*  $this->registerHours = ModelsRegisterHours::whereHas('teacher', function ($query) {
             $query->where('name', 'like', "%{$this->filtro}%");
         })
             ->when($this->date, function ($query) {
@@ -62,14 +63,20 @@ class RegisterHours extends Component
                         ->orWhereDate('sabado', $this->date);
                 });
             })
-            ->orderByDesc('updated_at')
-            ->get();
+            ->join(
+                DB::raw('(SELECT teacher_id, MAX(updated_at) as last_update FROM register_hours GROUP BY teacher_id) as latest'),
+                function ($join) {
+                    $join->on('register_hours.teacher_id', '=', 'latest.teacher_id')
+                        ->on('register_hours.updated_at', '=', 'latest.last_update');
+                }
+            )
+            ->orderByDesc('register_hours.updated_at')
+            ->select('register_hours.*')
+            ->get(); */
     }
     public function delete($value)
     {
         ModelsRegisterHours::where('id', $value)->delete();
-
-        $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
     }
     public function save()
     {
@@ -98,7 +105,6 @@ class RegisterHours extends Component
         );
 
         $this->view = false;
-        $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
     }
 
     public function donwload($teacher)
@@ -108,11 +114,35 @@ class RegisterHours extends Component
 
     public function showHours($value = null)
     {
-        $this->hoursDetails = ModelsRegisterHours::where('teacher_id',$value)->get();
+        $this->hoursDetails = ModelsRegisterHours::where('teacher_id', $value)->get();
         $this->showHour = !$this->showHour;
-    }   
+    }
     public function render()
     {
+
+        $this->registerHours = ModelsRegisterHours::whereHas('teacher', function ($query) {
+            $query->where('name', 'like', "%{$this->filtro}%");
+        })
+            ->when($this->date, function ($query) {
+                $query->where(function ($q) {
+                    $q->whereDate('lunes', $this->date)
+                        ->orWhereDate('martes', $this->date)
+                        ->orWhereDate('miercoles', $this->date)
+                        ->orWhereDate('jueves', $this->date)
+                        ->orWhereDate('viernes', $this->date)
+                        ->orWhereDate('sabado', $this->date);
+                });
+            })
+            ->join(
+                DB::raw('(SELECT teacher_id, MAX(updated_at) as last_update FROM register_hours GROUP BY teacher_id) as latest'),
+                function ($join) {
+                    $join->on('register_hours.teacher_id', '=', 'latest.teacher_id')
+                        ->on('register_hours.updated_at', '=', 'latest.last_update');
+                }
+            )
+            ->orderByDesc('register_hours.updated_at')
+            ->select('register_hours.*')
+            ->get();
         return view('livewire.register-hours');
     }
 }

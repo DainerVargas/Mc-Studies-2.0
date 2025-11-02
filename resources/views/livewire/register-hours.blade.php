@@ -101,7 +101,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6">
+                            <td colspan="12">
                                 <p class="nodatos">No hay datos</p>
                                 <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
                                     <source src="/videos/video2.mp4" type="">

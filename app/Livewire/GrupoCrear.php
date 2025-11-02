@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Apprentice;
 use App\Models\Group;
 use App\Models\History;
+use App\Models\Qualification;
 use App\Models\Teacher;
 use App\Models\Type;
 use Carbon\Carbon;
@@ -15,8 +16,8 @@ class GrupoCrear extends Component
 
     public $grupos, $grupoNmae, $grupoId, $estado;
     public $name;
-    public $teacher_id, $profesor_id, $profesorName;
-    public $type_id, $historyName;
+    public $teacher_id, $profesor_id, $profesorName, $show = false, $nameTeacher, $groupName, $typeGroup;
+    public $type_id, $historyName, $qualifications, $idGroup;
     public $profesores;
     public $filtroTeacher = '';
     public $types;
@@ -35,6 +36,7 @@ class GrupoCrear extends Component
         $this->view = 0;
         $this->view2 = 0;
         $this->profesor_id = '';
+        $this->show = false;
     }
 
     public function save()
@@ -139,6 +141,59 @@ class GrupoCrear extends Component
             $this->filtroTeacher = '';
             $this->view2 = 0;
         }
+    }
+
+    public function descargarReporte()
+    {
+        session()->put('groupName', $this->groupName);
+        session()->put('nameTeacher', $this->nameTeacher);
+        session()->put('typeGroup', $this->typeGroup);
+        session()->put('qualifications', $this->qualifications);
+
+        return redirect()->route('groupCalification');
+    }
+
+    public function verDetalle($grupo = null)
+    {
+        $group = Group::find($grupo);
+        $this->idGroup = $group->id;
+
+        $this->show = true;
+        session()->put('show', $this->show);
+
+        if (!$group) {
+            return;
+        }
+        $this->nameTeacher = '';
+        if (isset($group->teacher->name)) {
+            $this->nameTeacher = $group->teacher->name;
+        }
+        $this->groupName = $group->name;
+        $this->typeGroup = '';
+        if (isset($group->type->name)) {
+            $this->typeGroup = $group->type->name;
+        }
+
+        $this->qualifications = Qualification::where('group_id', $group->id)
+            ->orderBy('semestre', 'ASC')
+            ->get()
+            ->groupBy('semestre')
+            ->map(function ($items) {
+                $listening = $items->avg('listening');
+                $writing   = $items->avg('writing');
+                $reading   = $items->avg('reading');
+                $speaking  = $items->avg('speaking');
+
+                $global = ($listening + $writing + $reading + $speaking) / 4;
+
+                return [
+                    'listening' => round($listening, 2),
+                    'writing'   => round($writing, 2),
+                    'reading'   => round($reading, 2),
+                    'speaking'  => round($speaking, 2),
+                    'global'    => round($global, 2),
+                ];
+            });
     }
 
     public function render()

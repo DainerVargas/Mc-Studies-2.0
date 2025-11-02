@@ -106,6 +106,16 @@ class descargaController extends Controller
         $pdf = Pdf::loadView('registroHoras', compact('hoursDetails'));
         return $pdf->download("Registro Horas " . $teacher->name . " .pdf");
     }
+    public function groupCalification()
+    {
+        $qualifications = session()->get('qualifications');
+        $groupName = session()->get('groupName');
+        $nameTeacher = session()->get('nameTeacher');
+        $typeGroup = session()->get('typeGroup');
+
+        $pdf = Pdf::loadView('grupoCalificacion', compact('qualifications', 'groupName', 'nameTeacher', 'typeGroup'));
+        return $pdf->download("Calificacion - Grupo " . $groupName . " .pdf");
+    }
 
     public function descarga(Apprentice $aprendiz)
     {
@@ -117,7 +127,7 @@ class descargaController extends Controller
         $textReconocimiento = session()->get('textReconocimiento');
         $pdf = Pdf::loadView('certificado', compact('aprendiz', 'textReconocimiento'));
         return $pdf->download("Certificado.pdf");
-          /* return view('certificado'); */
+        /* return view('certificado'); */
     }
 
     public function descargarInforme($estudiante)

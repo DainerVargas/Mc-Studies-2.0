@@ -132,3 +132,5 @@ Route::get('Informe Caja', [DescargaController::class, 'informeCaja'])->middlewa
 Route::get('Descarga Registro Horas/{teacher}', [DescargaController::class, 'registroHoras'])->middleware('auth')->name('registroHoras');
 
 Route::get('Certificado/{aprendiz}', [DescargaController::class, 'certificado'])->middleware('auth')->name('certificado');
+
+Route::get('Calificacion Grupo', [DescargaController::class, 'groupCalification'])->middleware('auth')->name('groupCalification');
