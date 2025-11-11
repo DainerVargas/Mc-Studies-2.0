@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\sendQualificationMail;
 use App\Models\Apprentice;
 use App\Models\Informe;
 use App\Models\RegisterHours;
@@ -11,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Mail;
 
 class descargaController extends Controller
 {
@@ -88,6 +90,28 @@ class descargaController extends Controller
         $pdf = Pdf::loadView('copiaseguridadDescarga', compact('securityInforme', 'fecha'));
         return $pdf->download("Copia Seguridad " . $fecha . " .pdf");
         /*  return view('copiaseguridadDescarga', compact('securityInforme', 'fecha')); */
+    }
+
+    public function donwloadQualification()
+    {
+        $qualifications = session()->get('qualifications');
+ 
+        $aprendiz = session()->get('aprendiz');
+
+        if ($aprendiz) {
+
+            $email = $aprendiz->attendant->email ?? $aprendiz->email;
+        }
+
+        if ($aprendiz) {
+            Mail::to($email)->send(new sendQualificationMail($aprendiz, $qualifications));
+
+            return redirect('Informacion/' . $aprendiz->id);
+        } else {
+
+            $pdf = Pdf::loadView('downloadqualifications', compact('qualifications'));
+            return $pdf->download("Resultados");
+        }
     }
 
     public function informeCaja()

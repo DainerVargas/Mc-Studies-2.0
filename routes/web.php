@@ -134,3 +134,5 @@ Route::get('Descarga Registro Horas/{teacher}', [DescargaController::class, 'reg
 Route::get('Certificado/{aprendiz}', [DescargaController::class, 'certificado'])->middleware('auth')->name('certificado');
 
 Route::get('Calificacion Grupo', [DescargaController::class, 'groupCalification'])->middleware('auth')->name('groupCalification');
+
+Route::get('Descarga-Calificacion', [DescargaController::class, 'donwloadQualification'])->middleware('auth')->name('donwloadQualification');

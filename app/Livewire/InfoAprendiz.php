@@ -31,6 +31,9 @@ class InfoAprendiz extends Component
         $this->edadActualizada = $hoy->diff($fechaNacimiento)->y;
         $this->view = session()->get('view', false);
         $this->viewCertificate = session()->get('viewCertificate', false);
+
+        session()->forget('aprendiz');
+        session()->forget('qualifications');
     }
 
     public function toggleEstado(Apprentice $aprendiz)
@@ -77,7 +80,8 @@ class InfoAprendiz extends Component
         $this->textReconocimiento = '';
     }
 
-    public function generateCertificate($aprendiz){
+    public function generateCertificate($aprendiz)
+    {
 
         $this->validate([
             'textReconocimiento' => 'required|string|max:500',
@@ -89,6 +93,22 @@ class InfoAprendiz extends Component
 
         session()->put('textReconocimiento', $this->textReconocimiento);
         return redirect()->route('certificado', compact('aprendiz'));
+    }
+
+    public function donwloadQualification()
+    {
+        session()->put('qualifications', $this->qualifications);
+
+        return redirect()->route('donwloadQualification');
+    }
+
+    public function sendQualification()
+    {
+
+        session()->put('qualifications', $this->qualifications);
+        session()->put('aprendiz', $this->aprendiz);
+
+        return redirect()->route('donwloadQualification');
     }
 
     public function render()

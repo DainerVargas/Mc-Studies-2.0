@@ -41,10 +41,11 @@
             border-collapse: collapse;
             text-align: center;
             background-color: #fff;
+            margin-bottom: 10px;
         }
 
         .tabla-calificaciones th {
-            background: #0a58ca;
+            background: #05CCD1;
             color: #fff;
             font-weight: 600;
             padding: 12px;
@@ -83,6 +84,35 @@
         .tabla-calificaciones td.promedio-final {
             color: #198754;
             font-weight: bold;
+        }
+
+        .conteBtn{
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: end;
+            gap: 15px;
+        }
+
+        .conteBtn button{
+            padding: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            border: 1px solid #b1b1b1;
+            border-radius: 4px;
+        }
+
+        .conteBtn button:hover{
+            transform: scale(1.05);
+        }
+
+        .btn-send{
+            background-color: #05CCD1;
+        }
+        .btn-donwload{
+            background-color: #99BF51;
         }
 
         /* Responsivo */
@@ -328,11 +358,11 @@
         <div class="infoAcudiente">
             <p class="title">Información Acudiente</p>
             <div class="datos">
-                <p>Nombre: <span>{{ $aprendiz->attendant->name }} {{ $aprendiz->attendant->apellido }}</span>
+                <p>Nombre: <span>{{ $aprendiz->attendant->name ?? '' }} {{ $aprendiz->attendant->apellido ?? '' }}</span>
                 </p>
-                <p>Email: <span>{{ $aprendiz->attendant->email }}</span>
+                <p>Email: <span>{{ $aprendiz->attendant->email ?? '' }}</span>
                 </p>
-                <p>Telefono: <span>{{ $aprendiz->attendant->telefono }}</span>
+                <p>Telefono: <span>{{ $aprendiz->attendant->telefono ?? '' }}</span>
                 </p>
                 @if ($aprendiz->edad < 18)
                     <p>Documento: <span>{{ $aprendiz->attendant->documento ?? 'No hay documento' }}</span></p>
@@ -443,6 +473,11 @@
                         @endif
                     </tbody>
                 </table>
+
+                <div class="conteBtn">
+                    <button class="btn-send" wire:click="sendQualification">Enviar</button>
+                    <button class="btn-donwload" wire:click="donwloadQualification">Descargar</button>
+                </div>
             </div>
         @endif
 
@@ -464,8 +499,7 @@
                     @enderror
 
                     <div class="flex">
-                        <button class="btn_certi"
-                            wire:click="generateCertificate({{ $aprendiz->id }})">
+                        <button class="btn_certi" wire:click="generateCertificate({{ $aprendiz->id }})">
                             Generar Certificado
                         </button>
                     </div>
