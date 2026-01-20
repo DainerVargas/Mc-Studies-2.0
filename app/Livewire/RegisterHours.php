@@ -40,6 +40,12 @@ class RegisterHours extends Component
         }
     }
 
+    public function pay($value)
+    {
+        ModelsRegisterHours::find($value)->update(['pago' => true]);
+        $this->registerHours = ModelsRegisterHours::orderByDesc('updated_at')->get();
+    }
+
     public function updatedFiltro()
     {
         $this->Filtro();
@@ -50,7 +56,7 @@ class RegisterHours extends Component
     }
     public function Filtro()
     {
-       /*  $this->registerHours = ModelsRegisterHours::whereHas('teacher', function ($query) {
+        /*  $this->registerHours = ModelsRegisterHours::whereHas('teacher', function ($query) {
             $query->where('name', 'like', "%{$this->filtro}%");
         })
             ->when($this->date, function ($query) {

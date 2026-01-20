@@ -14,6 +14,34 @@
                 <label for="">Buscar servicio</label>
                 <input type="text" wire:model.live="nameService" placeholder="Buscar servicios">
             </div>
+
+            <style>
+                .year {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 1px solid #ccc;
+                    padding: 3px;
+                    border-radius: 5px;
+                    gap: 5px;
+                    background-color: white;
+                }
+
+                #btnPrev,
+                #btnNext {
+                    cursor: pointer;
+                }
+            </style>
+            <div class="year">
+                <span id="btnPrev" class="material-symbols-outlined" wire:click="previous">
+                    skip_previous
+                </span>
+                <p>{{ $year }}</p>
+                <span id="btnNext" class="material-symbols-outlined" wire:click="next">
+                    skip_next
+                </span>
+            </div>
+
             <div class="conteInput">
                 <label for="">Fecha</label>
                 <input style="width: 200px" type="date" wire:model.live="date">
@@ -101,7 +129,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td class="center" colspan="7">
+                                <td class="center" colspan="8">
                                     <p class="nodatos">No hay datos</p>
                                     <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
                                         <source src="/videos/video2.mp4" type="">
@@ -247,7 +275,8 @@
                 </select>
                 <div class="column">
                     <button wire:click="showPay">¡Crear nuevo!</button>
-                    <button wire:click="donwload" wire:confirm='Confirma para descargar el informe de caja.'>Descargar</button>
+                    <button wire:click="donwload"
+                        wire:confirm='Confirma para descargar el informe de caja.'>Descargar</button>
                 </div>
             </div>
         </div>

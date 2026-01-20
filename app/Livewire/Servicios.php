@@ -17,7 +17,7 @@ class Servicios extends Component
 
     public $showS = false, $showC = false, $show = 1;
     public $type = 'null', $nameService = '', $nameEstudiante = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $date = '', $pay_id = '';
-    public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate, $saldoCaja = 0;
+    public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate, $saldoCaja = 0, $year;
 
     public function mount()
     {
@@ -29,7 +29,9 @@ class Servicios extends Component
         $this->show = Session::get('show', 1);
         $this->metodoPagos = MetodoPago::all();
         $this->estudents = Apprentice::all();
+        $this->year = date('Y');
     }
+
     public function view($option)
     {
         $this->show = $option;
@@ -42,6 +44,7 @@ class Servicios extends Component
     {
         $this->service_id = $id;
     }
+
     public function updatedComprobante()
     {
         $this->validate([
@@ -90,6 +93,18 @@ class Servicios extends Component
         $this->fecha = $servicio->fecha;
         $this->type_service_id = $servicio->type_service_id;
     }
+
+    public function next()
+	{
+		$this->year += 1;
+		$this->services = Service::whereYear('fecha', $this->year)->get();
+	}
+	public function previous()
+	{
+		$this->year -= 1;
+		$this->services = Service::whereYear('fecha', $this->year)->get();
+	}
+
     public function updateService(Service $servicio)
     {
         $validate = $this->validate(
@@ -310,7 +325,7 @@ class Servicios extends Component
                 ->whereMonth('fecha', $fecha->month);
         }
 
-        $this->services = $query->get();
+        $this->services = $query->whereYear('fecha', $this->year)->get();
 
         return view('livewire.servicios');
     }

@@ -86,7 +86,7 @@ Route::get('Descarga-PDF/{mes}', [descargaController::class, 'descargar'])->midd
 
 /* Route::get('Descarga-PDF/{aprendiz}', [descargaController::class, 'descarga'])->middleware('auth')->name('descarga'); */
 
-Route::get('DescargaInforme', [descargaController::class, 'informedescarga'])->middleware('auth')->name('informedescarga');
+Route::get('DescargaInforme/{year}', [descargaController::class, 'informedescarga'])->middleware('auth')->name('informedescarga');
 
 /* Historial */
 Route::get('Historial', [AuthenticationController::class, 'historial'])->middleware('auth')->name('historial');

@@ -133,16 +133,16 @@ class SelectComprobante extends Component
             }
         }
 
-        $plataforma = 0;
+        $plataforma = 160000;
 
         if ($this->modality_id == 3) {
-            $this->valor =  810000;
+            $this->valor =  990000;
         } elseif ($this->modality_id == 2) {
             /* $this->valor =  450000; */
-            $this->valor =  900000;
+            $this->valor =  1100000;
         } elseif ($this->modality_id == 1) {
             /* $this->valor =  300000; */
-            $this->valor =  900000;
+            $this->valor =  1100000;
         }
 
         $aprendiz = Apprentice::create([

@@ -27,6 +27,8 @@ class InformeEstudiante extends Component
 		$this->informes = Informe::whereYear('fechaRegistro', $this->year)->get();
 		$this->aprendices = Apprentice::where('estado', true)->get();
 		$this->securityInforme = SecurityInforme::get();
+		
+		$this->active = session()->get('active');
 	}
 
 	public function next()
@@ -66,6 +68,7 @@ class InformeEstudiante extends Component
 	public function activar($value)
 	{
 		$this->active = $value;
+		session()->put('active', $value);
 	}
 
 	public function abonar(Apprentice $aprendiz)
@@ -206,7 +209,7 @@ class InformeEstudiante extends Component
 
 	public function plataforma(Apprentice $aprendiz)
 	{
-		$aprendiz->plataforma = 140000;
+		$aprendiz->plataforma = 160000;
 		$aprendiz->save();
 		$this->informes = Informe::all();
 		$this->aprendices = Apprentice::where('estado', true)->get();

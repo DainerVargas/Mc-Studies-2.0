@@ -158,10 +158,10 @@
                         @endif
                         <div class="conteInput">
                             <select class="input" name="becado_id" id="">
-                                <option value="{{ $aprendiz->becado->id }}">{{ $aprendiz->becado->name ?? 'No' }}
+                                <option value="{{ $aprendiz->becado->id ?? '' }}">{{ $aprendiz->becado->name ?? 'No' }}
                                 </option>
                                 @foreach ($becados as $becado)
-                                    @if ($becado->id != $aprendiz->becado->id)
+                                    @if ($becado->id != $aprendiz->becado?->id ?? null)
                                         <option value="{{ $becado->id }}">{{ $becado->name }}</option>
                                     @endif
                                 @endforeach

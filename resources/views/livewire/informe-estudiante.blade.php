@@ -102,7 +102,6 @@
                             $totalAbono = 0;
                             $plataforma = 0;
                             $background = 'white';
-                            $plataforma = 0;
                             $color = '#000000';
                             $valorModulo = 0;
                             $fechaPlataforma = Date::now()->year;
@@ -223,7 +222,7 @@
                                                     wire:click="plataforma({{ $informe->apprentice->id }})"
                                                     type="button"><span class="material-symbols-outlined">
                                                         payments
-                                                    </span> $140000</button>
+                                                    </span> $160000</button>
                                             </div>
                                         @else
                                             ¡Completado!

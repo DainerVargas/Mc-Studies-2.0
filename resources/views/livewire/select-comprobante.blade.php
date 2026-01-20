@@ -147,16 +147,17 @@
                 </div>
                 <div class="informacion">
                     <p>Valor completo del módulo:</p>
-                    <strong class="valor">$900.000<small>/cuatro meses</small></strong>
+                    <strong class="valor">$1.100.000<small>/cuatro meses</small></strong>
                 </div>
                 <div class="plataforma">
                     <p>Plataforma virtual de aprendizaje </p>
-                    <span>$140.000</span>
+                    <span>$160.000</span>
+                    <p><small>(Solo estudiantes nuevos)</small></p>
                 </div>
                 <div class="informacion">
                     <small>Resumen pago del módulo:</small>
-                    <strong class="valor">$440.000<small>/primer pago</small></strong>
-                    <strong class="valor">$300.000<small>/dos pagos restantes</small></strong>
+                    <strong class="valor">$460.000<small>/primer pago</small></strong>
+                    <strong class="valor">$350.000<small>/dos pagos restantes</small></strong>
                 </div>
                 <div class="conteBtn">
                     <button type="button" wire:click="modalidad(1)" class="btnModulo">Adquirir plan</button>
@@ -173,17 +174,18 @@
                     <small>Most popular</small>
                 </div>
                 <div class="informacion">
-                    <p>Pago total del módulo $900.000 pesos, este cuenta con un 10% de descuento:
+                    <p>Pago total del módulo $1.100.000 pesos, este cuenta con un 10% de descuento:
                     </p>
-                    <strong class="valor">$810.000<small>/cuatro meses</small></strong>
+                    <strong class="valor">$990.000<small>/cuatro meses</small></strong>
                 </div>
                 <div class="plataforma">
                     <p>Plataforma virtual de aprendizaje</p>
-                    <span>$140.000</span>
+                    <span>$160.000</span>
+                    <p><small>(Solo estudiantes nuevos)</small></p>
                 </div>
                 <div class="informacion">
                     <small>Valor total del módulo:</small>
-                    <strong class="valor">$950.000<small>/un solo pago</small></strong>
+                    <strong class="valor">$1.150.000<small>/un solo pago</small></strong>
                 </div>
                 <div class="conteBtn">
                     <button type="button" wire:click="modalidad(3)" class="btnModulo completo">Adquirir
@@ -201,16 +203,17 @@
                 </div>
                 <div class="informacion">
                     <p>Valor completo del módulo:</p>
-                    <strong class="valor">$900.000<small>/cuatro meses</small></strong>
+                    <strong class="valor">$1.100.000<small>/cuatro meses</small></strong>
                 </div>
                 <div class="plataforma">
                     <p>Plataforma virtual de aprendizaje</p>
-                    <span>$140.000</span>
+                    <span>$160.000</span>
+                    <p><small>(Solo estudiantes nuevos)</small></p>
                 </div>
                 <div class="informacion">
                     <small>Resumen pago del módulo:</small>
-                    <strong class="valor">$590.000<small>/primer mes</small></strong>
-                    <strong class="valor">$450.000<small>/un pago restante</small></strong>
+                    <strong class="valor">$600.000<small>/primer mes</small></strong>
+                    <strong class="valor">$600.000<small>/un pago restante</small></strong>
                 </div>
                 <div class="conteBtn">
                     <button type="button" wire:click="modalidad(2)" class="btnModulo">Adquirir plan</button>

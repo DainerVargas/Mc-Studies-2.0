@@ -5,8 +5,18 @@
                 <label for="filtro">Filtra por el nombre del Profesor</label>
                 <input type="text" wire:model.live="filtro" placeholder="Nombre del Profesor">
             </div>
+            <div class="year">
+                <span class="material-symbols-outlined" wire:click="previous">
+                    skip_previous
+                </span>
+                <p>{{ $year }}</p>
+                <span class="material-symbols-outlined" wire:click="next">
+                    skip_next
+                </span>
+            </div>
+
             <div class="contelink">
-                <a href="{{ route('informedescarga') }}"> Descargar Informe
+                <a href="{{ route('informedescarga', $year) }}"> Descargar Informe
                     <span class="material-symbols-outlined">
                         download
                     </span>
@@ -44,7 +54,7 @@
                                 $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
                             @endphp
                             <td>{{ $fecha }}</td>
-                            <td>{{ $informe->periodo ?? 'No registrado'}}</td>
+                            <td>{{ $informe->periodo ?? 'No registrado' }}</td>
                             <td>
                                 <div class="flex">
                                     <button class="delete" wire:click="eliminar({{ $informe->id }})"
@@ -57,8 +67,8 @@
                             </td>
                             <td>
                                 <div class="flex">
-                                 <input type="checkbox" wire:click="select({{ $informe->id }})"
-                                 {{ is_array($selectTeachers) && in_array($informe->id, $selectTeachers) ? 'checked' : '' }}>
+                                    <input type="checkbox" wire:click="select({{ $informe->id }})"
+                                        {{ is_array($selectTeachers) && in_array($informe->id, $selectTeachers) ? 'checked' : '' }}>
                                 </div>
                             </td>
                         </tr>

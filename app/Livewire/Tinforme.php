@@ -10,12 +10,13 @@ class Tinforme extends Component
 {
     public $tinformes, $profesores, $filtro = '', $informe = [], $view;
 
-    public $name, $abono, $teacher, $selectTeachers = [] ,$message2;
+    public $name, $abono, $teacher, $selectTeachers = [] ,$message2, $year;
 
     public function mount()
     {
         $this->tinformes = ModelsTinforme::all();
         $this->profesores = Teacher::all();
+        $this->year = date('Y');
     }
 
     public function active($value){
@@ -23,6 +24,17 @@ class Tinforme extends Component
         $this->teacher = Teacher::where('id', $infor->teacher_id)->first();
         $this->view = 1;
     }
+
+    public function next()
+	{
+		$this->year += 1;
+		$this->tinformes = ModelsTinforme::whereYear('fecha', $this->year)->get();
+	}
+	public function previous()
+	{
+		$this->year -= 1;
+		$this->tinformes = ModelsTinforme::whereYear('fecha', $this->year)->get();
+	}
     
     public function select($teacherId)
     {
@@ -79,7 +91,7 @@ class Tinforme extends Component
         $this->informe = collect(); 
 
         foreach ($this->profesores as $profesor) {
-            $informesProfesor = ModelsTinforme::where('teacher_id', $profesor->id)->get();
+            $informesProfesor = ModelsTinforme::where('teacher_id', $profesor->id)->whereYear('fecha', $this->year)->get();
             $this->informe = $this->informe->merge($informesProfesor); 
         }
 

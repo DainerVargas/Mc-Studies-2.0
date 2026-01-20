@@ -56,9 +56,17 @@ class descargaController extends Controller
         return $pdf->download('Informe-Estudiantes.pdf');
     }
 
-    public function informedescarga()
+    public function informedescarga($year)
     {
-        $informes = Tinforme::all();
+        $selectTeachers = session()->get('selectTeachers');
+
+        if ($selectTeachers != []) {
+
+            $informes = Tinforme::whereIn('id', $selectTeachers)->whereYear('fecha', $year)->get();
+        } else {
+            $informes = Tinforme::whereYear('fecha', $year)->get();
+        }
+
         $fecha = Carbon::now()->format('d-m-Y');
 
         $pdf = Pdf::loadView('tinformeDescarga', compact('informes', 'fecha'));

@@ -137,6 +137,7 @@
                         <th>jueves</th>
                         <th>viernes</th>
                         <th>sabado</th>
+                        <th>Pago</th>
                         <th>Horas</th>
                         <th>Total</th>
                     </tr>
@@ -165,6 +166,13 @@
                             <td>
                                 <p>{{ $detail->sabado ?? '---' }}</p>
                             </td>
+                            <td>
+                                @if ($detail->pago)
+                                    <p style="color: green">Completado</p>
+                                @else
+                                    <p style="color: orange">Pendiente</p>
+                                @endif
+                            </td>
                             <td>{{ $detail->horas }}</td>
                             @php
                                 $totalPrice += $detail->horas * $detail->teacher->precio_hora;
@@ -173,7 +181,7 @@
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="7" style="text-align: right; font-weight: bold;">Total General:</td>
+                        <td colspan="8" style="text-align: right; font-weight: bold;">Total General:</td>
                         <td style="font-weight: bold;">{{ number_format($totalPrice, 2) }}</td>
                 </tbody>
             </table>

@@ -9,7 +9,8 @@
 
         <div class="conteInput" style="display:flex; justify-items: start; width: 200px;">
             <label style="text-align: start; width: 100%;" for="">Fecha</label>
-            <input style="width: 200px; height: 28px; border-radius: 4px; border: 1px solid #787878;" type="date" wire:model.live="date">
+            <input style="width: 200px; height: 28px; border-radius: 4px; border: 1px solid #787878;" type="date"
+                wire:model.live="date">
         </div>
 
         <div style="gap: 10px" class="conteBtnCreate">
@@ -32,6 +33,7 @@
                         <th>jueves</th>
                         <th>viernes</th>
                         <th>sabado</th>
+                        <th>Pago</th>
                         <th>Actualizar</th>
                         <th>Eliminar</th>
                     </tr>
@@ -78,6 +80,13 @@
                             </td>
                             <td>
                                 <p>{{ $registerHour->sabado ?? '---' }}</p>
+                            </td>
+                            <td>
+                                @if ($registerHour->pago)
+                                    <p style="color: green">Completado</p>
+                                @else
+                                    <button wire:confirm="Confirma el pago del profesor por favor." wire:click="pay({{ $registerHour->id }})" class="update">Pendiente</button>
+                                @endif
                             </td>
                             <td>
                                 <div class="flex">
@@ -218,6 +227,7 @@
                             <th>jueves</th>
                             <th>viernes</th>
                             <th>sabado</th>
+                            <th>pago</th>
                             <th>Horas</th>
                             <th>Total</th>
                         </tr>
@@ -245,6 +255,13 @@
                                 </td>
                                 <td>
                                     <p>{{ $detail->sabado ?? '---' }}</p>
+                                </td>
+                                <td>
+                                    @if ($detail->pago)
+                                        <p style="color: green">Completado</p>
+                                        @else
+                                        <p style="color: orange">Pendiente</p>
+                                    @endif
                                 </td>
                                 <td>{{ $detail->horas }}</td>
                                 @php
