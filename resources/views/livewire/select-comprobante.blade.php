@@ -1,311 +1,264 @@
-<div class="conteForm">
-    <form wire:submit="">
-        @csrf
-        <h2>Datos del Estudiante</h2>
-        <div class="containerContents">
-            <div class="conteInput">
-                <label for="" class="labels">Nombre</label>
-                <input type="text" class="inputs" wire:model="name" placeholder="Nombre" value="{{ old('name') }}">
-                @error('name')
-                    <small class="errors" style="color red">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="conteInput">
-                <label for="" class="labels">Apellido</label>
-                <input type="text" class="inputs" wire:model="apellido" placeholder="Apellido"
-                    value="{{ old('apellido') }}">
-                @error('apellido')
-                    <small class="errors" style="color red">{{ $message }}</small>
-                @enderror
-            </div>
-        </div>
-        <div class="containerContents">
-            <div class="conteInput">
-                <label for="" class="labels">Edad</label>
-                <input type="number" min="3" max="90" class="inputs" wire:model.live="edad"
-                    placeholder="Edad" value="{{ old('edad') }}">
-                @error('edad')
-                    <small class="errors" style="color red">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="conteInput">
-                <label for="" class="labels">Fecha Nacimiento</label>
-                <input type="date" class="inputs" wire:model="fecha_nacimiento" placeholder="fecha"
-                    value="{{ old('apellido') }}">
-                @error('fecha_nacimiento')
-                    <small class="errors" style="color red">{{ $message }}</small>
-                @enderror
-            </div>
-        </div>
-        <div class="containerContents top">
-            <div class="conteInput">
-                <label for="" class="labels">Dirección</label>
-                <input type="text" class="inputs" wire:model="direccion" placeholder="Dirección"
-                    value="{{ old('direccion') }}">
-                @error('direccion')
-                    <small class="errors" style="color red">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="conteInput">
-                <label for="" class="labels">Sede</label>
-                <select wire:model="sede_id" id="" style="height: 30px; width: 230px; border-radius: 5px; padding: 5px; border: 1px solid #c4c4c4; background-color: #fff;">
-                    <option selected hidden value="">Selecciona....</option>
-                    <option value="1">Fonseca</option>
-                    <option value="2">San Juan</option>
-                </select>
-                @error('sede_id')
-                    <small class="errors" style="color red">{{ $message }}</small>
-                @enderror
-            </div>
-        </div>
-        @if ($edad >= 18)
-            <div class="containerContents top">
-                <div class="conteInput">
-                    <label for="" class="labels">Email</label>
-                    <input type="text" class="inputs" wire:model="email" placeholder="email"
-                        value="{{ old('email') }}">
-                    @error('email')
-                        <small class="errors" style="color red">{{ $message }}</small>
+<div class="src-container">
+    <div class="src-form-card">
+        <form wire:submit.prevent="">
+            @csrf
+            <h2>Datos del Estudiante</h2>
+            <div class="src-grid">
+                <div class="src-input-group">
+                    <label>Nombre</label>
+                    <input type="text" wire:model="name" placeholder="Ej: Juan">
+                    @error('name')
+                        <span class="src-error">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="conteInput">
-                    <label for="" class="labels">Teléfono</label>
-                    <input type="text" class="inputs" wire:model="telefono" placeholder="Teléfono"
-                        value="{{ old('telefono') }}">
-                    @error('telefono')
-                        <small class="errors" style="color red">{{ $message }}</small>
+                <div class="src-input-group">
+                    <label>Apellido</label>
+                    <input type="text" wire:model="apellido" placeholder="Ej: Perez">
+                    @error('apellido')
+                        <span class="src-error">{{ $message }}</span>
                     @enderror
                 </div>
+            </div>
 
-                <div class="containerContents">
-                    <div class="conteInput">
-                        <label for="" class="labels">Documento</label>
-                        <input type="text" class="inputs" wire:model="documento" placeholder="Documento"
-                            value="{{ old('documento') }}">
-                        @error('documento')
-                            <small class="errors" style="color red">{{ $message }}</small>
+            <div class="src-grid">
+                <div class="src-input-group">
+                    <label>Edad</label>
+                    <input type="number" min="3" max="90" wire:model.live="edad" placeholder="00">
+                    @error('edad')
+                        <span class="src-error">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="src-input-group">
+                    <label>Fecha de Nacimiento</label>
+                    <input type="date" wire:model="fecha_nacimiento">
+                    @error('fecha_nacimiento')
+                        <span class="src-error">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="src-grid">
+                <div class="src-input-group">
+                    <label>Dirección</label>
+                    <input type="text" wire:model="direccion" placeholder="Calle, Carrera, No.">
+                    @error('direccion')
+                        <span class="src-error">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="src-input-group">
+                    <label>Sede de Estudio</label>
+                    <select wire:model="sede_id">
+                        <option value="" selected hidden>Selecciona una sede...</option>
+                        <option value="1">Fonseca</option>
+                        <option value="2">San Juan</option>
+                    </select>
+                    @error('sede_id')
+                        <span class="src-error">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            @if ($edad >= 18)
+                <div class="src-grid">
+                    <div class="src-input-group">
+                        <label>Email</label>
+                        <input type="email" wire:model="email" placeholder="ejemplo@correo.com">
+                        @error('email')
+                            <span class="src-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="src-input-group">
+                        <label>Teléfono / WhatsApp</label>
+                        <input type="text" wire:model="telefono" placeholder="+57 321 ...">
+                        @error('telefono')
+                            <span class="src-error">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>
-            </div>
-        @endif
-        @if ($edad < 18)
-            <h2>Datos del Acudiente</h2>
-            <div class="containerContents">
-                <div class="conteInput">
-                    <label for="" class="labels">Nombre</label>
-                    <input type="text" class="inputs" wire:model="nameAcudiente" placeholder="Nombre Acudiente"
-                        value="{{ old('nameAcudiente') }}">
-                    @error('nameAcudiente')
-                        <small class="errors" style="color red">{{ $message }}</small>
-                    @enderror
-                </div>
-                <div class="conteInput">
-                    <label for="" class="labels">Apellido</label>
-                    <input type="text" class="inputs" wire:model="apellidoAcudiente"
-                        placeholder="apellido Acudiente" value="{{ old('apellidoAcudiente') }}">
-                    @error('apellidoAcudiente')
-                        <small class="errors" style="color red">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-            <div class="containerContents top">
-                <div class="conteInput">
-                    <label for="" class="labels">Teléfono</label>
-                    <input type="text" class="inputs" wire:model="telefonoAcudiente" placeholder="Teléfono"
-                        value="{{ old('telefono') }}">
-                    @error('telefonoAcudiente')
-                        <small class="errors" style="color red">{{ $message }}</small>
-                    @enderror
-                </div>
-                <div class="conteInput">
-                    <label for="" class="labels">Email</label>
-                    <input type="text" class="inputs" wire:model="emailAcudiente" placeholder="Email"
-                        value="{{ old('email') }}">
-                    @error('emailAcudiente')
-                        <small class="errors" style="color red">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-            <div class="containerContents top">
-                <div class="conteInput">
-                    <label for="" class="labels">Documento</label>
-                    <input type="text" class="inputs" wire:model="documentoAcudiente" placeholder="Documento"
-                        value="{{ old('documentoAcudiente') }}">
-                    @error('documentoAcudiente')
-                        <small class="errors" style="color red">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        @else
-        @endif
-        <h2>¿Cúal modalidad te gustaría adquirir?</h2>
-        <div class="modalidad">
-            <div class="pagomensual">
-                <div class="titulo">
-                    <p>Pago mensual</p>
-                </div>
-                <div class="informacion">
-                    <p>Valor completo del módulo:</p>
-                    <strong class="valor">$1.100.000<small>/cuatro meses</small></strong>
-                </div>
-                <div class="plataforma">
-                    <p>Plataforma virtual de aprendizaje </p>
-                    <span>$160.000</span>
-                    <p><small>(Solo estudiantes nuevos)</small></p>
-                </div>
-                <div class="informacion">
-                    <small>Resumen pago del módulo:</small>
-                    <strong class="valor">$460.000<small>/primer pago</small></strong>
-                    <strong class="valor">$350.000<small>/dos pagos restantes</small></strong>
-                </div>
-                <div class="conteBtn">
-                    <button type="button" wire:click="modalidad(1)" class="btnModulo">Adquirir plan</button>
-                </div>
-                @if ($modality_id == 1)
-                    <div class="absolute">
-                        <p>Adquirido</p>
+                <div class="src-grid">
+                    <div class="src-input-group">
+                        <label>Documento de Identidad</label>
+                        <input type="text" wire:model="documento" placeholder="C.C. / T.I.">
+                        @error('documento')
+                            <span class="src-error">{{ $message }}</span>
+                        @enderror
                     </div>
-                @endif
-            </div>
-            <div class="pagocompleto">
-                <div class="titulo">
-                    <p>Pago completo</p>
-                    <small>Most popular</small>
                 </div>
-                <div class="informacion">
-                    <p>Pago total del módulo $1.100.000 pesos, este cuenta con un 10% de descuento:
-                    </p>
-                    <strong class="valor">$990.000<small>/cuatro meses</small></strong>
-                </div>
-                <div class="plataforma">
-                    <p>Plataforma virtual de aprendizaje</p>
-                    <span>$160.000</span>
-                    <p><small>(Solo estudiantes nuevos)</small></p>
-                </div>
-                <div class="informacion">
-                    <small>Valor total del módulo:</small>
-                    <strong class="valor">$1.150.000<small>/un solo pago</small></strong>
-                </div>
-                <div class="conteBtn">
-                    <button type="button" wire:click="modalidad(3)" class="btnModulo completo">Adquirir
-                        plan</button>
-                </div>
-                @if ($modality_id == 3)
-                    <div class="absolute">
-                        <p>Adquirido</p>
+            @endif
+
+            @if ($edad > 0 && $edad < 18)
+                <h2 class="src-section-title">Datos del Acudiente</h2>
+                <div class="src-grid">
+                    <div class="src-input-group">
+                        <label>Nombre del Acudiente</label>
+                        <input type="text" wire:model="nameAcudiente" placeholder="Nombre completo">
+                        @error('nameAcudiente')
+                            <span class="src-error">{{ $message }}</span>
+                        @enderror
                     </div>
-                @endif
-            </div>
-            <div class="pagodoscuotas">
-                <div class="titulo">
-                    <p>Pago a dos cuotas</p>
-                </div>
-                <div class="informacion">
-                    <p>Valor completo del módulo:</p>
-                    <strong class="valor">$1.100.000<small>/cuatro meses</small></strong>
-                </div>
-                <div class="plataforma">
-                    <p>Plataforma virtual de aprendizaje</p>
-                    <span>$160.000</span>
-                    <p><small>(Solo estudiantes nuevos)</small></p>
-                </div>
-                <div class="informacion">
-                    <small>Resumen pago del módulo:</small>
-                    <strong class="valor">$600.000<small>/primer mes</small></strong>
-                    <strong class="valor">$600.000<small>/un pago restante</small></strong>
-                </div>
-                <div class="conteBtn">
-                    <button type="button" wire:click="modalidad(2)" class="btnModulo">Adquirir plan</button>
-                </div>
-                @if ($modality_id == 2)
-                    <div class="absolute">
-                        <p>Adquirido</p>
+                    <div class="src-input-group">
+                        <label>Apellido del Acudiente</label>
+                        <input type="text" wire:model="apellidoAcudiente" placeholder="Apellido">
+                        @error('apellidoAcudiente')
+                            <span class="src-error">{{ $message }}</span>
+                        @enderror
                     </div>
-                @endif
-                <input type="text" wire:model="modality_id" hidden>
-                @error('modality_id')
-                    <small class="errors smallErrors" style="color: red">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="pagodoscuotas">
-                <div class="titulo">
-                    <p>Pago clases personalizadas</p>
                 </div>
-                <div class="informacion">
-                    <p>Escribe el valor según las horas semanales seleccionadas</p>
-                    <p>Valor del plan:</p> <br>
-                    <br>
-                    <div class="conteInput">
-                        <input type="number" class="input" wire:model.live="valor" placeholder="Ingrese el valor">
-                        <label for="" class="label">Ingrese el valor</label>
+                <div class="src-grid">
+                    <div class="src-input-group">
+                        <label>Teléfono</label>
+                        <input type="text" wire:model="telefonoAcudiente" placeholder="Celular de contacto">
+                        @error('telefonoAcudiente')
+                            <span class="src-error">{{ $message }}</span>
+                        @enderror
                     </div>
-                    <div class="plataforma">
-                        <p>Plataforma virtual de aprendizaje</p>
-                        <span>(No aplica)</span>
+                    <div class="src-input-group">
+                        <label>Email</label>
+                        <input type="email" wire:model="emailAcudiente" placeholder="correo@acudiente.com">
+                        @error('emailAcudiente')
+                            <span class="src-error">{{ $message }}</span>
+                        @enderror
                     </div>
-                    <div class="informacion">
-                        <small>Valor total del módulo:</small>
-                        <strong class="valor">{{ $valor }}<small></small></strong>
+                </div>
+                <div class="src-grid">
+                    <div class="src-input-group">
+                        <label>Documento del Acudiente</label>
+                        <input type="text" wire:model="documentoAcudiente" placeholder="C.C.">
+                        @error('documentoAcudiente')
+                            <span class="src-error">{{ $message }}</span>
+                        @enderror
                     </div>
-                    <div class="conteBtn">
-                        <button type="button" wire:click="modalidad(4)" class="btnModulo">Adquirir plan</button>
+                </div>
+            @endif
+
+            <h2 class="src-section-title">Selecciona tu modalidad</h2>
+            <div class="src-modalidades-grid">
+                {{-- Pago Mensual --}}
+                <div class="src-plan-card {{ $modality_id == 1 ? 'src-active' : '' }}" wire:click="modalidad(1)">
+                    <div class="src-plan-badge">Adquirido</div>
+                    <div class="src-plan-title">Pago Mensual</div>
+                    <div class="src-plan-info">
+                        <p>Divide el costo total del módulo en pagos mensuales cómodos.</p>
+                        <strong class="src-price-big">$1.1M<small>/4 meses</small></strong>
                     </div>
-                    @if ($modality_id == 4)
-                        <div class="absolute">
-                            <p>Adquirido</p>
+                    <div class="src-plan-features">
+                        <span>$460k</span>
+                        <small>Primer pago (Inc. Plataforma)</small>
+                    </div>
+                    <button type="button" class="src-btn-plan" wire:click.stop="modalidad(1)">Seleccionar Plan</button>
+                </div>
+
+                {{-- Pago Completo --}}
+                <div class="src-plan-card src-popular {{ $modality_id == 3 ? 'src-active' : '' }}"
+                    wire:click="modalidad(3)">
+                    <div class="src-plan-badge">Adquirido</div>
+                    <div class="src-plan-title">Pago Completo</div>
+                    <div class="src-plan-info">
+                        <p>Obtén un 10% de descuento pagando el módulo por adelantado.</p>
+                        <strong class="src-price-big">$1.15M<small>/Inc. Plataforma</small></strong>
+                    </div>
+                    <div class="src-plan-features">
+                        <span>Ahorro del 10%</span>
+                        <small>Incluido en el valor total</small>
+                    </div>
+                    <button type="button" class="src-btn-plan" wire:click.stop="modalidad(3)">Seleccionar
+                        Plan</button>
+                </div>
+
+                {{-- Pago Dos Cuotas --}}
+                <div class="src-plan-card {{ $modality_id == 2 ? 'src-active' : '' }}" wire:click="modalidad(2)">
+                    <div class="src-plan-badge">Adquirido</div>
+                    <div class="src-plan-title">Dos Cuotas</div>
+                    <div class="src-plan-info">
+                        <p>Realiza dos pagos iguales durante el desarrollo del módulo.</p>
+                        <strong class="src-price-big">$1.1M<small>/4 meses</small></strong>
+                    </div>
+                    <div class="src-plan-features">
+                        <span>$600k</span>
+                        <small>Primer pago (Inc. Plataforma)</small>
+                    </div>
+                    <button type="button" class="src-btn-plan" wire:click.stop="modalidad(2)">Seleccionar
+                        Plan</button>
+                </div>
+
+                {{-- Personalizado --}}
+                <div class="src-plan-card {{ $modality_id == 4 ? 'src-active' : '' }}" wire:click="modalidad(4)">
+                    <div class="src-plan-badge">Adquirido</div>
+                    <div class="src-plan-title">Personalizado</div>
+                    <div class="src-plan-info">
+                        <p>Ajusta el valor según tus horas semanales de clases privadas.</p>
+                        <div class="src-input-group">
+                            <input type="number" wire:model.live="valor" placeholder="Ingresa el valor pactado"
+                                onclick="event.stopPropagation()">
                         </div>
-                    @endif
-                    <small class="errors smallErrors" style="color: red">{{ $error }}</small>
-                </div>
-            </div>
-        </div>
-
-        <div class="metodosPagos">
-            <h2>Seleccione un método de Pago</h2>
-            <div class="colum">
-                <div class="bancolombia bancolombia{{ $comprobante }}" wire:click="active(2)">
-                    <div class="imagen">
-                        <img src="/images/transferencia.png" alt="">
                     </div>
-                    <p>Método: <span>Transferencia electrónica</span></p>
-                    <p>Cuenta: <span>72400002457</span></p>
-                    <p>Nombre: <span>MC Language S.A.S .</span></p>
-                    <p>Nit: <span>901809528-9</span></p>
-                </div>
-                <div class="pagoFisico pagoFisico{{ $comprobante }}" wire:click="active(1)"">
-                    <div class="imagen">
-                        <img src="/images/efectivo.png" alt="">
+                    <div class="src-plan-features">
+                        <span>Personalizado</span>
+                        <small>Según acuerdo previo</small>
                     </div>
-                    <p>Método: <span>Efectivo</span></p>
-                    <p>Dirección: <span>calle 10 #18-25</span></p>
-                    <p>Telefono: <span>3173961175</span></p>
-                    <p>Email: <span>info@mcstudies.com</span></p>
+                    <button type="button" class="src-btn-plan" wire:click.stop="modalidad(4)">Seleccionar
+                        Plan</button>
                 </div>
             </div>
-        </div>
-        @if ($comprobante == 2)
-            <div class="boton">
-                <button disabled class="btnRegistro">Aun no está dispoblie <small
-                        wire:loading="">Cargando...</small></button>
-            </div>
-        @elseif ($comprobante == 1)
-            <div class="boton">
-                <button wire:click="createApprentice" class="btnRegistro">¡REGISTRARME! <small
-                        wire:loading="createApprentice">Cargando...</small></button>
-            </div>
-        @endif
+            @error('modality_id')
+                <div class="src-error" style="text-align: center; margin-top: -30px; margin-bottom: 20px;">Debe
+                    seleccionar una modalidad</div>
+            @enderror
 
+            <h2 class="src-section-title">Método de Pago</h2>
+            <div class="src-payment-methods">
+                <div class="src-method-card {{ $comprobante == 2 ? 'src-active' : '' }}" wire:click="active(2)">
+                    <img src="/images/transferencia.png" alt="Transferencia">
+                    <div class="src-method-info">
+                        <p><span>Transferencia Bancaria</span></p>
+                        <p>Bancolombia: <span>72400002457</span></p>
+                        <p>NIT: <span>901809528-9</span></p>
+                    </div>
+                </div>
 
-        <p class="success" style="color: green">{{ $success }}</p>
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li style="color: red">{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <div class="src-method-card {{ $comprobante == 1 ? 'src-active' : '' }}" wire:click="active(1)">
+                    <img src="/images/efectivo.png" alt="Efectivo">
+                    <div class="src-method-info">
+                        <p><span>Pago en Efectivo</span></p>
+                        <p>Dirección: <span>Calle 10 #18-25</span></p>
+                        <p>Fonseca, La Guajira</p>
+                    </div>
+                </div>
             </div>
-        @endif
-    </form>
+
+            <div class="src-register-footer">
+                @if ($comprobante == 2)
+                    <button disabled class="src-btn-submit" style="opacity: 0.6; cursor: not-allowed;">
+                        No disponible aún
+                    </button>
+                @elseif ($comprobante == 1)
+                    <button wire:click="createApprentice" class="src-btn-submit" wire:loading.attr="disabled">
+                        <span wire:loading.remove wire:target="createApprentice">¡REGISTRARME AHORA!</span>
+                        <span wire:loading wire:target="createApprentice">PROCESANDO...</span>
+                    </button>
+                @else
+                    <button disabled class="src-btn-submit" style="opacity: 0.5;">
+                        SELECCIONE PAGO
+                    </button>
+                @endif
+
+                @if ($success)
+                    <div class="src-success-msg">
+                        {{ $success }}
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="src-error"
+                        style="background: #fff5f5; padding: 20px; border-radius: 15px; width: 100%; max-width: 500px;">
+                        <ul style="margin: 0; padding-left: 20px;">
+                            @foreach ($errors->all() as $error)
+                                <li style="margin-bottom: 5px;">{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </div>
+        </form>
+    </div>
 </div>

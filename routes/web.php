@@ -12,10 +12,12 @@ use App\Http\Controllers\InformeController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 
 /* LOGIN */
+
 Route::get('/', [AuthenticationController::class, 'index'])->middleware('guest')->name('index');
 
 Route::get('Login', [AuthenticationController::class, 'login'])->middleware('guest')->name('login');
@@ -42,6 +44,10 @@ Route::get('Lista-Profesores', [TeacherController::class, 'lista'])->middleware(
 Route::get('Registro-Horas', [TeacherController::class, 'registerHours'])->middleware('auth')->name('registerHours');
 
 Route::get('Informacion-Profesor/{teacher}', [TeacherController::class, 'infoteacher'])->middleware('auth')->name('infoProfesor');
+
+Route::get('Detalle-Horas-Profesor/{teacher}', [TeacherController::class, 'hoursDetails'])->middleware('auth')->name('teacher.hours-details');
+
+Route::get('Formulario-Horas/{id?}', [TeacherController::class, 'hoursForm'])->middleware('auth')->name('teacher.hours-form');
 
 /* REGISTRO */
 
@@ -76,6 +82,8 @@ Route::get('Agregar-Usuarios', [UserController::class, 'agregar'])->middleware('
 
 Route::get('Listado-Usuarios', [UserController::class, 'listado'])->middleware('auth')->name('listado');
 
+Route::get('Historial de acciones', [UserController::class, 'history'])->middleware('auth')->name('history');
+
 /* DESCARGA PDF */
 
 Route::get('Donwload-PDF/{aprendiz}', [descargaController::class, 'donwload'])->middleware('auth')->name('donwload');
@@ -91,7 +99,7 @@ Route::get('DescargaInforme/{year}', [descargaController::class, 'informedescarg
 /* Historial */
 Route::get('Historial', [AuthenticationController::class, 'historial'])->middleware('auth')->name('historial');
 
-/* COMPROBANTE */ 
+/* COMPROBANTE */
 
 Route::get('Comprobante/{teacher}', [TeacherController::class, 'comprobante'])->middleware('auth')->name('comprobante');
 
@@ -136,3 +144,20 @@ Route::get('Certificado/{aprendiz}', [DescargaController::class, 'certificado'])
 Route::get('Calificacion Grupo', [DescargaController::class, 'groupCalification'])->middleware('auth')->name('groupCalification');
 
 Route::get('Descarga-Calificacion', [DescargaController::class, 'donwloadQualification'])->middleware('auth')->name('donwloadQualification');
+
+Route::get('/optimize', function () {
+    Artisan::call('optimize:clear');
+    return '✅ Caché, configuración y rutas limpiadas correctamente.';
+});
+/*
+Route::get('/storage-link', function () {
+    Artisan::call('storage:link');
+    return '✅ LISTO.';
+});
+
+use Illuminate\Support\Facades\File;
+
+Route::get('/copy-storage', function () {
+    File::copyDirectory(storage_path('app/public/products'), public_path('storage/products'));
+    return '✅ Archivos copiados a la carpeta pública.';
+}); */

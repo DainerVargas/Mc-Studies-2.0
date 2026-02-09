@@ -1,415 +1,407 @@
 <div class="component">
     <div class="links">
         <a wire:click="view(1)" class="{{ $show == 1 ? 'active' : '' }}">Servicios</a>
-
         <a wire:click="view(2)" class="{{ $show == 2 ? 'active' : '' }}">Caja</a>
     </div>
 
     @if ($show == 1)
-        <div class="conteFilter">
-            <div class="create">
-                <button wire:click="showService">Crear servicio</button>
-            </div>
-            <div class="conteInput">
-                <label for="">Buscar servicio</label>
-                <input type="text" wire:model.live="nameService" placeholder="Buscar servicios">
-            </div>
-
-            <style>
-                .year {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border: 1px solid #ccc;
-                    padding: 3px;
-                    border-radius: 5px;
-                    gap: 5px;
-                    background-color: white;
-                }
-
-                #btnPrev,
-                #btnNext {
-                    cursor: pointer;
-                }
-            </style>
-            <div class="year">
-                <span id="btnPrev" class="material-symbols-outlined" wire:click="previous">
-                    skip_previous
-                </span>
-                <p>{{ $year }}</p>
-                <span id="btnNext" class="material-symbols-outlined" wire:click="next">
-                    skip_next
-                </span>
+        <div class="modern-filters">
+            <div class="filter-header">
+                <div class="filter-title">
+                    <span class="material-symbols-outlined">filter_list</span>
+                    Gestión de Servicios
+                </div>
+                <div class="header-actions">
+                    <button class="filter-btn outline" wire:click="showCategory">
+                        <span class="material-symbols-outlined">category</span> Categoría
+                    </button>
+                    <button class="filter-btn dark" wire:click="showService">
+                        <span class="material-symbols-outlined">add_circle</span> Nuevo Servicio
+                    </button>
+                </div>
             </div>
 
-            <div class="conteInput">
-                <label for="">Fecha</label>
-                <input style="width: 200px" type="date" wire:model.live="date">
+            <div class="filter-group">
+                <label>Buscador</label>
+                <input type="text" wire:model.live="nameService" placeholder="Buscar por nombre o fecha...">
             </div>
-            <div class="typeService">
-                <select wire:model.live="type" id="">
-                    <option value="null" selected>Seleccione...</option>
-                    @forelse ($typeService as $type)
+
+            <div class="filter-group small">
+                <label>Año</label>
+                <div class="year-selector">
+                    <span class="material-symbols-outlined" wire:click="previous">keyboard_arrow_left</span>
+                    <p>{{ $year }}</p>
+                    <span class="material-symbols-outlined" wire:click="next">keyboard_arrow_right</span>
+                </div>
+            </div>
+
+            <div class="filter-group medium">
+                <label>Mes de referencia</label>
+                <input type="date" wire:model.live="date">
+            </div>
+
+            <div class="filter-group">
+                <label>Filtrar por categoría</label>
+                <select wire:model.live="type">
+                    <option value="null">Todas las especialidades</option>
+                    @foreach ($typeService as $type)
                         <option value="{{ $type->id }}">{{ $type->name }}</option>
-                    @empty
-                        <p>Sin categoria</p>
-                    @endforelse
+                    @endforeach
                 </select>
-
-                <button wire:click="showCategory">Crear categoria</button>
             </div>
         </div>
 
-        <div class="containerConte">
-            <div class="conteTable">
-                <table class="teacher">
-                    <thead>
+        <div class="modern-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Servicio</th>
+                        <th>Valor</th>
+                        <th>Fecha</th>
+                        <th>Categoría</th>
+                        <th>Comprobante</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $suma = 0; @endphp
+                    @forelse ($services as $key => $service)
+                        @php $suma += $service->valor; @endphp
                         <tr>
-                            <th>No.</th>
-                            <th>Servicios</th>
-                            <th>valor</th>
-                            <th>fecha</th>
-                            <th>Categoria</th>
-                            <th>Comprobante</th>
-                            <th>Editar</th>
-                            <th>Eliminar</th>
+                            <td style="font-weight: 600; color: #718096;">#{{ $key + 1 }}</td>
+                            <td><span style="font-weight: 700;">{{ $service->name }}</span></td>
+                            <td style="font-weight: 700; color: #05ccd1;">
+                                ${{ number_format($service->valor, 0, ',', '.') }}</td>
+                            <td><span style="color: #718096; font-size: 0.85rem;">{{ $service->fecha }}</span></td>
+                            <td><span class="badge-category">{{ $service->typeService->name }}</span></td>
+                            <td>
+                                @php $extension = pathinfo($service->comprobante, PATHINFO_EXTENSION); @endphp
+                                @if ($extension)
+                                    <a href="{{ asset('users/' . $service->comprobante) }}"
+                                        download="Comprobante-{{ $service->name }}" class="btn-update"
+                                        style="text-decoration: none;">
+                                        <span class="material-symbols-outlined">download</span>Descargar
+                                    </a>
+                                @else
+                                    <label class="btn-update" style="cursor: pointer;"
+                                        wire:change="setServiceIdAndSave({{ $service->id }})">
+                                        <span class="material-symbols-outlined">upload</span>Cargar
+                                        <input type="file" wire:model="comprobante" hidden>
+                                    </label>
+                                @endif
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <button wire:click="showUpdate({{ $service->id }})" class="btn-update">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+                                    <button wire:click="delete({{ $service->id }})"
+                                        wire:confirm="¿Desea eliminar el servicio?" class="btn-delete">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $suma = 0;
-                        @endphp
-                        @forelse ($services as $key => $service)
-                            <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td>{{ $service->name }} </td>
-                                <td>${{ number_format($service->valor, 0, ',', '.') }} </td>
-                                @php
-                                    $suma += $service->valor;
-                                @endphp
-                                <td>{{ $service->fecha }} </td>
-                                <td>{{ $service->typeService->name }} </td>
-                                @php
-                                    $extension = pathinfo($service->comprobante, PATHINFO_EXTENSION);
-                                @endphp
-                                <td>
-                                    @if ($extension)
-                                        <a style="text-decoration: none; color: #99BF51"
-                                            href="{{ asset('users/' . $service->comprobante) }}"
-                                            download="Comprobante de servicio-{{ $service->name }}">
-                                            <div class="flex">
-                                                <label style="cursor: pointer;">Descargar
-                                                    <span class="material-symbols-outlined">
-                                                        play_for_work
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </a>
-                                    @else
-                                        <label style="cursor: pointer"
-                                            wire:change="setServiceIdAndSave({{ $service->id }})">Cargar
-                                            <span class="material-symbols-outlined">
-                                                upload_file
-                                            </span>
-                                            <input type="file" wire:model="comprobante" hidden>
-                                        </label>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="flex">
-                                        <button wire:click="showUpdate({{ $service->id }})"
-                                            class="update">Actualizar</button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="flex">
-                                        <button class="delete" wire:click="delete({{ $service->id }})"
-                                            wire:confirm="¿Desea eliminar el servicio?">Eliminar</button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td class="center" colspan="8">
-                                    <p class="nodatos">No hay datos</p>
-                                    <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
-                                        <source src="/videos/video2.mp4" type="">
-                                    </video>
-                                </td>
-                            </tr>
-                        @endforelse
-                        <tr class="total">
-                            <td colspan="2">Total:</td>
-                            <td>${{ number_format($suma, 0, ',', '.') }}</td>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 50px;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 48px; color: #cbd5e0;">inventory_2</span>
+                                <p style="margin-top: 10px; color: #718096;">No hay servicios registrados</p>
+                            </td>
                         </tr>
-                    </tbody>
-                </table>
+                    @endforelse
+                </tbody>
+                <tfoot>
+                    <tr class="total">
+                        <td colspan="2">TOTAL SERVICIOS</td>
+                        <td colspan="5" style="color: #05ccd1; font-size: 1.2rem;">
+                            ${{ number_format($suma, 0, ',', '.') }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        @if ($showS || $showC || $showU)
+            <div class="conteCreate">
+                @if ($showS || $showU)
+                    <div class="conteCreateService">
+                        <div class="modal-header">
+                            <h3>{{ $showU ? 'Actualizar Servicio' : 'Nuevo Servicio' }}</h3>
+                            <p>{{ $showU ? 'Modifique los detalles del servicio seleccionado' : 'Registre un nuevo gasto o servicio en el sistema' }}
+                            </p>
+                            <button class="close-modal" wire:click="close">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="conteDivs">
+                                <div class="Input">
+                                    <label>Nombre del Servicio</label>
+                                    <input type="text" wire:model="name" placeholder="Ej: Pago de luz">
+                                </div>
+                                <div class="Input">
+                                    <label>Valor</label>
+                                    <input type="text" wire:model="valor" placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="conteDivs">
+                                <div class="Input">
+                                    <label>Fecha</label>
+                                    <input type="date" wire:model="fecha">
+                                </div>
+                                <div class="Input">
+                                    <label>Categoría</label>
+                                    <select wire:model="type_service_id">
+                                        <option value="null">Seleccione...</option>
+                                        @foreach ($typeService as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-cancel" wire:click="close">Cancelar</button>
+                            @if ($showU)
+                                <button class="btn-save" wire:click="updateService({{ $service_id }})">
+                                    <span class="material-symbols-outlined">save</span> Guardar Cambios
+                                </button>
+                            @else
+                                <button class="btn-save" wire:click="saveService">
+                                    <span class="material-symbols-outlined">add_circle</span> Registrar Servicio
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                @if ($showC)
+                    <div class="conteCreateCategory">
+                        <div class="modal-header">
+                            <h3>Nueva Categoría</h3>
+                            <p>Organice sus servicios mediante categorías personalizadas</p>
+                            <button class="close-modal" wire:click="close">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="conteDivs">
+                                <div class="Input">
+                                    <label>Nombre de Categoría</label>
+                                    <input type="text" wire:model="name" placeholder="Ej: Mantenimiento">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-cancel" wire:click="close">Cancelar</button>
+                            <button class="btn-save" wire:click="saveCategory">
+                                <span class="material-symbols-outlined">check_circle</span> Crear Categoría
+                            </button>
+                        </div>
+                    </div>
+                @endif
             </div>
-        </div>
-
-        <div class="conteCreate">
-            @if ($showS)
-                <div class="conteCreateService">
-                    <h3>Crear Servicio</h3>
-
-                    <div class="conteDivs">
-                        <div class="conteInput">
-                            <label for="">Servicio</label>
-                            <input type="text" wire:model="name">
-                        </div>
-                        <div class="conteInput">
-                            <label for="">Valor:</label>
-                            <input type="text" wire:model="valor">
-                        </div>
-                    </div>
-                    <div class="conteDivs">
-                        <div class="conteInput">
-                            <label for="">Fecha:</label>
-                            <input type="date" wire:model="fecha">
-                        </div>
-                        <div class="conteInput">
-                            <label for="">Categoria:</label>
-                            <select wire:model="type_service_id" id="">
-                                <option value="null" selected hidden>Seleccione...</option>
-                                @forelse ($typeService as $type)
-                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                @empty
-                                    <p>Sin categoria</p>
-                                @endforelse
-                            </select>
-                        </div>
-                    </div>
-
-                    <button wire:click="saveService">Crear servicio</button>
-
-                    <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
-
-                </div>
-            @endif
-
-            @if ($showC)
-                <div class="conteCreateCategory">
-                    <h3>Crear Categoria</h3>
-                    <div class="conteDivs">
-                        <div class="conteInput">
-                            <label for="">Categoria</label>
-                            <input type="text" wire:model="name">
-                        </div>
-                    </div>
-
-                    <button wire:click="saveCategory">Crear servicio</button>
-
-                    <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
-                </div>
-            @endif
-
-            @if ($showU)
-                <div class="conteCreateService">
-                    <h3>Crear Servicio</h3>
-
-                    <div class="conteDivs">
-                        <div class="conteInput">
-                            <label for="">Servicio</label>
-                            <input type="text" wire:model="name">
-                        </div>
-                        <div class="conteInput">
-                            <label for="">Valor:</label>
-                            <input type="text" wire:model="valor">
-                        </div>
-                    </div>
-                    <div class="conteDivs">
-                        <div class="conteInput">
-                            <label for="">Fecha:</label>
-                            <input type="date" wire:model="fecha">
-                        </div>
-                        <div class="conteInput">
-                            <label for="">Categoria:</label>
-                            <select wire:model="type_service_id" id="">
-                                <option value="null" selected hidden>Seleccione...</option>
-                                @forelse ($typeService as $type)
-                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                @empty
-                                    <p>Sin categoria</p>
-                                @endforelse
-                            </select>
-                        </div>
-                    </div>
-
-                    <button wire:click="updateService({{ $service_id }})">Actualizar servicio</button>
-
-                    <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}"
-                        alt="Icono Cerrar">
-
-                </div>
-            @endif
-        </div>
+        @endif
     @else
-        <div class="conteFilter">
-            <div class="conteInput">
-                <label for="">Nombre del Estudiante</label>
-                <input id="inputEstudent" type="text" wire:model.live="nameEstudiante" placeholder="Estudiante">
-            </div>
-            <div class="container">
-                <div class="conteInput">
-                    <label for="">Fecha Inicial</label>
-                    <input style="width: 200px" type="date" wire:model.live="dateInicio">
+        <div class="modern-filters">
+            <div class="filter-header">
+                <div class="filter-title">
+                    <span class="material-symbols-outlined">account_balance</span>
+                    Control de Caja
                 </div>
-                <div class="conteInput">
-                    <label for="">Fecha Final</label>
-                    <input style="width: 200px" type="date" wire:model.live="dateFinal">
+                <div class="header-actions">
+                    <button class="filter-btn dark" wire:click="showPay">
+                        <span class="material-symbols-outlined">add_box</span> Nuevo Movimiento
+                    </button>
+                    <button class="filter-btn outline" wire:click="donwload"
+                        wire:confirm="¿Descargar informe de caja?">
+                        <span class="material-symbols-outlined">download</span> Reporte PDF
+                    </button>
                 </div>
             </div>
-            <div class="typeService">
-                <select wire:model.live="metodo" id="">
-                    <option value="" selected>Metodo de pago</option>
-                    @forelse ($metodoPagos as $metodo)
-                        <option value="{{ $metodo->id }}">{{ $metodo->name }}</option>
-                    @empty
-                        <p></p>
-                    @endforelse
-                </select>
 
-                <select wire:model.live="dinero" id="">
-                    <option value="" selected>Dinero</option>
-                    <option value="Ingresado">Ingreso</option>
-                    <option value="Egresado">Egreso</option>
-                </select>
-                <div class="column">
-                    <button wire:click="showPay">¡Crear nuevo!</button>
-                    <button wire:click="donwload"
-                        wire:confirm='Confirma para descargar el informe de caja.'>Descargar</button>
+            <div class="filter-group">
+                <label>Búsqueda rápida</label>
+                <input type="text" wire:model.live="nameEstudiante" placeholder="Estudiante o concepto...">
+            </div>
+
+            <div class="filter-group medium">
+                <label>Fecha inicial</label>
+                <input type="date" wire:model.live="dateInicio">
+            </div>
+
+            <div class="filter-group medium">
+                <label>Fecha final</label>
+                <input type="date" wire:model.live="dateFinal">
+            </div>
+
+            <div class="filter-group small">
+                <label>Año</label>
+                <div class="year-selector">
+                    <span class="material-symbols-outlined" wire:click="previouspay">keyboard_arrow_left</span>
+                    <p>{{ $year2 }}</p>
+                    <span class="material-symbols-outlined" wire:click="nextpay">keyboard_arrow_right</span>
                 </div>
+            </div>
+
+            <div class="filter-group small">
+                <label>Método</label>
+                <select wire:model.live="metodo">
+                    <option value="">Todos</option>
+                    @foreach ($metodoPagos as $metodoItem)
+                        <option value="{{ $metodoItem->id }}">{{ $metodoItem->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="filter-group small">
+                <label>Tipo</label>
+                <select wire:model.live="dinero">
+                    <option value="">Ambos</option>
+                    <option value="Ingresado">Ingresos</option>
+                    <option value="Egresado">Egresos</option>
+                </select>
             </div>
         </div>
 
-        <h2 class="titlesaldo">SALDO EN CAJA: ${{ number_format($saldoCaja, 0, ',', '.') }}</h2>
+        <h2 class="titlesaldo">BALANCE ACTUAL: ${{ number_format($saldoCaja, 0, ',', '.') }}</h2>
 
-        <div class="containerConte">
-            <div class="conteTable">
-                <table class="teacher">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Nombre</th>
-                            <th>valor</th>
-                            <th>Metodo</th>
-                            <th>Ingreso/Egreso</th>
-                            <th>Fecha</th>
-                            <th>Editar</th>
-                            <th>Eliminar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <div class="modern-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Concepto / Estudiante</th>
+                        <th>Monto</th>
+                        <th>Método</th>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $total = 0; @endphp
+                    @forelse ($pagos as $key => $pago)
                         @php
-                            $total = 0;
+                            $total += $pago->monto;
+                            $name = $pago->apprentice
+                                ? $pago->apprentice->name . ' ' . $pago->apprentice->apellido
+                                : $pago->egresado;
                         @endphp
-                        @forelse ($pagos as $key => $pago)
-                            <tr>
-                                <td>{{ $key + 1 }}</td>
-
-                                @php
-                                    $name = $pago->apprentice
-                                        ? $pago->apprentice->name . ' ' . $pago->apprentice->apellido
-                                        : $pago->egresado;
-                                @endphp
-                                <td>{{ $name }}</td>
-                                <td>${{ number_format($pago->monto, 0, ',', '.') }} </td>
-                                @php
-                                    $total += $pago->monto;
-                                @endphp
-                                <td>{{ $pago->metodo->name }} </td>
-                                <td>{{ $pago->dinero }} </td>
-                                <td>
-                                    {{ $pago->created_at->format('Y-m-d') }}
-                                </td>
-                                <td>
-                                    <div class="flex">
-                                        <button wire:click="showPay({{ $pago->id }})"
-                                            class="update">Actualizar</button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="flex">
-                                        <button class="delete" wire:click="deletePay({{ $pago->id }})"
-                                            wire:confirm="¿Desea eliminar el servicio?">Eliminar</button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td class="center" colspan="8">
-                                    <p class="nodatos">No hay datos</p>
-                                    <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
-                                        <source src="/videos/video2.mp4" type="">
-                                    </video>
-                                </td>
-                            </tr>
-                        @endforelse
-                        <tr class="total">
-                            <td colspan="2">Total:</td>
-                            <td>${{ number_format($total, 0, ',', '.') }}</td>
+                        <tr>
+                            <td style="font-weight: 600; color: #718096;">#{{ $key + 1 }}</td>
+                            <td><span style="font-weight: 700;">{{ $name }}</span></td>
+                            <td
+                                style="font-weight: 700; color: {{ $pago->dinero == 'Ingresado' ? '#27ae60' : '#e74c3c' }};">
+                                ${{ number_format($pago->monto, 0, ',', '.') }}
+                            </td>
+                            <td><span class="badge-category">{{ $pago->metodo->name }}</span></td>
+                            <td>
+                                <span class="badge-{{ $pago->dinero == 'Ingresado' ? 'income' : 'expense' }}">
+                                    {{ $pago->dinero == 'Ingresado' ? 'INGRESO' : 'EGRESO' }}
+                                </span>
+                            </td>
+                            <td>{{ $pago->created_at->format('d/m/Y') }}</td>
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <button wire:click="showPay({{ $pago->id }})" class="btn-update">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+                                    <button wire:click="deletePay({{ $pago->id }})"
+                                        wire:confirm="¿Eliminar este registro?" class="btn-delete">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 50px;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 48px; color: #cbd5e0;">point_of_sale</span>
+                                <p style="margin-top: 10px; color: #718096;">No hay movimientos</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+                <tfoot>
+                    <tr class="total">
+                        <td colspan="2">TOTAL CONSULTADO</td>
+                        <td colspan="5" style="color: #2d3436; font-size: 1.2rem;">
+                            ${{ number_format($total, 0, ',', '.') }}</td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
 
         @if ($showU)
-            <div class="conteCreateService">
-                <h3>Crear Pago</h3>
-
-                <div class="conteDivs">
-                    <div class="conteInput">
-                        <label for="">Crear o Buscar</label>
-                        <input type="text" wire:model.live="search">
+            <div class="conteCreate">
+                <div class="conteCreateService">
+                    <div class="modal-header">
+                        <h3>{{ $pay_id ? 'Actualizar Movimiento' : 'Nuevo Movimiento' }}</h3>
+                        <p>{{ $pay_id ? 'Gestione los detalles del registro contable' : 'Registre un nuevo ingreso o egreso en la caja' }}
+                        </p>
+                        <button class="close-modal" wire:click="close">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
                     </div>
-                    <div class="conteInput">
-                        <label for="">Estudiantes:</label>
-                        <select wire:model="idEstudentCreate" id="">
-                            <option selected hidden value="">Seleccione</option>
-                            @foreach ($estudents as $estudent)
-                                <option value="{{ $estudent->id }}">{{ $estudent->name }} {{ $estudent->apellido }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="modal-body">
+                        <div class="conteDivs">
+                            <div class="Input">
+                                <label>Concepto / Egreso</label>
+                                <input type="text" wire:model.live="search" placeholder="Especifique concepto...">
+                            </div>
+                            <div class="Input">
+                                <label>O Estudiante</label>
+                                <select wire:model="idEstudentCreate">
+                                    <option value="">Seleccione...</option>
+                                    @foreach ($estudents as $estudent)
+                                        <option value="{{ $estudent->id }}">{{ $estudent->name }}
+                                            {{ $estudent->apellido }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="conteDivs">
+                            <div class="Input">
+                                <label>Monto</label>
+                                <input type="text" wire:model="montoCreate" placeholder="0.00">
+                            </div>
+                            <div class="Input">
+                                <label>Fecha</label>
+                                <input type="date" wire:model="dateCreate">
+                            </div>
+                        </div>
+                        <div class="conteDivs">
+                            <div class="Input">
+                                <label>Método</label>
+                                <select wire:model="metodoCreate">
+                                    <option value="null">Seleccione...</option>
+                                    @foreach ($metodoPagos as $metodoItem)
+                                        <option value="{{ $metodoItem->id }}">{{ $metodoItem->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="Input">
+                                <label>Tipo</label>
+                                <select wire:model="dineroCreate">
+                                    <option value="null">Seleccione...</option>
+                                    <option value="Ingresado">Ingreso</option>
+                                    <option value="Egresado">Egreso</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" wire:click="close">Cancelar</button>
+                        <button class="btn-save" wire:click="createPay({{ $pay_id }})">
+                            <span class="material-symbols-outlined">{{ $pay_id ? 'save' : 'add_box' }}</span>
+                            {{ $pay_id ? 'Actualizar' : 'Registrar' }}
+                        </button>
                     </div>
                 </div>
-                <div class="conteDivs">
-                    <div class="conteInput">
-                        <label for="">Monto:</label>
-                        <input type="text" wire:model="montoCreate">
-                    </div>
-                    <div class="conteInput">
-                        <label for="">Fecha:</label>
-                        <input type="date" wire:model="dateCreate">
-                    </div>
-                </div>
-                <div class="conteDivs">
-                    <div class="conteInput">
-                        <label for="">Metodo:</label>
-                        <select wire:model="metodoCreate" id="">
-                            <option value="null" selected hidden>Seleccione...</option>
-                            @forelse ($metodoPagos as $metodo)
-                                <option value="{{ $metodo->id }}">{{ $metodo->name }}</option>
-                            @empty
-                                <p></p>
-                            @endforelse
-                        </select>
-                    </div>
-                    <div class="conteInput">
-                        <label for="">Dinero:</label>
-                        <select wire:model="dineroCreate" id="">
-                            <option value="null" selected hidden>Seleccione...</option>
-                            <option value="Ingresado">Ingreso</option>
-                            <option value="Egresado">Egreso</option>
-                        </select>
-                    </div>
-                </div>
-                @if ($pay_id)
-                    <button wire:click="createPay({{ $pay_id }})">Actualizar Pago</button>
-                @else
-                    <button wire:click="createPay()">Crear Pago</button>
-                @endif
-
-                <img class="close" wire:click="close" src="{{ asset('images/cerrar.png') }}" alt="Icono Cerrar">
             </div>
         @endif
     @endif

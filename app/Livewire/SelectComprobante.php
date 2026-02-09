@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
+use App\Services\ActivityLogService;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -19,6 +20,7 @@ class SelectComprobante extends Component
 {
 
     use WithFileUploads;
+
 
     public $name, $apellido, $edad, $telefono, $email, $documento, $direccion, $valor, $precio;
     public $fecha_nacimiento;
@@ -183,6 +185,15 @@ class SelectComprobante extends Component
             Mail::to('info@mcstudies.com')->send(new ConfirmacionMail($aprendiz)); */
 
             Mail::to('dainer2607@gmail.com')->send(new ConfirmacionMail($aprendiz));
+
+            ActivityLogService::log(
+                'created',
+                'Apprentice',
+                "Nuevo registro de estudiante: {$aprendiz->name} {$aprendiz->apellido}",
+                $aprendiz->id,
+                null,
+                $aprendiz->toArray()
+            );
         } catch (\Throwable $th) {
             return redirect('Registrate')->with('messageError', 'Hubo un erorr. Por favor revisa tu conexion.');
         }

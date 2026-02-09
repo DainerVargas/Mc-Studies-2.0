@@ -95,6 +95,12 @@ class descargaController extends Controller
         $securityInforme = session()->get('copiaseguridad');
         $fecha = Date::now();
 
+        \App\Services\ActivityLogService::log(
+            'backup',
+            'Sistema',
+            "Generación de copia de seguridad del sistema"
+        );
+
         $pdf = Pdf::loadView('copiaseguridadDescarga', compact('securityInforme', 'fecha'));
         return $pdf->download("Copia Seguridad " . $fecha . " .pdf");
         /*  return view('copiaseguridadDescarga', compact('securityInforme', 'fecha')); */
@@ -103,7 +109,7 @@ class descargaController extends Controller
     public function donwloadQualification()
     {
         $qualifications = session()->get('qualifications');
- 
+
         $aprendiz = session()->get('aprendiz');
 
         if ($aprendiz) {
@@ -133,9 +139,10 @@ class descargaController extends Controller
 
     public function registroHoras(Teacher $teacher)
     {
-        $hoursDetails = RegisterHours::where('teacher_id', $teacher->id)->get();
+        $hoursDetails = session()->get('hoursDetails');
+        $fecha = Date::now()->format('d-m-Y');
 
-        $pdf = Pdf::loadView('registroHoras', compact('hoursDetails'));
+        $pdf = Pdf::loadView('registroHoras', compact('hoursDetails', 'teacher', 'fecha'));
         return $pdf->download("Registro Horas " . $teacher->name . " .pdf");
     }
     public function groupCalification()

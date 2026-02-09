@@ -3,13 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Descarga de Asistencia</title>
 </head>
 <style>
     body {
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: 'DejaVu Sans', sans-serif;
     }
 
     header {
@@ -96,41 +97,41 @@
     </header>
 
     <div class="container">
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Estudiantes</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Observaciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($asistencias as $index => $asistencia)
+        <div class="table-container">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $asistencia->apprentice->name }} {{ $asistencia->apprentice->apellido }}</td>
-                        <td>{{ $asistencia->fecha }}</td>
-                        @php
-                            $color = '';
-                            if ($asistencia->estado == 'presente') {
-                                $color = 'green';
-                            } elseif ($asistencia->estado == 'ausente') {
-                                $color = 'orange';
-                            } elseif ($asistencia->estado == 'tarde') {
-                                $color = 'red';
-                            }
-
-                        @endphp
-                        <td style="color: {{ $color }}"">{{ $asistencia->estado }}</td>
-                        <td>{{ $asistencia->observaciones ?? 'No tiene ninguna observacion' }}</td>
+                        <th>No.</th>
+                        <th>Estudiantes</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach ($asistencias as $index => $asistencia)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $asistencia->apprentice->name }} {{ $asistencia->apprentice->apellido }}</td>
+                            <td>{{ $asistencia->fecha }}</td>
+                            @php
+                                $color = '';
+                                if ($asistencia->estado == 'presente') {
+                                    $color = 'green';
+                                } elseif ($asistencia->estado == 'ausente') {
+                                    $color = 'orange';
+                                } elseif ($asistencia->estado == 'tarde') {
+                                    $color = 'red';
+                                }
+
+                            @endphp
+                            <td style="color: {{ $color }}"">{{ $asistencia->estado }}</td>
+                            <td>{{ $asistencia->observaciones ?? 'No tiene ninguna observacion' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 </body>
 
 </html>

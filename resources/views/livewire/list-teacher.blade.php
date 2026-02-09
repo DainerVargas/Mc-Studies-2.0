@@ -1,5 +1,5 @@
 <div class="componente">
-    
+
     <div class="conteFiltro" id="conteProfesor">
         <form wire:submit="filtrar">
             <div class="conteInput">
@@ -28,9 +28,9 @@
         <div style="gap: 10px" class="conteBtnCreate">
             <a>
                 <button wire:click="update"><img src="/images/agregar.png" alt="">
-                    añadir</button>
+                    Agrgar</button>
             </a>
-            <a href="{{route('registerHours')}}">
+            <a href="{{ route('registerHours') }}">
                 <button class="register">Registro de horas</button>
             </a>
         </div>
@@ -141,7 +141,7 @@
                     close
                 </span>
             </div>
-            <form wire:submit="">
+            <form wire:submit="" style="background-color: white; border-radius: 12px;">
                 <div class="conteImage">
                     <div class="contePerfil">
                         @if ($image)

@@ -22,7 +22,7 @@
             @endphp
             <table>
                 <tr>
-                    <th class="fixed" colspan="9">Modalidad - {{ $aprendiz->modality->name }}</th>
+                    <th class="fixed" colspan="10">Modalidad - {{ $aprendiz->modality->name }}</th>
                 </tr>
                 <tr>
                     <th class="fixed">Precio Modulo</th>
@@ -30,6 +30,7 @@
                     <th class="fixed">Abono</th>
                     <th class="fixed">Pendiente</th>
                     <th class="fixed">Plataforma</th>
+                    <th class="fixed">Metodo</th>
                     <th class="fixed">Fecha</th>
                     <th class="fixed">Subir/Ver</th>
                     @if ($user->rol_id == 1)
@@ -49,6 +50,7 @@
                         @endphp
                         <td>${{ number_format($precio - $descuento - $totalAbono, 0, ',', '.') }}</td>
                         <td>${{ number_format($informe->apprentice->plataforma, 0, ',', '.') }}</td>
+                        <td>{{ $informe->metodo ?? 'N/A' }}</td>
                         <td>{{ $informe->fecha ?? 'Sin fecha' }}</td>
 
                         @if ($informe->urlImage == null)

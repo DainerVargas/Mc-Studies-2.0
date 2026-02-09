@@ -343,7 +343,7 @@
                 <p>Nombre: <span>{{ $aprendiz->name }}</span> </p>
                 <p>Apellido: <span>{{ $aprendiz->apellido }}</span> </p>
                 <p>Edad: <span>{{ $edadActualizada }}</span> </p>
-                <p>Fecha-Nacimiento: <span>{{ $aprendiz->fecha_nacimiento }}</span> </p>
+                <p>Fecha-Nacimiento: <span>{{ $aprendiz->fecha_nacimiento->format('d/m/Y') }}</span> </p>
                 <p>Dirección:
                     <span>{{ isset($aprendiz->direccion) ? $aprendiz->direccion : 'No hay dirección' }}</span>
                 </p>

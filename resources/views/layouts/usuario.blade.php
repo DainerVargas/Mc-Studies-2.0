@@ -38,6 +38,14 @@
                     }
                 @endphp
                 <a class="{{ $validat ? 'active' : '' }}" href="{{ route('listado') }}">Lista de Usuario</a>
+                @php
+                    if (request()->routeIs('history') == true) {
+                        $validat = true;
+                    } else {
+                        $validat = false;
+                    }
+                @endphp
+                <a class="{{ $validat ? 'active' : '' }}" href="{{ route('history') }}">Historial de acciones</a>
             @endif
         </div>
         <div class="contenedor">
@@ -45,6 +53,7 @@
             @yield('actualizar')
             @yield('anadir')
             @yield('listado')
+            @yield('history')
         </div>
     </div>
 @endsection

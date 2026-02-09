@@ -17,19 +17,20 @@ class Servicios extends Component
 
     public $showS = false, $showC = false, $show = 1;
     public $type = 'null', $nameService = '', $nameEstudiante = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $date = '', $pay_id = '';
-    public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate, $saldoCaja = 0, $year;
+    public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate, $saldoCaja = 0, $year, $year2;
 
     public function mount()
     {
         $this->fecha = now()->format('Y-m-d');
         $this->services = Service::all();
         $this->typeService = typeService::all();
-        $this->pagos = Pago::all();
+        $this->pagos = Pago::whereYear('created_at', date('Y'))->get();
         $this->saldoCaja = Pago::where('dinero', 'Ingresado')->sum('monto') - Pago::where('dinero', 'Egresado')->sum('monto');
         $this->show = Session::get('show', 1);
         $this->metodoPagos = MetodoPago::all();
         $this->estudents = Apprentice::all();
         $this->year = date('Y');
+        $this->year2 = date('Y');
     }
 
     public function view($option)
@@ -99,10 +100,21 @@ class Servicios extends Component
 		$this->year += 1;
 		$this->services = Service::whereYear('fecha', $this->year)->get();
 	}
+
+    public function nextpay()
+	{
+		$this->year2 += 1;
+		$this->pagos = Pago::whereYear('created_at', $this->year2)->get();
+	}
 	public function previous()
 	{
 		$this->year -= 1;
 		$this->services = Service::whereYear('fecha', $this->year)->get();
+	}
+	public function previouspay()
+	{
+		$this->year2 -= 1;
+		$this->pagos = Pago::whereYear('created_at', $this->year2)->get();
 	}
 
     public function updateService(Service $servicio)
@@ -231,7 +243,7 @@ class Servicios extends Component
             $query->where('dinero', '=', $this->dinero);
         }
 
-        $this->pagos = $query->get();
+        $this->pagos = $query->whereYear('created_at', $this->year2)->get();
     }
     public function showPay($id = null)
     {
@@ -312,6 +324,8 @@ class Servicios extends Component
                 ->orWhere('fecha', 'LIKE', '%' . $this->nameService . '%');
         }
 
+        $query->whereYear('fecha', $this->year);
+
         if ($this->type != 'null') {
             $query->where('type_service_id', '=', $this->type);
         }
@@ -325,7 +339,7 @@ class Servicios extends Component
                 ->whereMonth('fecha', $fecha->month);
         }
 
-        $this->services = $query->whereYear('fecha', $this->year)->get();
+        $this->services = $query->get();
 
         return view('livewire.servicios');
     }

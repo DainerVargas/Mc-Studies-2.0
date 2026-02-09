@@ -1,0 +1,412 @@
+// Variables - MCP Language Premium Theme
+$primary: #05ccd1;
+$primary-dark: #04b3b8;
+$secondary: #99bf51;
+$secondary-dark: #88ab47;
+$dark: #0f172a;
+$dark-light: #1e293b;
+$danger: #e74c3c;
+$white: #ffffff;
+$bg-light: #f8fafc;
+$border-color: #e2e8f0;
+$radius-xl: 32px;
+$radius-lg: 24px;
+$radius-md: 16px;
+$shadow-premium: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+$shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+.mainRegistro {
+    background-color: $bg-light !important;
+}
+
+.src-container {
+    max-width: 1100px;
+    margin: 125px auto 40px; // Account for 100px fixed header
+    padding: 0 20px;
+    font-family: "Work Sans", sans-serif;
+
+    @media (max-width: 817px) {
+        margin-top: 180px; // Header is 156px at this breakpoint
+    }
+
+    @media (max-width: 566px) {
+        margin-top: 200px; // Header is 176px at this breakpoint
+    }
+
+    .src-form-card {
+        background: $white;
+        border-radius: $radius-xl;
+        box-shadow: $shadow-premium;
+        padding: 60px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        position: relative;
+        overflow: hidden;
+
+        @media (max-width: 768px) {
+            padding: 40px 25px;
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, $primary, $secondary);
+        }
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: $dark;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        letter-spacing: -0.02em;
+
+        &::before {
+            content: "";
+            width: 8px;
+            height: 32px;
+            background: $primary;
+            border-radius: 4px;
+        }
+
+        &.src-section-title {
+            margin-top: 4rem;
+        }
+    }
+
+    .src-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 25px;
+
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .src-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding-left: 5px;
+        }
+
+        input,
+        select {
+            height: 56px;
+            padding: 0 20px;
+            background: #f1f5f9;
+            border: 2px solid transparent;
+            border-radius: 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: $dark;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            &:focus {
+                outline: none;
+                background: $white;
+                border-color: $primary;
+                box-shadow: 0 10px 20px rgba(5, 204, 209, 0.1);
+                transform: translateY(-2px);
+            }
+
+            &::placeholder {
+                color: #94a3b8;
+            }
+        }
+
+        .src-error {
+            color: $danger;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 5px;
+            padding-left: 5px;
+        }
+    }
+
+    // Modalidades
+    .src-modalidades-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        margin-bottom: 50px;
+
+        @media (max-width: 900px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .src-plan-card {
+        background: #f8fafc;
+        border: 2px solid #f1f5f9;
+        border-radius: $radius-lg;
+        padding: 35px;
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+
+        &:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(15, 23, 42, 0.08);
+            border-color: rgba($primary, 0.3);
+        }
+
+        &.src-active {
+            border-color: $primary;
+            background: $white;
+            box-shadow: 0 25px 50px rgba(5, 204, 209, 0.12);
+
+            .src-plan-badge {
+                background: $primary;
+                transform: scale(1);
+            }
+        }
+
+        .src-plan-title {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: $dark;
+            margin-bottom: 15px;
+        }
+
+        .src-plan-info {
+            p {
+                font-size: 0.95rem;
+                color: #64748b;
+                margin-bottom: 10px;
+                line-height: 1.5;
+            }
+
+            .src-price-big {
+                display: block;
+                font-size: 2.2rem;
+                font-weight: 900;
+                color: $dark;
+                margin: 20px 0;
+
+                small {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: #94a3b8;
+                }
+            }
+        }
+
+        .src-plan-features {
+            background: #f1f5f9;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+
+            span {
+                font-weight: 800;
+                color: $primary;
+                display: block;
+                font-size: 1.1rem;
+            }
+
+            small {
+                color: #64748b;
+                font-weight: 600;
+            }
+        }
+
+        .src-btn-plan {
+            width: 100%;
+            height: 52px;
+            background: $dark;
+            color: $white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+
+            &:hover {
+                background: #000;
+                transform: scale(1.02);
+            }
+        }
+
+        .src-plan-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: $secondary;
+            color: $white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        &.src-popular {
+            &::after {
+                content: "MAS POPULAR";
+                position: absolute;
+                top: 20px;
+                right: -35px;
+                background: $secondary;
+                color: $white;
+                padding: 5px 40px;
+                font-size: 0.65rem;
+                font-weight: 900;
+                transform: rotate(45deg);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+        }
+    }
+
+    // Payment Methods
+    .src-payment-methods {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 50px;
+
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .src-method-card {
+        background: #f8fafc;
+        border: 2px solid #f1f5f9;
+        border-radius: 20px;
+        padding: 30px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+
+        &:hover {
+            border-color: rgba($primary, 0.3);
+            background: $white;
+        }
+
+        &.src-active {
+            border-color: $primary;
+            background: $white;
+            box-shadow: 0 15px 30px rgba(5, 204, 209, 0.1);
+        }
+
+        img {
+            height: 60px;
+            margin-bottom: 20px;
+            filter: grayscale(1);
+            transition: all 0.3s;
+        }
+
+        &.src-active img {
+            filter: grayscale(0);
+        }
+
+        .src-method-info {
+            p {
+                font-size: 0.9rem;
+                color: #64748b;
+                margin-bottom: 8px;
+                font-weight: 600;
+
+                span {
+                    color: $dark;
+                    font-weight: 800;
+                }
+            }
+        }
+    }
+
+    .src-register-footer {
+        margin-top: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+
+        .src-btn-submit {
+            width: 100%;
+            max-width: 400px;
+            height: 70px;
+            background: linear-gradient(
+                135deg,
+                $primary 0%,
+                $primary-dark 100%
+            );
+            color: $white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(5, 204, 209, 0.35);
+
+            &:hover:not(:disabled) {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 25px 50px rgba(5, 204, 209, 0.45);
+            }
+
+            &:active:not(:disabled) {
+                transform: translateY(-2px);
+            }
+
+            &:disabled {
+                background: #e2e8f0;
+                color: #94a3b8;
+                box-shadow: none;
+                cursor: not-allowed;
+            }
+
+            .loader {
+                margin-left: 10px;
+                font-size: 0.9rem;
+                opacity: 0.8;
+            }
+        }
+
+        .src-success-msg {
+            color: #27ae60;
+            font-weight: 800;
+            padding: 15px 30px;
+            background: #f0fff4;
+            border-radius: 12px;
+            animation: slideIn 0.5s ease;
+        }
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

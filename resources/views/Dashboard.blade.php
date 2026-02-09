@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,7 @@
     <title>@yield('title')</title>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/app-BvbZW79v.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('build/assets/app-DnEp5ElW.css') }}">
     <link rel="icon" type="image/png" href="{{ asset('Logo.png') }}">
 </head>
 
@@ -53,7 +53,7 @@
                         $validat = false;
                     }
                 @endphp
-                <a href="{{ route('informe') }}" class="{{ $validat ? 'active' : '' }}">Informes</a>
+                <a href="{{ route('informe') }}" class="{{ $validat ? 'active' : '' }}">Pagos estudiantes</a>
                 @php
                     if (request()->routeIs('historial') == true) {
                         $validat = true;

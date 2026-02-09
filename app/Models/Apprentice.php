@@ -62,6 +62,10 @@ class Apprentice extends Model
         return $this->belongsTo(Rol::class);
     }
 
+    protected $casts = [
+    'fecha_nacimiento' => 'date',
+];
+
     protected $fillable = [
         'name',
         'apellido',

@@ -36,7 +36,7 @@
         height: auto;
     }
 
-    /* Información del profesor */
+    /* Informaci贸n del profesor */
     .info_teacher {
         font-size: 14px;
         margin-bottom: 20px;
@@ -119,10 +119,9 @@
         </div>
 
         <div class="info_teacher">
-            <strong>Nombre:</strong> {{ $hoursDetails[0]->teacher->name }}
-            {{ $hoursDetails[0]->teacher->apellido }}<br>
+            <strong>Nombre:</strong> {{ $teacher->name ?? ''}} {{ $teacher->apellido ?? '' }}<br>
             <strong>Fecha:</strong>
-            {{ \Carbon\Carbon::now()->format('d/m/Y') }}
+            {{ $fecha }}
         </div>
 
         <h4>Registro de Horas</h4>
@@ -146,7 +145,7 @@
                     @php
                         $totalPrice = 0;
                     @endphp
-                    @foreach ($hoursDetails as $detail)
+                    @forelse ($hoursDetails ?? [] as $detail)
                         <tr>
                             <td>
                                 <p>{{ $detail->lunes ?? '---' }}</p>
@@ -179,10 +178,15 @@
                             @endphp
                             <td>{{ number_format($detail->horas * $detail->teacher->precio_hora, 2) }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="9">No se encontraron registros de horas.</td>
+                        </tr>
+                    @endforelse
                     <tr>
                         <td colspan="8" style="text-align: right; font-weight: bold;">Total General:</td>
                         <td style="font-weight: bold;">{{ number_format($totalPrice, 2) }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

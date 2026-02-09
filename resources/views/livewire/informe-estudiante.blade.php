@@ -5,23 +5,27 @@
         <a wire:click="activar(3)" class="active{{ $active }}">Copia de seguridad</a>
     </div>
     @if ($active == 1)
-        <div class="conteFiltro">
-            <form style="display: flex; gap: 10px; align-items: center; width: 90%;">
-                <div class="conteInput">
-                    <label for="filtro">Filtra por el nombre del Estudiante</label>
-                    <input type="text" wire:model.live="filtro" placeholder="Nombre del estudiante" style="width: 200px">
+        <div class="modern-filters">
+            <form>
+                <div class="filter-group">
+                    <label for="filtro">Estudiante</label>
+                    <input type="text" id="filtro" wire:model.live="filtro" placeholder="Buscar por nombre...">
                 </div>
-                <div class="mes">
-                    <select wire:model.live="sede_id" title="Filtrar por mes">
-                        <option value="" selected>Sedes</option>
+
+                <div class="filter-group">
+                    <label>Sede</label>
+                    <select wire:model.live="sede_id">
+                        <option value="" selected>Todas las Sedes</option>
                         <option value="1">Fonseca</option>
                         <option value="2">San Juan</option>
                         <option value="3">Online</option>
                     </select>
                 </div>
-                <div class="mes">
-                    <select wire:model.live="mes" title="Filtrar por mes">
-                        <option value="00" selected="">Mes</option>
+
+                <div class="filter-group">
+                    <label>Mes</label>
+                    <select wire:model.live="mes">
+                        <option value="00" selected>Seleccionar mes</option>
                         <option value="01">Enero</option>
                         <option value="02">Febrero</option>
                         <option value="03">Marzo</option>
@@ -37,393 +41,323 @@
                     </select>
                 </div>
 
-                <div class="year">
-                    <span class="material-symbols-outlined" wire:click="previous">
-                        skip_previous
-                    </span>
-                    <p>{{ $year }}</p>
-                    <span class="material-symbols-outlined" wire:click="next">
-                        skip_next
-                    </span>
+                <div class="filter-group">
+                    <label>Año</label>
+                    <div class="year-selector">
+                        <span class="material-symbols-outlined" wire:click="previous">skip_previous</span>
+                        <p>{{ $year }}</p>
+                        <span class="material-symbols-outlined" wire:click="next">skip_next</span>
+                    </div>
                 </div>
 
-                <div class="mes">
-                    <select wire:model.live="estado" title="Filtrar por estado">
-                        <option value="0" selected="">Todos</option>
+                <div class="filter-group">
+                    <label>Estado</label>
+                    <select wire:model.live="estado">
+                        <option value="0" selected>Todos los estados</option>
                         <option value="1">Pagado</option>
                         <option value="2">Pendiente</option>
                     </select>
                 </div>
-                <div class="new_modulo" style="width:170px">
-                    <div style="cursor: pointer" class="contelink"
-                        wire:confirm="Estas seguro?, Se guardará la información para luego eliminar la información del informe."
-                        wire:click="saveInforme">
+
+                <div class="btn-group" style="display: flex; gap: 10px; margin-left: auto;">
+                    <button type="button" class="btn-action btn-new-module"
+                        wire:confirm="¿Estás seguro? Se archivará el módulo actual." wire:click="saveInforme">
+                        <span class="material-symbols-outlined">archive</span>
                         Nuevo Módulo
+                    </button>
 
-                    </div>
-                    {{-- <select wire:model.live="modulo" title="Filtrar por modulo">
-                        <option value="" selected="">Módulo</option>
-                        <option value="1">Módulo 1</option>
-                        <option value="2">Módulo 2</option>
-                    </select> --}}
-                </div>
-
-                <div class="contelink" style="width: 250px">
-                    <a href="{{ route('descargar', $mes) }}"> Descargar Informe
-                        <span class="material-symbols-outlined" title="Descargar documento">
-                            download
-                        </span>
+                    <a href="{{ route('descargar', $mes) }}" class="btn-action btn-download">
+                        <span class="material-symbols-outlined">download</span>
+                        Descargar
                     </a>
                 </div>
             </form>
         </div>
-        <div class="containerConte">
-            <div class="conteTable">
-                <table class="tableInforme">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Acudiente</th>
-                            <th>Estudiante</th>
-                            <th>Becado</th>
-                            <th>Valor Modulo</th>
-                            <th>Descuento</th>
-                            <th>Abono</th>
-                            <th>Pendiente</th>
-                            <th>Plataforma de Pago</th>
-                            <th>Abonar</th>
-                            <th>Fecha</th>
-                            <th>Observaciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+
+        <div class="modern-table-container">
+            <table class="tableInforme">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Acudiente / Estudiante</th>
+                        <th>Becado</th>
+                        <th>Valor Módulo</th>
+                        <th>Descuento</th>
+                        <th>Abonado</th>
+                        <th>Pendiente</th>
+                        <th>Plataforma</th>
+                        <th>Acción</th>
+                        <th>Fecha</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $count = 1;
+                        $plataformaTotal = 0;
+                        $fechaPlataforma = Date::now()->year;
+                    @endphp
+                    @forelse ($informes ?? [] as $informe)
                         @php
-                            $count = 1;
-                            $totalAbono = 0;
-                            $plataforma = 0;
-                            $background = 'white';
-                            $color = '#000000';
-                            $valorModulo = 0;
-                            $fechaPlataforma = Date::now()->year;
+                            $abonoColor = '#2d3748';
+                            if ($informe->total_abonos <= 300000) {
+                                $abonoColor = '#e74c3c';
+                            } elseif ($informe->total_abonos < 800000) {
+                                $abonoColor = '#f39c12';
+                            } else {
+                                $abonoColor = '#27ae60';
+                            }
+
+                            $isBecado = $informe->apprentice->becado_id == 1;
+                            $valorModulo =
+                                $informe->apprentice->modality_id != 4
+                                    ? $informe->apprentice->modality->valor
+                                    : $informe->apprentice->valor;
+                            $pendiente = $isBecado
+                                ? 0
+                                : $valorModulo - $informe->total_abonos - $informe->apprentice->descuento;
+
+                            if (!$isBecado && $informe->apprentice->fechaPlataforma == $fechaPlataforma) {
+                                $plataformaTotal += $informe->apprentice->plataforma ?? 0;
+                            }
                         @endphp
-                        @forelse ($informes ?? [] as $informe)
-                            @php
-                                $mes = \Carbon\Carbon::parse($informe->apprentice->fecha_inicio)->month;
-                            @endphp
-                            @if ($informe->apprentice->estado)
-                                @php
 
-                                    $isBecado = $informe->apprentice->becado_id == 1;
-                                    if (!$isBecado) {
-                                        $value =
-                                            $informe->apprentice->valor -
-                                            $informe->apprentice->descuento -
-                                            $informe->total_abonos;
-
-                                        $totalAbono += $informe->total_abonos;
-                                    } else {
-                                        $value = 0;
-                                    }
-
-                                    if ($informe->total_abonos <= 300000) {
-                                        $color = 'red';
-                                    }
-                                    if ($informe->total_abonos > 300000 && $informe->abono <= 799999) {
-                                        $color = 'orange';
-                                    }
-                                    if ($informe->total_abonos >= 800000) {
-                                        $color = 'green';
-                                    }
-                                @endphp
-
-                                <tr class="{{ $value == 0 ? 'active' : '' }}">
-                                    <td style="color: {{ $color }}">{{ $count++ }}
-                                    </td>
-                                    <td class="relative">
-                                        {{ $informe->apprentice->attendant->name }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('estadoCuenta', $informe->apprentice->id) }}">
-                                            {{ $informe->apprentice->name . ' ' . $informe->apprentice->apellido }}
-                                        </a>
-                                    </td>
-                                    <td class="relative">
-                                        {{ $informe->apprentice->becado->name ?? 'N/A' }}
-                                    </td>
-
-                                    @php
-                                        if ($informe->apprentice->becado_id != 1) {
-                                            if ($informe->apprentice->modality_id != 4) {
-                                                $valorModulo = $informe->apprentice->modality->valor;
-                                            } else {
-                                                $valorModulo = $informe->apprentice->valor;
-                                            }
-                                        }
-                                    @endphp
-                                    @if ($informe->apprentice->becado_id != 1)
-                                        <td>$
-                                            {{ number_format($valorModulo , 0, ',', '.') }}
-                                        </td>
-                                    @else
-                                        <td>$
-                                            0
-                                        </td>
+                        <tr class="{{ $pendiente <= 0 ? 'active' : '' }}">
+                            <td>{{ $count++ }}</td>
+                            <td>
+                                <div style="display: flex; flex-direction: column;">
+                                    <small
+                                        style="color: #718096; font-size: 0.75rem;">{{ $informe->apprentice->attendant->name }}</small>
+                                    <a href="{{ route('estadoCuenta', $informe->apprentice->id) }}">
+                                        {{ $informe->apprentice->name }} {{ $informe->apprentice->apellido }}
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge-entity">{{ $informe->apprentice->becado->name ?? 'N/A' }}</span>
+                            </td>
+                            <td>${{ number_format($isBecado ? 0 : $valorModulo, 0, ',', '.') }}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    ${{ number_format($isBecado ? 0 : $informe->apprentice->descuento, 0, ',', '.') }}
+                                    @if (!$isBecado)
+                                        <span wire:click="descuento({{ $informe->apprentice->id }})"
+                                            class="material-symbols-outlined"
+                                            style="font-size: 16px; cursor: pointer; color: #a0aec0;">edit</span>
                                     @endif
-                                    <td>
-                                        <div class="flex">
-                                            @if ($informe->apprentice->becado_id != 1)
-                                                ${{ number_format($informe->apprentice->descuento, 0, ',', '.') }}
-                                                <span wire:click="descuento({{ $informe->apprentice->id }})"
-                                                    class="material-symbols-outlined editar"
-                                                    title="Actualizar descuento">
-                                                    edit
-                                                </span>
-                                            @else
-                                                $ 0
-                                            @endif
-                                        </div>
-                                    </td>
-
-                                    <td style="color: {{ $color }}">
-                                        @if ($informe->apprentice->becado_id != 1)
-                                            ${{ number_format($informe->total_abonos, 0, ',', '.') }}
-                                        @else
-                                            $ 0
-                                        @endif
-                                    </td>
-
-                                    @php
-                                        $valueAprendiz = 0;
-                                        if ($informe->apprentice->becado_id != 1) {
-                                            if ($informe->apprentice->modality_id != 4) {
-                                                $valueAprendiz = $informe->apprentice->modality->valor;
-                                            } else {
-                                                $valueAprendiz = $informe->apprentice->valor;
-                                            }
-                                            $pendiente =
-                                                $valueAprendiz -
-                                                $informe->total_abonos -
-                                                $informe->apprentice->descuento;
-
-                                            if ($informe->apprentice->fechaPlataforma == $fechaPlataforma) {
-                                                $plataforma += $informe->apprentice->plataforma ?? 0;
-                                            }
-                                        } else {
-                                            $pendiente = 0;
-                                        }
-                                    @endphp
-                                    <td>${{ number_format($pendiente, 0, ',', '.') }}
-                                    </td>
-                                    <td style="color: green">
-                                        @if ($informe->apprentice->plataforma == null || $informe->apprentice->plataforma == 0)
-                                            <div class="flex">
-                                                <button wire:confirm="¿Deseas abonar la plataforma al estudiante?"
-                                                    class="update"
-                                                    wire:click="plataforma({{ $informe->apprentice->id }})"
-                                                    type="button"><span class="material-symbols-outlined">
-                                                        payments
-                                                    </span> $160000</button>
-                                            </div>
-                                        @else
-                                            ¡Completado!
-                                            @if ($informe->apprentice->becado_id != 1)
-                                                <span wire:click="activePlataforma({{ $informe->apprentice->id }})"
-                                                    class="material-symbols-outlined editar" title="Actualizar fecha">
-                                                    edit
-                                                </span>
-                                            @endif
-                                        @endif
-                                    </td>
-                                    <td style="color: green">
-                                        @if ($pendiente != 0)
-                                            <div class="flex">
-                                                <button class="update"
-                                                    wire:click="abonar({{ $informe->apprentice->id }})"
-                                                    type="button"><span class="material-symbols-outlined">
-                                                        payments
-                                                    </span> Abonar</button>
-                                            </div>
-                                        @else
-                                            ¡Completado!
-                                        @endif
-                                    </td>
-                                    @php
-                                        $fecha = isset($informe->fecha) ? $informe->fecha : 'Sin fecha';
-                                    @endphp
-                                    <td>
-                                        <div class="flex">
-                                            {{ $fecha }} <span 
-                                            wire:click="aumentar({{ $informe->id }})"
-                                                class="material-symbols-outlined editar" title="Actualizar fecha">
-                                                edit
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex">
-                                            <form>
-                                                <textarea class="observaciones" wire:model.defer="observaciones.{{ $informe->apprentice->id }}" rows="2"></textarea>
-
-                                                <img wire:click="saveObservacion({{ $informe->apprentice->id }})"
-                                                    title="Guardar observaciones" class="save"
-                                                    src="{{ asset('images/save.png') }}" alt="">
-                                            </form>
-                                        </div>
-                                        <small wire:loading
-                                            wire:target="saveObservacion({{ $informe->apprentice->id }})">Cargando...</small>
-                                    </td>
-                                </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td colspan="12">
-                                    <p class="nodatos">No hay datos</p>
-                                    <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
-                                        <source src="/videos/video2.mp4" type="">
-                                    </video>
-                                </td>
-                            </tr>
-                        @endforelse
-
-                        <td colspan="4">Total: </td>
+                                </div>
+                            </td>
+                            <td style="color: {{ $abonoColor }}; font-weight: 700;">
+                                ${{ number_format($isBecado ? 0 : $informe->total_abonos, 0, ',', '.') }}
+                            </td>
+                            <td style="font-weight: 700;">${{ number_format($pendiente, 0, ',', '.') }}</td>
+                            <td>
+                                @if ($informe->apprentice->plataforma == null || $informe->apprentice->plataforma == 0)
+                                    <button wire:confirm="¿Deseas abonar la plataforma?" class="update-badge"
+                                        wire:click="plataforma({{ $informe->apprentice->id }})">
+                                        <span class="material-symbols-outlined">add_card</span> $140mil
+                                    </button>
+                                @else
+                                    <div style="display: flex; align-items: center; gap: 5px; color: #27ae60;">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size: 18px;">check_circle</span>
+                                        Ok
+                                        <span wire:click="activePlataforma({{ $informe->apprentice->id }})"
+                                            class="material-symbols-outlined"
+                                            style="font-size: 16px; cursor: pointer; color: #a0aec0;">edit</span>
+                                    </div>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($pendiente > 0)
+                                    <button class="update-badge" wire:click="abonar({{ $informe->apprentice->id }})">
+                                        <span class="material-symbols-outlined">payments</span> Abonar
+                                    </button>
+                                @else
+                                    <span style="color: #27ae60; font-weight: 700;">Pagado</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 5px; font-size: 0.85rem;">
+                                    {{ $informe->fecha ?? 'Sin fecha' }}
+                                    <span wire:click="aumentar({{ $informe->id }})" class="material-symbols-outlined"
+                                        style="font-size: 16px; cursor: pointer; color: #a0aec0;">edit</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <textarea class="observaciones" wire:model.defer="observaciones.{{ $informe->apprentice->id }}" rows="1"></textarea>
+                                    <img wire:click="saveObservacion({{ $informe->apprentice->id }})" class="save-icon"
+                                        src="{{ asset('images/save.png') }}" alt="Guardar">
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="11" style="text-align: center; padding: 50px;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 48px; color: #cbd5e0;">search_off</span>
+                                <p style="margin-top: 10px; color: #718096;">No se encontraron resultados</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+                <tfoot class="total-row">
+                    <tr>
+                        <td colspan="3">TOTALES DEL PERÍODO</td>
                         <td>${{ number_format($totalModulos - $totalDescuento, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalDescuento, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalAbono, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalPendiente, 0, ',', '.') }}</td>
-                        <td>${{ number_format($plataforma, 0, ',', '.') }}</td>
-                        <td colspan="3">
-                            ${{ number_format($plataforma + $totalModulos - $totalDescuento, 0, ',', '.') }}</td>
-                    </tbody>
-                </table>
-
-                @if ($viewDescuento == 1)
-                    <div class="conteUpdate" id="informe">
-                        <div class="close">
-                            <span wire:click="ocultar" title="Cerrar" class="material-symbols-outlined">
-                                close
-                            </span>
-                        </div>
-                        <form wire:submit="saveDescuento({{ $aprendizArray->id }})">
-                            <div class="containerContent">
-                                <div class="conteInput">
-                                    <input wire:model="nameF" class="input" readonly type="text"
-                                        placeholder="nombre">
-                                    <label class="label">Estudiante</label>
-                                </div>
-                                <div class="conteInput">
-                                    <input wire:model="descuent" class="input" type="text"
-                                        placeholder="Descuento">
-                                    <label class="label" for="">Descuento</label>
-                                    @if (isset($message))
-                                        <small class="errors message" style="color: red">{{ $message }}</small>
-                                    @endif
-                                </div>
-                            </div>
-                            <button>Guardar</button>
-                        </form>
-                    </div>
-                @endif
-
-                @if ($vista == 1)
-                    <div class="conteUpdate" id="informe">
-                        <div class="close">
-                            <span wire:click="ocultar" title="Cerrar" class="material-symbols-outlined">
-                                close
-                            </span>
-                        </div>
-                        <form wire:submit="guardar({{ $idEstudiante }})">
-                            <div class="containerContent">
-                                <div class="conteInput">
-                                    <input wire:model="nameF" class="input" readonly type="text"
-                                        placeholder="nombre">
-                                    <label class="label">Estudiante</label>
-                                </div>
-                                <div class="conteInput">
-                                    <input wire:model="fecha" class="input" type="text" placeholder="fecha">
-                                    <label class="label" for="">Fecha</label>
-                                    @if (isset($message))
-                                        <small class="errors message" style="color: red">{{ $message }}</small>
-                                    @endif
-                                </div>
-                            </div>
-                            <button>Guardar</button>
-                        </form>
-                    </div>
-                @endif
-
-                @if ($viewplataforma == 1)
-                    <div class="conteUpdate" id="informe">
-                        <div class="close">
-                            <span wire:click="ocultar" title="Cerrar" class="material-symbols-outlined">
-                                close
-                            </span>
-                        </div>
-                        <form wire:submit="savePlataforma({{ $idEstudiante }})">
-                            <div class="containerContent">
-                                <div class="conteInput">
-                                    <input wire:model="name" class="input" readonly type="text"
-                                        placeholder="nombre">
-                                    <label class="label">Estudiante</label>
-                                </div>
-                                <div class="conteInput">
-                                    <input wire:model="fechaPlataforma" class="input" type="text"
-                                        placeholder="plataforma">
-                                    <label class="label" for="">Año Plataforma (2025)</label>
-                                    @if (isset($message))
-                                        <small class="errors message" style="color: red">{{ $message }}</small>
-                                    @endif
-                                </div>
-                            </div>
-                            <button>Guardar</button>
-                        </form>
-                    </div>
-                @endif
-
-            </div>
+                        <td>${{ number_format($plataformaTotal, 0, ',', '.') }}</td>
+                        <td colspan="3" style="text-align: right; color: #05ccd1; font-size: 1.1rem;">
+                            Neto: ${{ number_format($plataformaTotal + $totalModulos - $totalDescuento, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
 
-        @if ($view != 0)
-            <div class="conteUpdate" id="informe">
-                <div class="close">
-                    <span wire:click="ocultar" title="Cerrar" class="material-symbols-outlined">
-                        close
-                    </span>
-                </div>
-                <form wire:submit="">
-                    <div class="containerContent">
-                        <div class="conteInput">
-                            <input wire:model="name" class="input" readonly type="text" placeholder="nombre"
-                                name="" id="">
-                            <label class="label" for="">Estudiante</label>
-                        </div>
-                        <div class="conteInput">
-                            <input wire:model="abono" class="input" type="text" placeholder="nombre"
-                                name="abono" id="">
-                            <label class="label" for="">Abono</label>
-                            @error('abono')
-                                <small class="errors" style="color: red">{{ $message }}</small>
-                            @enderror
-                            @if (isset($message))
-                                <small class="errors message" style="color: red">{{ $message }}</small>
-                            @endif
-                        </div>
+        {{-- Modales --}}
+        @if ($viewDescuento == 1)
+            <div class="modern-modal-overlay">
+                <div class="modern-modal">
+                    <span wire:click="ocultar" class="material-symbols-outlined close-btn">close</span>
+                    <div class="modal-header">
+                        <h2>Registrar Descuento</h2>
+                        <p>Aplicar una rebaja al valor del módulo</p>
                     </div>
-                    <button wire:click="save({{ $idEstudiante }})">Abonar</button>
-                </form>
+                    <form wire:submit="saveDescuento({{ $aprendizArray->id }})">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Estudiante</label>
+                                <input wire:model="nameF" type="text" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Monto del Descuento</label>
+                                <input wire:model="descuent" type="number" placeholder="Ej: 50000" autofocus>
+                                @if (isset($message) && $message)
+                                    <small style="color: #e74c3c;">{{ $message }}</small>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit">Aplicar Descuento</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+
+        @if ($vista == 1)
+            <div class="modern-modal-overlay">
+                <div class="modern-modal">
+                    <span wire:click="ocultar" class="material-symbols-outlined close-btn">close</span>
+                    <div class="modal-header">
+                        <h2>Actualizar Fecha</h2>
+                        <p>Modificar la fecha de registro del abono</p>
+                    </div>
+                    <form wire:submit="guardar({{ $idEstudiante }})">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Estudiante</label>
+                                <input wire:model="nameF" type="text" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Nueva Fecha</label>
+                                <input wire:model="fecha" type="date">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit">Actualizar Fecha</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+
+        @if ($viewplataforma == 1)
+            <div class="modern-modal-overlay">
+                <div class="modern-modal">
+                    <span wire:click="ocultar" class="material-symbols-outlined close-btn">close</span>
+                    <div class="modal-header">
+                        <h2>Pago de Plataforma</h2>
+                        <p>Actualizar el año de vigencia de la plataforma</p>
+                    </div>
+                    <form wire:submit="savePlataforma({{ $idEstudiante }})">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Estudiante</label>
+                                <input wire:model="name" type="text" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Año de Vigencia</label>
+                                <input wire:model="fechaPlataforma" type="number" placeholder="Ej: 2025">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+
+        @if ($view != 0)
+            <div class="modern-modal-overlay">
+                <div class="modern-modal">
+                    <span wire:click="ocultar" class="material-symbols-outlined close-btn">close</span>
+                    <div class="modal-header">
+                        <h2>Registrar Nuevo Abono</h2>
+                        <p>Ingresar un nuevo pago realizado por el estudiante</p>
+                    </div>
+                    <form wire:submit.prevent>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Estudiante</label>
+                                <input wire:model="name" type="text" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Monto a Abonar</label>
+                                <input wire:model="abono" type="number" placeholder="Monto en pesos" autofocus>
+                                @error('abono')
+                                    <small style="color: #e74c3c;">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label>Método de Pago</label>
+                                <select wire:model="metodo">
+                                    <option value="" selected hidden>Seleccionar...</option>
+                                    <option value="Transferencia">Transferencia</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Consignación">Consignación Bancaria</option>
+                                </select>
+                                @error('metodo')
+                                    <small style="color: #e74c3c;">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" wire:click="save({{ $idEstudiante }})">Confirmar Abono</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         @endif
     @elseif($active == 2)
         @livewire('tinforme')
     @else
-        <div class="conteFiltro">
+        <div class="modern-filters">
             <form>
-                <div class="conteInput">
-                    <label for="filtro">Filtra por el nombre del Estudiante</label>
-                    <input type="text" wire:model.live="nameApprentice" placeholder="Nombre del estudiante">
+                <div class="filter-group">
+                    <label>Estudiante / Acudiente</label>
+                    <input type="text" wire:model.live="nameApprentice" placeholder="Buscar en copia...">
                 </div>
-                <div class="mes">
-                    <select wire:model.live="month" title="Filtrar por mes">
-                        <option value="00" selected="">Mes</option>
+
+                <div class="filter-group">
+                    <label>Mes</label>
+                    <select wire:model.live="month">
+                        <option value="00" selected>Seleccionar mes</option>
                         <option value="01">Enero</option>
                         <option value="02">Febrero</option>
                         <option value="03">Marzo</option>
@@ -439,162 +373,134 @@
                     </select>
                 </div>
 
-                <div class="year">
-                    <span class="material-symbols-outlined" wire:click="previous">
-                        skip_previous
-                    </span>
-                    <p>{{ $yearCopia }}</p>
-                    <span class="material-symbols-outlined" wire:click="next">
-                        skip_next
-                    </span>
+                <div class="filter-group">
+                    <label>Año</label>
+                    <div class="year-selector">
+                        <span class="material-symbols-outlined" wire:click="previous">skip_previous</span>
+                        <p>{{ $yearCopia }}</p>
+                        <span class="material-symbols-outlined" wire:click="next">skip_next</span>
+                    </div>
                 </div>
-                <div class="new_modulo mes">
-                    {{-- <div style="cursor: pointer" class="contelink"
-                        wire:confirm="Estas seguro?, Se guardará la información para luego eliminar la información del informe."
-                        wire:click="saveInforme">
-                        Nuevo Módulo
 
-                    </div> --}}
-                    <select wire:model.live="module" title="Filtrar por modulo">
-                        <option value="" selected="">Módulo</option>
+                <div class="filter-group">
+                    <label>Módulo</label>
+                    <select wire:model.live="module">
+                        <option value="" selected>Todos los módulos</option>
                         <option value="1">Módulo 1</option>
                         <option value="2">Módulo 2</option>
                     </select>
                 </div>
 
-                <div class="contelink">
-                    <a style="cursor: pointer" wire:click="donwload"> Descargar Informe
-                        <span class="material-symbols-outlined" title="Descargar documento">
-                            download
-                        </span>
-                    </a>
+                <div class="btn-group" style="display: flex; gap: 10px; margin-left: auto;">
+                    <button type="button" class="btn-action btn-download" wire:click="donwload">
+                        <span class="material-symbols-outlined">download</span>
+                        Descargar Reporte
+                    </button>
                 </div>
             </form>
         </div>
-        <div class="containerConte">
-            <div class="conteTable">
-                <table class="tableInforme">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Acudiente</th>
-                            <th>Estudiante</th>
-                            <th>Becado</th>
-                            <th>Valor Modulo</th>
-                            <th>Descuento</th>
-                            <th>Abono</th>
-                            <th>Pendiente</th>
-                            <th>Plataforma de Pago</th>
-                            <th>Fecha</th>
-                            <th>Comprobante</th>
-                            <th>Observaciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+
+        <div class="modern-table-container">
+            <table class="tableInforme">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Acudiente / Estudiante</th>
+                        <th>Becado</th>
+                        <th>Valor Módulo</th>
+                        <th>Descuento</th>
+                        <th>Abonado</th>
+                        <th>Pendiente</th>
+                        <th>Plataforma</th>
+                        <th>Fecha</th>
+                        <th>Comprobante</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $totalModulos = 0;
+                        $totalAbono = 0;
+                        $totalDescuento = 0;
+                        $totalPendiente = 0;
+                        $totalplataforma = 0;
+                    @endphp
+
+                    @forelse ($securityInforme as $key => $informe)
                         @php
-                            $totalModulos = 0;
-                            $totalAbono = 0;
-                            $totalDescuento = 0;
-                            $totalPendiente = 0;
-                            $totalplataforma = 0;
+                            $totalModulos += $informe->valor;
+                            $totalAbono += $informe->abono;
+                            $totalDescuento += $informe->descuento;
+                            $totalPendiente += $informe->pendiente;
+                            $totalplataforma += $informe->plataforma;
+                            $extension = pathinfo($informe->comprobante, PATHINFO_EXTENSION);
                         @endphp
 
-                        @forelse ($securityInforme as $key => $informe)
-                            @php
-                                $totalModulos += $informe->valor;
-                                $totalAbono += $informe->abono;
-                                $totalDescuento += $informe->descuento;
-                                $totalPendiente += $informe->pendiente;
-                                $totalplataforma += $informe->plataforma;
-                            @endphp
-
-                            <tr>
-                                <td>
-                                    {{ $key + 1 }}
-                                </td>
-                                <td class="relative">
-                                    {{ $informe->acudiente }}
-                                </td>
-                                <td>
-                                    {{ $informe->estudiante }}
-                                </td>
-                                <td class="relative">
-                                    {{ $informe->becado }}
-                                </td>
-                                <td>$
-                                    {{ number_format($informe->valor, 0, ',', '.') }}
-                                </td>
-                                <td>
-                                    <div class="flex">
-                                        ${{ number_format($informe->descuento, 0, ',', '.') }}
-                                    </div>
-                                </td>
-                                <td>
-                                    ${{ number_format($informe->abono, 0, ',', '.') }}
-                                </td>
-                                <td>${{ number_format($informe->pendiente, 0, ',', '.') }}
-                                </td>
-                                <td>${{ number_format($informe->plataforma, 0, ',', '.') }}
-                                </td>
-                                <td>
+                        <tr>
+                            <td>{{ $key + 1 }}</td>
+                            <td>
+                                <div style="display: flex; flex-direction: column;">
+                                    <small
+                                        style="color: #718096; font-size: 0.75rem;">{{ $informe->acudiente }}</small>
+                                    <span style="font-weight: 600;">{{ $informe->estudiante }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge-entity">{{ $informe->becado }}</span>
+                            </td>
+                            <td>${{ number_format($informe->valor, 0, ',', '.') }}</td>
+                            <td>${{ number_format($informe->descuento, 0, ',', '.') }}</td>
+                            <td style="font-weight: 700;">${{ number_format($informe->abono, 0, ',', '.') }}</td>
+                            <td style="font-weight: 700;">${{ number_format($informe->pendiente, 0, ',', '.') }}</td>
+                            <td>${{ number_format($informe->plataforma, 0, ',', '.') }}</td>
+                            <td>
+                                <div style="font-size: 0.85rem; color: #718096;">
                                     {{ $informe->fecha ?? 'Sin fecha' }}
-                                </td>
-                                @php
-                                    $extension = pathinfo($informe->comprobante, PATHINFO_EXTENSION);
-                                @endphp
-                                <td>
-                                    {{-- @if ($extension != 'pdf')
-                                    <div style="cursor: pointer" wire:click="show({{ $informe->id }})"
-                                     class="flex">
-                                                <span class="material-symbols-outlined">
-                                                    eye_tracking
-                                                </span>
-                                                <label>Mostrar</label>
-                                            </div>
-
-                                            @else
-                                            No hay Comprobante
-                                        @endif
-                                    @else --}}
-                                    @if ($extension)
-                                        <a href="{{ asset('users/' . $informe->comprobante) }}"
-                                            download="Comprobante de pago-{{ $informe->estudiante }}">
-                                            <div class="flex">
-                                                <label>Descargar <span class="material-symbols-outlined">
-                                                        play_for_work
-                                                    </span></label>
-                                            </div>
-                                        </a>
-                                    @else
-                                        No hay Comprobante
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="flex">{{ $informe->observacion }}
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="12">
-                                    <p class="nodatos">No hay datos</p>
-                                    <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
-                                        <source src="/videos/video2.mp4" type="">
-                                    </video>
-                                </td>
-                            </tr>
-                        @endforelse
-                        <td colspan="4">Total: </td>
+                                </div>
+                            </td>
+                            <td>
+                                @if ($extension)
+                                    <a href="{{ asset('users/' . $informe->comprobante) }}"
+                                        download="Comprobante-{{ $informe->estudiante }}" class="update-badge"
+                                        style="text-decoration: none;">
+                                        <span class="material-symbols-outlined">download_for_offline</span>
+                                        PDF/IMG
+                                    </a>
+                                @else
+                                    <span style="color: #cbd5e0; font-size: 0.8rem;">No disponible</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div style="font-size: 0.85rem; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                    title="{{ $informe->observacion }}">
+                                    {{ $informe->observacion }}
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="11" style="text-align: center; padding: 50px;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 48px; color: #cbd5e0;">archive</span>
+                                <p style="margin-top: 10px; color: #718096;">No hay registros archivados</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+                <tfoot class="total-row">
+                    <tr>
+                        <td colspan="3">TOTALES ARCHIVADOS</td>
                         <td>${{ number_format($totalModulos, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalDescuento, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalAbono, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalPendiente, 0, ',', '.') }}</td>
                         <td>${{ number_format($totalplataforma, 0, ',', '.') }}</td>
-                        <td colspan="3">
-                            ${{ number_format($totalplataforma + $totalModulos, 0, ',', '.') }}</td>
-                    </tbody>
-                </table>
-            </div>
+                        <td colspan="3" style="text-align: right; color: #05ccd1; font-size: 1.1rem;">
+                            Neto: ${{ number_format($totalplataforma + $totalModulos, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     @endif
 </div>

@@ -72,10 +72,49 @@ class UserController extends Controller
         $user = Auth::user();
         return view('layouts.usuario.anadir', compact('user'));
     }
-    
-    public function listado(){
-        
+
+    public function listado()
+    {
+
         $user = Auth::user();
         return view('layouts.usuario.listado', compact('user'));
+    }
+
+    public function history(Request $request)
+    {
+        $user = Auth::user();
+        $category = $request->get('category');
+
+        $query = \App\Models\ActivityLog::query();
+
+        // Si no es administrador (rol_id != 1), solo mostrar sus propias acciones
+        if ($user->rol_id != 1) {
+            $query->where('user_id', $user->id);
+        }
+
+        // Mapping de categorías a entity_type
+        if ($category) {
+            switch ($category) {
+                case 'student':
+                    $query->whereIn('entity_type', ['Estudiante', 'Descuento', 'Informe']);
+                    break;
+                case 'teachers':
+                    $query->whereIn('entity_type', ['Profesor']);
+                    break;
+                case 'services':
+                    $query->whereIn('entity_type', ['Servicio']);
+                    break;
+                case 'payments':
+                    $query->whereIn('entity_type', ['Pagos', 'Abono']);
+                    break;
+                case 'cashier':
+                    $query->whereIn('entity_type', ['Caja']);
+                    break;
+            }
+        }
+
+        $logs = $query->latest()->paginate(20);
+
+        return view('layouts.usuario.history', compact('user', 'logs', 'category'));
     }
 }

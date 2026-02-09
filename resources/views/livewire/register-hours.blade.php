@@ -1,363 +1,410 @@
 <div class="componente">
-    <div class="conteFiltro conteFilter" id="conteProfesor">
-        <form wire:submit="filtrar">
-            <div class="conteInput">
-                <label for="filtro">Filtra por el nombre</label>
-                <input type="text" wire:model.live="filtro" placeholder="Nombre">
+    <div class="main-container">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="header-content">
+                    <span class="material-symbols-outlined header-icon">history_edu</span>
+                    <div>
+                        <h1>Gestión de Horas Docentes</h1>
+                        <p>Visualice y administre los registros de horas y pagos de los profesores.</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a href="{{ route('teacher.hours-form') }}" class="btn-create">
+                        <span class="material-symbols-outlined">add_circle</span>
+                        <span>Registrar Horas</span>
+                    </a>
+                </div>
             </div>
-        </form>
 
-        <div class="conteInput" style="display:flex; justify-items: start; width: 200px;">
-            <label style="text-align: start; width: 100%;" for="">Fecha</label>
-            <input style="width: 200px; height: 28px; border-radius: 4px; border: 1px solid #787878;" type="date"
-                wire:model.live="date">
-        </div>
-
-        <div style="gap: 10px" class="conteBtnCreate">
-            <a><button wire:click="show()" class="register">Registrar Horas</button></a>
-        </div>
-    </div>
-
-    <div class="containerConte">
-        <div class="conteTable">
-            <table class="teacher">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Profesor</th>
-                        <th>Horas</th>
-                        <th>Monto</th>
-                        <th>lunes</th>
-                        <th>martes</th>
-                        <th>miercoles</th>
-                        <th>jueves</th>
-                        <th>viernes</th>
-                        <th>sabado</th>
-                        <th>Pago</th>
-                        <th>Actualizar</th>
-                        <th>Eliminar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $count = 1;
-                    @endphp
-                    @forelse ($registerHours as $registerHour)
-                        <tr>
-                            <td>{{ $count++ }}</td>
-                            <td class="relative">
-                                <div class="conteName">
-                                    @if ($registerHour->teacher)
-                                        <img src="/users/{{ $registerHour->teacher->image }}" alt="">
-                                    @else
-                                        <img src="/images/perfil.png" alt="">
-                                    @endif
-                                    <a style="cursor: pointer"
-                                        wire:click="showHours({{ $registerHour->teacher->id }})">{{ $registerHour->teacher->name }}
-                                        {{ $registerHour->teacher->apellido }}</a>
-                                </div>
-                            </td>
-                            <td>
-                                <p>{{ $registerHour->horas }}</p>
-                            </td>
-                            <td>
-                                <p>{{ number_format($registerHour->horas * $registerHour->teacher->precio_hora) }}</p>
-                            </td>
-                            <td>
-                                <p>{{ $registerHour->lunes ?? '---' }}</p>
-                            </td>
-                            <td>
-                                <p>{{ $registerHour->martes ?? '---' }}</p>
-                            </td>
-                            <td>
-                                <p>{{ $registerHour->miercoles ?? '---' }}</p>
-                            </td>
-                            <td>
-                                <p>{{ $registerHour->jueves ?? '---' }}</p>
-                            </td>
-                            <td>
-                                <p>{{ $registerHour->viernes ?? '---' }}</p>
-                            </td>
-                            <td>
-                                <p>{{ $registerHour->sabado ?? '---' }}</p>
-                            </td>
-                            <td>
-                                @if ($registerHour->pago)
-                                    <p style="color: green">Completado</p>
-                                @else
-                                    <button wire:confirm="Confirma el pago del profesor por favor." wire:click="pay({{ $registerHour->id }})" class="update">Pendiente</button>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="flex">
-                                    <a><button wire:click="show({{ $registerHour->id }})" class="update">
-                                            <span class="material-symbols-outlined">
-                                                edit
-                                            </span> Editar
-                                        </button>
-                                    </a>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="flex">
-                                    <button class="delete" wire:click="delete({{ $registerHour->id }})"
-                                        wire:confirm="¿Desea elimiar el?">
-                                        <span class="material-symbols-outlined">
-                                            delete
-                                        </span>Eliminar</button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="12">
-                                <p class="nodatos">No hay datos</p>
-                                <video class="video" src="/videos/video2.mp4" height="180vw" autoplay loop>
-                                    <source src="/videos/video2.mp4" type="">
-                                </video>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    @if ($view != 0)
-        <div class="conteUpdate">
-            <div class="close">
-                <span wire:click="show()" title="Cerrar" class="material-symbols-outlined">
-                    close
-                </span>
+            <div class="card-filters">
+                <div class="filter-wrapper">
+                    <div class="filter-box">
+                        <span class="material-symbols-outlined">search</span>
+                        <input type="text" wire:model.live="filtro" placeholder="Buscar por nombre de profesor...">
+                    </div>
+                    <div class="filter-box">
+                        <span class="material-symbols-outlined">calendar_today</span>
+                        <input type="date" wire:model.live="date">
+                    </div>
+                </div>
             </div>
-            <form wire:submit="">
-                <div class="conteImage">
-                    <h1 style="color: #99BF51">Registro de horas</h1>
-                </div>
-                <div class="containerContent">
-                    <select wire:model="teacher_id">
-                        <option value="" selected hidden>Seleccione el profesor...</option>
-                        @foreach ($profesores as $profesor)
-                            <option value="{{ $profesor->id }}">{{ $profesor->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('teacher_id')
-                        <small class="errors" style="color: red">{{ $message }}</small>
-                    @enderror
-                </div>
-                <div class="containerContent">
-                    <div class="conteInput">
-                        <input class="input" wire:model="horas" type="number" placeholder="Horas">
-                        <label class="label" for="">Horas</label>
-                        @error('horas')
-                            <small class="errors" style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                    <div class="conteInput">
-                        <input wire:model="lunes" class="input" type="date" placeholder="Lunes">
-                        <label class="label" for="">Lunes</label>
-                        @error('lunes')
-                            <small class="errors" style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                </div>
-                <div class="containerContent">
-                    <div class="conteInput">
-                        <input wire:model="martes" class="input" type="date" placeholder="Martes">
-                        <label class="label" for="">martes</label>
-                        @error('Martes')
-                            <small class="errors" style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                    <div class="conteInput">
-                        <input wire:model="miercoles" class="input" type="date" placeholder="Miercoles">
-                        <label class="label" for="">Miercoles</label>
-                        @error('miercoles')
-                            <small class="errors" style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                </div>
-                <div class="containerContent">
-                    <div class="conteInput">
-                        <input wire:model="jueves" class="input" type="date" placeholder="Jueves">
-                        <label class="label" for="">Jueves</label>
-                        @error('jueves')
-                            <small class="errors" style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                    <div class="conteInput">
-                        <input wire:model="viernes" class="input" type="date" placeholder="Viernes">
-                        <label class="label" for="">Viernes</label>
-                        @error('viernes')
-                            <small class="errors" style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                </div>
-                <div class="containerContent">
-                    <div class="conteInput">
-                    </div>
-                    <div class="conteInput">
-                        <input wire:model="sabado" class="input" type="date" placeholder="Sabado">
-                        <label class="label" for="">Sabado</label>
-                        @error('sabado')
-                            <small class="errors" style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                </div>
-                <button style="background-color: #99BF51" wire:click="save(1)">Registrar Horas</button>
-            </form>
-        </div>
-    @endif
-    @if ($showHour)
-        <div class="conteUpdate">
-            <div class="close">
-                <span wire:click="showHours()" title="Cerrar" class="material-symbols-outlined">
-                    close
-                </span>
-            </div>
-            <div class="conteImage">
-                <h1 style="color: #99BF51">Horas del profesor - {{ $hoursDetails[0]->teacher->name }}</h1>
 
-                <table>
+            <div class="table-responsive">
+                <table class="premium-table">
                     <thead>
                         <tr>
-                            <th>lunes</th>
-                            <th>martes</th>
-                            <th>miercoles</th>
-                            <th>jueves</th>
-                            <th>viernes</th>
-                            <th>sabado</th>
-                            <th>pago</th>
-                            <th>Horas</th>
-                            <th>Total</th>
+                            <th width="50">No.</th>
+                            <th>Profesor</th>
+                            <th class="text-center">Horas</th>
+                            <th class="text-right">Monto Total</th>
+                            <th>Estado de Pago</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $totalPrice = 0;
-                        @endphp
-                        @foreach ($hoursDetails as $detail)
+                        @php $count = 1; @endphp
+                        @forelse ($registerHours as $registerHour)
                             <tr>
+                                <td class="text-muted">{{ $count++ }}</td>
                                 <td>
-                                    <p>{{ $detail->lunes ?? '---' }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ $detail->martes ?? '---' }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ $detail->miercoles ?? '---' }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ $detail->jueves ?? '---' }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ $detail->viernes ?? '---' }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ $detail->sabado ?? '---' }}</p>
-                                </td>
-                                <td>
-                                    @if ($detail->pago)
-                                        <p style="color: green">Completado</p>
+                                    <div class="teacher-info">
+                                        @if ($registerHour->teacher && $registerHour->teacher->image)
+                                            <img src="/users/{{ $registerHour->teacher->image }}" class="avatar">
                                         @else
-                                        <p style="color: orange">Pendiente</p>
+                                            <img src="/images/perfil.png" class="avatar">
+                                        @endif
+                                        <div class="name-box">
+                                            <a href="{{ route('teacher.hours-details', $registerHour->teacher->id) }}"
+                                                class="teacher-link">
+                                                {{ $registerHour->teacher->name }}
+                                                {{ $registerHour->teacher->apellido }}
+                                            </a>
+                                            <span class="sub-text">Ver historial detallado</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="hours-badge">{{ $registerHour->horas }}h</span>
+                                </td>
+                                <td class="text-right">
+                                    <span
+                                        class="amount-tag">${{ number_format($registerHour->horas * $registerHour->teacher->precio_hora) }}</span>
+                                </td>
+                                <td>
+                                    @if ($registerHour->pago)
+                                        <div class="status-pill status-paid">
+                                            <span class="material-symbols-outlined">check_circle</span>
+                                            <span>Completado</span>
+                                        </div>
+                                    @else
+                                        <button wire:confirm="¿Confirma que se ha realizado el pago?"
+                                            wire:click="pay({{ $registerHour->id }})" class="btn-pay">
+                                            <span class="material-symbols-outlined">payments</span>
+                                            <span>Pendiente</span>
+                                        </button>
                                     @endif
                                 </td>
-                                <td>{{ $detail->horas }}</td>
-                                @php
-                                    $totalPrice += $detail->horas * $detail->teacher->precio_hora;
-                                @endphp
-                                <td>{{ number_format($detail->horas * $detail->teacher->precio_hora, 2) }}</td>
+                                <td>
+                                    <div class="action-grid">
+                                        <a href="{{ route('teacher.hours-form', $registerHour->id) }}"
+                                            class="action-btn edit-btn" title="Editar">
+                                            <span class="material-symbols-outlined">edit</span>
+                                        </a>
+                                        <button class="action-btn delete-btn"
+                                            wire:click="delete({{ $registerHour->id }})"
+                                            wire:confirm="¿Desea eliminar este registro permanentemente?"
+                                            title="Eliminar">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                        @endforeach
-                        <tr>
-                            <td colspan="7" style="text-align: right; font-weight: bold;">Total General:</td>
-                            <td style="font-weight: bold;">{{ number_format($totalPrice, 2) }}</td>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="empty-row">
+                                    <div class="empty-content">
+                                        <video class="empty-animation" src="/videos/video2.mp4" autoplay loop
+                                            muted></video>
+                                        <p>No se encontraron registros para mostrar en este momento.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="flex">
-                <button class="button" wire:click="donwload({{ $hoursDetails[0]->teacher->id }})">Descargar</button>
-            </div>
         </div>
-    @endif
+    </div>
 
     <style>
-        .conteImage h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 700;
+        .main-container {
+            padding: 30px;
+            background: #f8fafc;
+        }
+
+        .dashboard-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 32px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            font-size: 36px;
             color: #99BF51;
-            text-align: center;
-            margin-bottom: 25px;
+            background: #f0f7e6;
+            padding: 12px;
+            border-radius: 16px;
         }
 
-        .conteImage {
-            height: 84%;
-            overflow-y: auto;
+        .card-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1e293b;
+            font-weight: 800;
         }
 
-        .conteImage table {
+        .card-header p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .btn-create {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #99BF51;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(153, 191, 81, 0.2);
+        }
+
+        .btn-create:hover {
+            background: #84a844;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(153, 191, 81, 0.3);
+        }
+
+        .card-filters {
+            padding: 24px 40px;
+            background: #fafcf7;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .filter-wrapper {
+            display: flex;
+            gap: 20px;
+        }
+
+        .filter-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .filter-box span {
+            position: absolute;
+            left: 15px;
+            color: #94a3b8;
+            font-size: 20px;
+        }
+
+        .filter-box input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .filter-box input:focus {
+            outline: none;
+            border-color: #99BF51;
+            box-shadow: 0 0 0 4px rgba(153, 191, 81, 0.1);
+        }
+
+        .table-responsive {
+            padding: 20px 40px 40px;
+            overflow-x: auto;
+        }
+
+        .premium-table {
             width: 100%;
             border-collapse: collapse;
-            background-color: #ffffff;
+        }
+
+        .premium-table th {
+            padding: 16px;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .premium-table td {
+            padding: 20px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .teacher-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #f1f5f9;
+        }
+
+        .name-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .teacher-link {
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .teacher-link:hover {
+            color: #99BF51;
+        }
+
+        .sub-text {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .hours-badge {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 6px 12px;
             border-radius: 10px;
-            overflow: hidden;
-            font-family: 'Poppins', sans-serif;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            font-weight: 700;
+            font-size: 0.9rem;
         }
 
-        .conteImage thead {
-            background-color: #f5f7fa;
-            color: #333;
-            font-weight: 600;
-            text-transform: capitalize;
+        .amount-tag {
+            color: #1e293b;
+            font-weight: 800;
+            font-size: 1.1rem;
         }
 
-        .conteImage thead th {
-            padding: 12px;
-            border-bottom: 2px solid #e0e0e0;
-            text-align: center;
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
         }
 
-        .conteImage tbody td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
+        .status-paid {
+            background: #dcfce7;
+            color: #15803d;
         }
 
-        .conteImage tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .btn-pay {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fefce8;
+            color: #a16207;
+            border: 2px solid #fef08a;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        .conteImage tbody tr:hover {
-            background-color: #f0f8e7;
+        .btn-pay:hover {
+            background: #fef9c3;
+            transform: scale(1.05);
         }
 
-        /* Botón Descargar */
-        .flex {
+        .action-grid {
             display: flex;
             justify-content: center;
-            margin-top: 25px;
+            gap: 10px;
         }
 
-        .flex .button {
-            background-color: #99BF51;
-            color: white;
+        .action-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: none;
-            border-radius: 8px;
-            padding: 10px 22px;
-            font-size: 15px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            transition: 0.2s;
+            text-decoration: none;
         }
 
-        .flex .button:hover {
-            background-color: #8ab44a;
-            box-shadow: 0 4px 10px rgba(153, 191, 81, 0.4);
-            transform: translateY(-2px);
+        .edit-btn {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .edit-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .delete-btn {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+            transform: rotate(8deg);
+        }
+
+        .empty-row {
+            padding: 60px !important;
+            text-align: center;
+        }
+
+        .empty-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .empty-animation {
+            height: 150px;
+            border-radius: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-muted {
+            color: #94a3b8;
         }
     </style>
 </div>

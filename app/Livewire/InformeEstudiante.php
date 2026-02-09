@@ -13,7 +13,7 @@ use Livewire\Component;
 class InformeEstudiante extends Component
 {
 	public $informes, $info, $view, $name, $idEstudiante, $abono, $message, $message2, $total, $nameF, $fecha, $mes = '00', $estado = 0;
-	public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente = 0, $totalModulos, $observaciones = [], $viewplataforma = 0, $fechaPlataforma, $modulo;
+	public $active = 1, $viewDescuento = 0, $descuent, $totalDescuento, $totalPendiente = 0, $totalModulos, $observaciones = [], $viewplataforma = 0, $fechaPlataforma, $modulo, $metodo, $totalAbono = 0;
 	public $filtro = '';
 	public $aprendices, $aprendizArray, $securityInforme;
 	public $vista = 0;
@@ -27,7 +27,7 @@ class InformeEstudiante extends Component
 		$this->informes = Informe::whereYear('fechaRegistro', $this->year)->get();
 		$this->aprendices = Apprentice::where('estado', true)->get();
 		$this->securityInforme = SecurityInforme::get();
-		
+
 		$this->active = session()->get('active');
 	}
 
@@ -168,6 +168,7 @@ class InformeEstudiante extends Component
 	{
 		$this->validate([
 			'abono' => 'required|numeric',
+			'metodo' => 'required',
 		], [
 			'required' => 'Este campo es requerido.',
 			'numeric' => 'Escribe el valor sin puntos o coma.'
@@ -186,18 +187,21 @@ class InformeEstudiante extends Component
 					Informe::create([
 						'apprentice_id' => $aprendiz->id,
 						'abono' => $this->abono,
+						'metodo' => $this->metodo,
 						'fecha' => Date::now(),
 						'fechaRegistro' => Date::now()->year,
 					]);
 				} else {
 					$informeExistente->update([
 						'abono' => $this->abono,
+						'metodo' => $this->metodo,
 						'fecha' => Date::now(),
 					]);
 				}
 
 				$this->view = 0;
 				$this->abono = '';
+				$this->metodo = '';
 				$this->message = '';
 			} else {
 				$this->message = "El abono sobre pasa el valor del modulo";
@@ -207,9 +211,27 @@ class InformeEstudiante extends Component
 		}
 	}
 
+	/* public function update(Apprentice $aprendiz){
+
+		$this->validate([
+			'abono' => 'required|numeric',
+		], [
+			'required' => 'Este campo es requerido.',
+			'numeric' => 'Escribe el valor sin puntos o coma.'
+		]);
+
+		$aprendiz->update([
+			'abono'=> $this->abono,
+		]);
+
+		$this->view = 0;
+		$this->abono = '';
+		$this->message = '';
+	} */
+
 	public function plataforma(Apprentice $aprendiz)
 	{
-		$aprendiz->plataforma = 160000;
+		$aprendiz->plataforma = 140000;
 		$aprendiz->save();
 		$this->informes = Informe::all();
 		$this->aprendices = Apprentice::where('estado', true)->get();
@@ -356,6 +378,15 @@ class InformeEstudiante extends Component
 				return $valor - $descuento - $informe->total_abonos;
 			}
 
+			return 0;
+		});
+
+		$this->totalAbono = $this->informes->sum(function ($informe) {
+			$apprentice = optional($informe->apprentice);
+
+			if ($apprentice->becado_id != 1 && $apprentice->estado == 1) {
+				return $informe->total_abonos;
+			}
 			return 0;
 		});
 
