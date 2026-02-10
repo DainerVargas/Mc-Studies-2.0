@@ -1,0 +1,448 @@
+// Variables - MCP Language Premium Theme
+$primary: #05ccd1;
+$primary-dark: #04b3b8;
+$secondary: #99bf51;
+$secondary-dark: #88ab47;
+$danger: #e74c3c;
+$warning: #f39c12;
+$success: #27ae60;
+$dark: #0f172a;
+$dark-light: #1e293b;
+$white: #ffffff;
+$bg-light: #f8fafc;
+$border-color: #e2e8f0;
+$radius-xl: 32px;
+$radius-lg: 24px;
+$radius-md: 16px;
+$shadow-premium: 0 20px 50px -12px rgba(15, 23, 42, 0.1);
+$shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+// Using a completely unique prefix to avoid any collisions
+.ux-ap-container {
+    padding: 0 2rem;
+    max-width: 1600px;
+    margin: 20px auto 2rem; // Extra top margin for fixed header
+    width: 95vw;
+    box-sizing: border-box;
+    font-family: "Work Sans", sans-serif;
+
+    // Filters Section
+    .ux-ap-filters-card {
+        background: $white;
+        padding: 2rem;
+        border-radius: $radius-lg;
+        margin-bottom: 2.5rem;
+        box-shadow: $shadow-premium;
+        border: 1px solid $border-color;
+        display: block;
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .ux-ap-filter-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 2rem;
+            flex-wrap: wrap;
+            width: 100%;
+
+            .ux-ap-input-group {
+                flex: 1;
+                min-width: 300px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                label {
+                    font-size: 0.85rem;
+                    font-weight: 800;
+                    color: $dark-light;
+                    text-transform: none;
+                    letter-spacing: normal;
+                    padding-left: 2px;
+                }
+
+                .ux-ap-input-with-icon {
+                    position: relative;
+                    width: 100%;
+                    max-width: 500px;
+                    display: flex;
+                    align-items: center;
+
+                    .material-symbols-outlined {
+                        position: absolute;
+                        left: 1.25rem;
+                        color: #94a3b8;
+                        font-size: 24px;
+                        pointer-events: none;
+                        transition: color 0.3s;
+                        z-index: 5;
+                    }
+
+                    input[type="text"] {
+                        height: 54px;
+                        width: 100% !important;
+                        background: #f8fafc !important;
+                        border: 2px solid #eef2f6 !important;
+                        border-radius: 16px !important;
+                        padding: 0 1.5rem 0 3.5rem !important;
+                        font-size: 1rem !important;
+                        font-weight: 600 !important;
+                        color: $dark !important;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        box-sizing: border-box !important;
+                        outline: none !important;
+
+                        &:focus {
+                            background: #fff !important;
+                            border-color: $primary !important;
+                            box-shadow: 0 10px 25px rgba(5, 204, 209, 0.12) !important;
+
+                            & + .material-symbols-outlined {
+                                color: $primary;
+                            }
+                        }
+
+                        &::placeholder {
+                            color: #cbd5e1;
+                        }
+                    }
+                }
+            }
+
+            .ux-ap-btn-email {
+                height: 54px;
+                padding: 0 2rem;
+                background: $secondary;
+                color: $white;
+                border: none;
+                border-radius: 16px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 10px 20px rgba(153, 191, 81, 0.25);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+
+                &:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 15px 30px rgba(153, 191, 81, 0.35);
+                    background: darken($secondary, 5%);
+                }
+            }
+        }
+
+        .ux-ap-filter-bottom {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+
+            select {
+                height: 50px;
+                padding: 0 1.25rem;
+                background: #f1f5f9;
+                border: 2px solid transparent;
+                border-radius: 14px;
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: $dark-light;
+                cursor: pointer;
+                transition: all 0.3s;
+                min-width: 200px;
+                outline: none;
+
+                &:focus {
+                    border-color: $primary;
+                    background: $white;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                }
+            }
+
+            .ux-ap-segmented-control {
+                display: flex;
+                background: #f1f5f9;
+                padding: 5px;
+                border-radius: 16px;
+                height: 50px;
+                align-items: stretch;
+
+                .ux-ap-segmented-item {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+
+                    input[type="radio"] {
+                        position: absolute;
+                        opacity: 0;
+                        width: 100%;
+                        height: 100%;
+                        cursor: pointer;
+                        z-index: 2;
+
+                        &:checked + label {
+                            background: $white;
+                            color: $primary;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                        }
+                    }
+
+                    label {
+                        padding: 0 1.75rem;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        font-size: 0.9rem;
+                        font-weight: 700;
+                        color: #64748b;
+                        border-radius: 12px;
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                        white-space: nowrap;
+                    }
+                }
+            }
+
+            .ux-ap-btn-clear {
+                font-size: 0.85rem;
+                font-weight: 800;
+                color: #94a3b8;
+                text-decoration: none;
+                padding: 0.5rem 1rem;
+                border-radius: 10px;
+                transition: all 0.2s;
+
+                &:hover {
+                    background: #f1f5f9;
+                    color: $dark;
+                }
+            }
+        }
+    }
+
+    // Table Section
+    .ux-ap-table-card {
+        background: $white;
+        border-radius: $radius-lg;
+        box-shadow: $shadow-premium;
+        overflow: hidden;
+        border: 1px solid $border-color;
+
+        .ux-ap-table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 75vh;
+            scrollbar-width: thin;
+
+            .ux-ap-table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: left;
+                box-shadow: none !important; // Override global table shadow
+
+                thead {
+                    background: #f8fafc;
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+
+                    th {
+                        padding: 1.5rem;
+                        font-weight: 800;
+                        color: #64748b;
+                        border-bottom: 2px solid $border-color;
+                        text-transform: uppercase;
+                        font-size: 0.75rem;
+                        letter-spacing: 0.05em;
+                    }
+                }
+
+                tbody {
+                    tr {
+                        border-bottom: 1px solid #f1f5f9;
+                        transition: all 0.2s ease;
+
+                        &:hover {
+                            background: rgba($bg-light, 0.5);
+                        }
+
+                        td {
+                            padding: 1.25rem 1.5rem;
+                            vertical-align: middle;
+                            color: $dark-light;
+                            font-size: 1rem;
+                            font-weight: 600;
+
+                            .ux-ap-user-info {
+                                display: flex;
+                                align-items: center;
+                                gap: 14px;
+
+                                img {
+                                    width: 48px;
+                                    height: 48px;
+                                    border-radius: 14px;
+                                    object-fit: cover;
+                                    box-shadow: $shadow-sm;
+                                    border: 2px solid $white;
+                                }
+
+                                a {
+                                    text-decoration: none;
+                                    color: $dark;
+                                    font-weight: 800;
+                                    font-size: 1.05rem;
+                                    transition: color 0.2s;
+
+                                    &:hover {
+                                        color: $primary;
+                                    }
+                                }
+
+                                .ux-ap-badge-new {
+                                    background: $danger;
+                                    color: $white;
+                                    font-size: 10px;
+                                    padding: 3px 10px;
+                                    border-radius: 20px;
+                                    font-weight: 900;
+                                    text-transform: uppercase;
+                                    margin-left: 8px;
+                                }
+                            }
+
+                            .ux-ap-status-pill {
+                                padding: 8px 18px;
+                                border-radius: 30px;
+                                font-size: 0.75rem;
+                                font-weight: 900;
+                                text-transform: uppercase;
+                                letter-spacing: 0.02em;
+                                display: inline-flex;
+
+                                &.active {
+                                    background: rgba($secondary, 0.12);
+                                    color: $secondary-dark;
+                                }
+
+                                &.inactive {
+                                    background: rgba($danger, 0.12);
+                                    color: $danger;
+                                }
+                            }
+
+                            .ux-ap-actions {
+                                display: flex;
+                                gap: 10px;
+
+                                button,
+                                a {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 8px;
+                                    height: 42px;
+                                    padding: 0 1.25rem;
+                                    border-radius: 12px;
+                                    border: none;
+                                    font-weight: 800;
+                                    font-size: 0.85rem;
+                                    cursor: pointer;
+                                    transition: all 0.3s;
+                                    text-decoration: none;
+
+                                    .material-symbols-outlined {
+                                        font-size: 20px;
+                                    }
+
+                                    &.ux-ap-btn-edit {
+                                        background: #f0fdfa;
+                                        color: $primary-dark;
+                                        &:hover {
+                                            background: $primary;
+                                            color: $white;
+                                        }
+                                    }
+
+                                    &.ux-ap-btn-delete {
+                                        background: #fef2f2;
+                                        color: $danger;
+                                        &:hover {
+                                            background: $danger;
+                                            color: $white;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .ux-ap-no-data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        padding: 5rem 0;
+
+        p {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #94a3b8;
+        }
+
+        video {
+            border-radius: 24px;
+            box-shadow: $shadow-premium;
+            max-width: 350px;
+        }
+    }
+
+    // Pagination styling
+    .ux-ap-pagination-wrapper {
+        padding: 2rem;
+        border-top: 1px solid $border-color;
+        display: flex;
+        justify-content: center;
+
+        nav {
+            display: flex;
+            gap: 8px;
+
+            span,
+            a {
+                padding: 10px 18px;
+                border-radius: 12px;
+                font-weight: 700;
+                text-decoration: none;
+                transition: all 0.2s;
+            }
+
+            .active {
+                background: $primary;
+                color: $white;
+            }
+        }
+    }
+}
+
+// Fixed header overlap mitigation
+@media (max-width: 817px) {
+    .ux-ap-container {
+        margin-top: 140px;
+    }
+}

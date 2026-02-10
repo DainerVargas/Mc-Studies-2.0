@@ -10,6 +10,9 @@ export default defineConfig({
                 'resources/sass/servicios.scss',
                 'resources/sass/grupo-crear.scss',
                 'resources/sass/select-comprobante.scss',
+                'resources/sass/list-aprendiz.scss',
+                'resources/sass/login-premium.scss',
+                'resources/sass/info-aprendiz.scss',
                 'resources/js/app.js'
             ],
             refresh: true,

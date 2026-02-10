@@ -15,11 +15,53 @@ use Illuminate\Support\Facades\Mail;
 
 class ApprenticeController extends Controller
 {
-    public function lista()
+    public function lista(Request $request)
     {
         $user = Auth::user();
 
-        return view('layouts.listaAprendiz', compact('user'));
+        // Sedes and Groups for filters
+        if ($user->rol_id != 4) {
+            $gruposSelect = \App\Models\Group::all();
+        } else {
+            $gruposSelect = \App\Models\Group::where('teacher_id', $user->teacher_id)->get();
+        }
+
+        // Base Query
+        if (isset($user->teacher_id)) {
+            $gruposIds = \App\Models\Group::where('teacher_id', $user->teacher_id)->pluck('id');
+            $query = Apprentice::whereIn('group_id', $gruposIds);
+        } else {
+            $query = Apprentice::query();
+        }
+
+        // Apply Search Filter
+        if ($request->has('name') && $request->name != '') {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        // Apply Group Filter
+        if ($request->has('grupo') && $request->grupo != 'all') {
+            if ($request->grupo == 'none') {
+                $query->whereNull('group_id');
+            } else {
+                $query->where('group_id', $request->grupo);
+            }
+        }
+
+        // Apply Sede Filter
+        if ($request->has('sede') && $request->sede != '') {
+            $query->where('sede_id', $request->sede);
+        }
+
+        // Apply Status Filter
+        if ($request->has('estado') && $request->estado != 'all') {
+            $status = $request->estado == 'active' ? 1 : 0;
+            $query->where('estado', $status);
+        }
+
+        $aprendices = $query->get();
+
+        return view('layouts.listaAprendiz', compact('user', 'aprendices', 'gruposSelect'));
     }
 
     public function info(Apprentice $aprendiz)
@@ -87,7 +129,6 @@ class ApprenticeController extends Controller
             try {
                 $email = $estudiant->edad >= 18 ? $estudiant->email : $estudiant->attendant->email;
                 Mail::to('dainer2607@gmail.com')->send(new SendMail($asunto, $text, $documento));
-                
             } catch (\Throwable $th) {
 
                 return redirect()->route('sendEmail')->with('error', 'Ha ocurrido un error');
@@ -101,5 +142,18 @@ class ApprenticeController extends Controller
     {
         $user = Auth::user();
         return view('layouts.qualification', compact('user', 'teacher'));
+    }
+    public function destroy(Apprentice $aprendiz)
+    {
+        $informes = Informe::where('apprentice_id', $aprendiz->id)->get();
+
+        foreach ($informes as $informe) {
+            $informe->delete();
+        }
+
+        $nombre = $aprendiz->name;
+        $aprendiz->delete();
+
+        return redirect()->route('listaAprendiz')->with('messageSuccess', "Aprendiz $nombre eliminado correctamente.");
     }
 }

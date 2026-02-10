@@ -1,0 +1,251 @@
+// Variables - MCP Language Premium Theme
+$primary: #05ccd1;
+$primary-dark: #04b3b8;
+$secondary: #99bf51;
+$secondary-dark: #88ab47;
+$danger: #e74c3c;
+$white: #ffffff;
+$dark: #1e293b;
+$gray-light: #f1f5f9;
+$gray-text: #64748b;
+
+.lp-login-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    font-family: "Work Sans", sans-serif;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+    }
+
+    // Left Side: Image & Message
+    .lp-image-panel {
+        flex: 1.2;
+        position: relative;
+        overflow: hidden;
+
+        @media (max-width: 900px) {
+            display: none; // Hide on mobile for better focus on form
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .lp-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba($primary-dark, 0.7) 0%,
+                rgba($secondary-dark, 0.7) 100%
+            );
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+            text-align: center;
+            color: $white;
+            backdrop-filter: blur(2px);
+
+            h3 {
+                font-size: 3rem;
+                font-weight: 900;
+                margin-bottom: 1.5rem;
+                letter-spacing: -0.02em;
+                text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                animation: lp-fadeUp 0.8s ease;
+            }
+
+            p {
+                font-size: 1.25rem;
+                font-weight: 500;
+                max-width: 500px;
+                line-height: 1.6;
+                opacity: 0.95;
+                animation: lp-fadeUp 1s ease;
+            }
+        }
+    }
+
+    // Right Side: Login Form
+    .lp-form-panel {
+        flex: 1;
+        background: $white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+
+        @media (max-width: 900px) {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .lp-login-card {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            animation: lp-fadeIn 0.8s ease;
+
+            .lp-logo-box {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+
+                img {
+                    height: 100px;
+                    width: auto;
+                    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.05));
+                }
+
+                h2 {
+                    font-size: 1.4rem;
+                    font-weight: 800;
+                    color: $secondary;
+                    letter-spacing: -0.01em;
+                }
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+
+                .lp-input-wrapper {
+                    position: relative;
+
+                    .material-symbols-outlined {
+                        position: absolute;
+                        left: 18px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        color: $gray-text;
+                        font-size: 22px;
+                        transition: color 0.3s;
+                    }
+
+                    input {
+                        width: 100%;
+                        height: 60px;
+                        background: $gray-light;
+                        border: 2px solid transparent;
+                        border-radius: 16px;
+                        padding: 0 15px 0 54px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        color: $dark;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        box-sizing: border-box;
+
+                        &:focus {
+                            outline: none;
+                            background: $white;
+                            border-color: $primary;
+                            box-shadow: 0 10px 20px rgba(5, 204, 209, 0.08);
+
+                            & + .material-symbols-outlined {
+                                color: $primary;
+                            }
+                        }
+
+                        &::placeholder {
+                            color: #94a3b8;
+                            font-weight: 500;
+                        }
+                    }
+
+                    .lp-error-text {
+                        color: $danger;
+                        font-size: 0.8rem;
+                        font-weight: 700;
+                        margin-top: 6px;
+                        display: block;
+                        padding-left: 10px;
+                    }
+
+                    .lp-success-text {
+                        color: $secondary-dark;
+                        font-size: 0.8rem;
+                        font-weight: 700;
+                        margin-top: 6px;
+                        display: block;
+                        padding-left: 10px;
+                    }
+                }
+
+                .lp-forgot-link {
+                    color: $gray-text;
+                    font-weight: 700;
+                    font-size: 0.9rem;
+                    text-decoration: none;
+                    text-align: center;
+                    transition: color 0.2s;
+
+                    &:hover {
+                        color: $dark;
+                    }
+                }
+
+                .lp-btn-submit {
+                    height: 56px;
+                    background: $primary;
+                    color: $white;
+                    border: none;
+                    border-radius: 30px;
+                    font-size: 1.1rem;
+                    font-weight: 900;
+                    letter-spacing: 0.05em;
+                    cursor: pointer;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    box-shadow: 0 15px 30px rgba(5, 204, 209, 0.3);
+                    margin-top: 1rem;
+
+                    &:hover {
+                        transform: translateY(-3px);
+                        background: $primary-dark;
+                        box-shadow: 0 20px 40px rgba(5, 204, 209, 0.4);
+                    }
+
+                    &:active {
+                        transform: translateY(-1px);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Animations
+@keyframes lp-fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lp-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

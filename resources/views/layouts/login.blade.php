@@ -1,67 +1,50 @@
 @extends('index')
 @section('title', 'Login')
 @section('login')
-    <div class="conteLogin">
-        <div class="conteImagen">
-            <img src="/images/LoginImage.jpg" alt="">
-            <div class="background">
-            </div>
-            <div class="text">
+    <div class="lp-login-container">
+        {{-- Panel Izquierdo: Imagen y Bienvenida --}}
+        <div class="lp-image-panel">
+            <img src="/images/LoginImage.jpg" alt="Estudiante aprendiendo">
+            <div class="lp-overlay">
                 <h3>Welcome To Back!</h3>
-                <p>Recuerda que cada acción que tomes ayuda a mejorar la experiencia de los usuarios.
-                    ¡Sigamos avanzando juntos!
-                </p>
+                <p>Recuerda que cada acción que tomes ayuda a mejorar la experiencia de los usuarios. ¡Sigamos avanzando
+                    juntos!</p>
             </div>
         </div>
-        <div class="conteFormLogin">
-            <div class="infoLogo">
-                <img class="logo" src="/images/Logo.png" alt="Logo de la academia">
-                <p>Sing in to MC Studies</p>
+
+        {{-- Panel Derecho: Formulario de Login --}}
+        <div class="lp-form-panel">
+            <div class="lp-login-card">
+                <div class="lp-logo-box">
+                    <img src="/images/Logo.png" alt="MC Language Studies Logo">
+                    <h2>Sing in to MC Studies</h2>
+                </div>
+
+                <form action="{{ route('loginPost') }}" method="post">
+                    @csrf
+                    <div class="lp-input-wrapper">
+                        <input type="text" name="usuario" placeholder="Usuario" value="{{ old('usuario') }}" required
+                            autocomplete="username">
+                        <span class="material-symbols-outlined">person</span>
+                        @error('usuario')
+                            <span class="lp-error-text">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="lp-input-wrapper">
+                        <input id="password" type="password" name="password" placeholder="Contraseña" required
+                            autocomplete="current-password">
+                        <span class="material-symbols-outlined">password</span>
+                        @error('password')
+                            <span class="lp-error-text">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <a class="lp-forgot-link" href="/Recuperar-Contraseña">¿Haz olvidado la contraseña?</a>
+
+                    <button class="lp-btn-submit" type="submit">INGRESAR</button>
+                </form>
             </div>
-            <form action="{{ route('loginPost') }}" method="post">
-                @csrf
-                <div class="conte">
-                    <input class="input" type="text" name="usuario" placeholder="Usuario" value="{{ old('usuario') }}">
-                    <span class="material-symbols-outlined absolute">
-                        person
-                    </span>
-                    @error('usuario')
-                        <small class="errors">{{ $message }}</small>
-                    @enderror
-                </div>
-                <div class="conte contePassword">
-                    <input class="input" id="password" type="password" name="password" placeholder="Contraseña"
-                        value="{{ old('password') }}">
-                    <span class="material-symbols-outlined absolute">
-                        password
-                    </span>
-                    @error('password')
-                        <small class="errors">{{ $message }}</small>
-                    @enderror
-                    {{-- <span class="material-symbols-outlined show" id="eye"> visibility_off </span> --}}
-                </div>
-                <a class="forgot" href="/Recuperar-Contraseña">¿Haz olvidado la contraseña?</a>
-                <div class="conteButton">
-                    <button class="btnLogin" type="submit">INGRESAR</button>
-                </div>
-            </form>
         </div>
     </div>
-
-    <script>
-        const eye = document.getElementById('eye');
-        const password = document.getElementById('password');
-        let count = 0;
-        eye.addEventListener('click', () => {
-            count++;
-            if (count === 1) {
-                eye.innerHTML = "visibility";
-                password.type = "text";
-            } else {
-                eye.innerHTML = "visibility_off";
-                password.type = "password";
-                count = 0;
-            }
-        });
-    </script>
 @endsection

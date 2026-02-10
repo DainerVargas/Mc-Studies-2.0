@@ -1,41 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>RECUPERAR CONTRASEÑAS</title>
-    <link rel="stylesheet" href="{{asset('build/assets/app-Be1cidhe.css')}}">
-</head>
-@vite('resources/sass/app.scss')
-<body class="forgotBody">
-    <div class="conteLogin">
-        <div class="conteFormLogin">
-            <div class="infoLogo">
-                <img class="logo" src="/images/Logo.png" alt="Logo de la academia">
-                <p>Recupera tu contraseña</p>
+@extends('index')
+@section('title', 'Recuperar Contraseña')
+@section('login')
+    <div class="lp-login-container">
+        {{-- Panel Izquierdo: Imagen y Bienvenida --}}
+        <div class="lp-image-panel">
+            <img src="/images/LoginImage.jpg" alt="Recuperación de cuenta">
+            <div class="lp-overlay">
+                <h3>¿Olvidaste tu acceso?</h3>
+                <p>No te preocupes, ingresa tu correo electrónico y te enviaremos las instrucciones para que puedas volver a
+                    entrar.</p>
             </div>
-            <form action="{{ route('forgotPassword') }}" method="post">
-                @csrf
-                <div class="conteInput">
-                    <input class="input" type="text" name="email" placeholder="user" value="{{ old('email') }}">
-                    @error('email')
-                        <small class="errors">{{ $message }}</small>
-                    @enderror
-                    @error('message')
-                        <small class="errors" style="color:green">{{ $message }}</small>
-                    @enderror
-                    <label class="label" for="">Email</label>
+        </div>
 
+        {{-- Panel Derecho: Formulario de Recuperación --}}
+        <div class="lp-form-panel">
+            <div class="lp-login-card">
+                <div class="lp-logo-box">
+                    <img src="/images/Logo.png" alt="MC Language Studies Logo">
+                    <h2>Recupera tu contraseña</h2>
                 </div>
 
-                <div class="conteButton">
-                    <button class="btnLogin" id="top" type="submit">Recuperar Contraseña</button>
-                </div>
-            </form>
+                <form action="{{ route('forgotPassword') }}" method="post">
+                    @csrf
+                    <div class="lp-input-wrapper">
+                        <input type="email" name="email" placeholder="Correo electrónico" value="{{ old('email') }}"
+                            required autocomplete="email">
+                        <span class="material-symbols-outlined">mail</span>
+
+                        @error('email')
+                            <span class="lp-error-text">{{ $message }}</span>
+                        @enderror
+
+                        @if (session('messageSuccess'))
+                            <span class="lp-success-text">{{ session('messageSuccess') }}</span>
+                        @endif
+                    </div>
+
+                    <button class="lp-btn-submit" type="submit">ENVIAR INSTRUCCIONES</button>
+
+                    <a class="lp-forgot-link" href="{{ route('login') }}" style="margin-top: 1rem;">
+                        Volver al inicio de sesión
+                    </a>
+                </form>
+            </div>
         </div>
     </div>
-</body>
-
-</html>
+@endsection

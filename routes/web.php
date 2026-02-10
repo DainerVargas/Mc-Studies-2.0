@@ -34,6 +34,7 @@ Route::post('Recuperar-Contraseña', [ForgotController::class, 'forgotPassword']
 
 /* APRENDINCES */
 Route::get('Lista-Aprendiz', [ApprenticeController::class, 'lista'])->middleware('auth')->name('listaAprendiz');
+Route::delete('Lista-Aprendiz/{aprendiz}', [ApprenticeController::class, 'destroy'])->middleware('auth')->name('deleteAprendiz');
 
 /* INFORMACION DEL APRENDIZ */
 Route::get('Informacion/{aprendiz}', [ApprenticeController::class, 'info'])->middleware('auth')->name('informacion');

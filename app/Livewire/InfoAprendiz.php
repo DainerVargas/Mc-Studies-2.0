@@ -19,47 +19,47 @@ class InfoAprendiz extends Component
 {
     use WithFileUploads;
 
-    public $aprendiz, $image, $grupos, $modalidades, $fechaActual, $user, $edadActualizada, $view, $qualifications, $viewCertificate, $textReconocimiento;
-    public $valor = 0;
+    public $aprendiz;
+    public $textReconocimiento;
 
-    public function mount()
+    // UI State
+    public $view = false;
+    public $viewCertificate = false;
+    public $valor = 0; // 0: hidden, 1: viewer
+
+    // Computed properties or passed directly to render to avoid hydration overhead
+    // public $grupos; 
+    // public $modalidades;
+    // public $qualifications;
+
+    public function mount(Apprentice $aprendiz)
     {
-        $this->grupos = Group::all();
-        $this->modalidades = Modality::all();
-        $fechaNacimiento = new DateTime($this->aprendiz->fecha_nacimiento);
-        $hoy = new DateTime();
-        $this->edadActualizada = $hoy->diff($fechaNacimiento)->y;
-        $this->view = session()->get('view', false);
-        $this->viewCertificate = session()->get('viewCertificate', false);
+        $this->aprendiz = $aprendiz;
 
-        session()->forget('aprendiz');
-        session()->forget('qualifications');
+        // Removed session-based UI state initialization to prevent conflicts
+        // The component should start with modales closed unless logic dictates otherwise
     }
 
-    public function toggleEstado(Apprentice $aprendiz)
+    public function toggleEstado()
     {
-        $aprendiz->estado = !$aprendiz->estado;
+        $this->aprendiz->estado = !$this->aprendiz->estado;
 
-        if ($aprendiz->estado) {
-            $aprendiz->fecha_inicio = date('y-m-d');
-            switch ($aprendiz->modality_id) {
-                case 1:
-                    $fechaFin = Carbon::now()->addMonths(1)->toDateString();
-                    $aprendiz->fecha_fin = $fechaFin;
-                    break;
-                case 2:
-                    $fechaFin = Carbon::now()->addMonths(2)->toDateString();
-                    $aprendiz->fecha_fin = $fechaFin;
-                    break;
-                case 3:
-                    $fechaFin = Carbon::now()->addMonths(4)->toDateString();
-                    $aprendiz->fecha_fin = $fechaFin;
-                    break;
+        if ($this->aprendiz->estado) {
+            $this->aprendiz->fecha_inicio = date('Y-m-d');
+
+            $monthsToAdd = match ($this->aprendiz->modality_id) {
+                1 => 1,
+                2 => 2,
+                3 => 4,
+                default => 0,
+            };
+
+            if ($monthsToAdd > 0) {
+                $this->aprendiz->fecha_fin = Carbon::now()->addMonths($monthsToAdd)->toDateString();
             }
         }
 
-        $aprendiz->save();
-        $this->aprendiz = $aprendiz;
+        $this->aprendiz->save();
     }
 
     public function show($value)
@@ -70,19 +70,18 @@ class InfoAprendiz extends Component
     public function showQualification()
     {
         $this->view = !$this->view;
-        session()->put('view', $this->view);
     }
 
     public function showCertificate()
     {
         $this->viewCertificate = !$this->viewCertificate;
-        session()->put('viewCertificate', $this->viewCertificate);
-        $this->textReconocimiento = '';
+        if (!$this->viewCertificate) {
+            $this->textReconocimiento = '';
+        }
     }
 
-    public function generateCertificate($aprendiz)
+    public function generateCertificate()
     {
-
         $this->validate([
             'textReconocimiento' => 'required|string|max:500',
         ], [
@@ -92,20 +91,22 @@ class InfoAprendiz extends Component
         ]);
 
         session()->put('textReconocimiento', $this->textReconocimiento);
-        return redirect()->route('certificado', compact('aprendiz'));
+        return redirect()->route('certificado', ['aprendiz' => $this->aprendiz->id]);
     }
 
     public function donwloadQualification()
     {
-        session()->put('qualifications', $this->qualifications);
+        // Get qualifications fresh data
+        $qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
+        session()->put('qualifications', $qualifications);
 
         return redirect()->route('donwloadQualification');
     }
 
     public function sendQualification()
     {
-
-        session()->put('qualifications', $this->qualifications);
+        $qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
+        session()->put('qualifications', $qualifications);
         session()->put('aprendiz', $this->aprendiz);
 
         return redirect()->route('donwloadQualification');
@@ -113,10 +114,16 @@ class InfoAprendiz extends Component
 
     public function render()
     {
-        $this->user = Auth::user();
-        $this->qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
+        // Calculate age
+        $fechaNacimiento = new DateTime($this->aprendiz->fecha_nacimiento);
+        $hoy = new DateTime();
+        $edadActualizada = $hoy->diff($fechaNacimiento)->y;
 
-        $this->fechaActual = Carbon::now()->toDateString();
-        return view('livewire.info-aprendiz');
+        // Fetch data here to avoid public property hydration issues
+        $qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
+        $grupos = Group::all();
+        $user = Auth::user();
+
+        return view('livewire.info-aprendiz', compact('qualifications', 'edadActualizada', 'user'));
     }
 }

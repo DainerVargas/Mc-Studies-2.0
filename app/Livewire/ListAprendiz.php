@@ -14,12 +14,10 @@ use Livewire\Component;
 
 class ListAprendiz extends Component
 {
-    public $aprendices = [];
-    public $grupos = [];
     public $nameAprendiz = '';
     public $grupo = 'all';
     public $estado = 'all';
-    public $count = 0, $user, $sede_id = '';
+    public $count = 0, $sede_id = '';
 
     public function delete(Apprentice $apprentice)
     {
@@ -29,38 +27,35 @@ class ListAprendiz extends Component
             $informe->delete();
         }
         $apprentice->delete();
-        $this->aprendices = Apprentice::all();
     }
 
-    public function mount()
+    public function mount() {}
+
+    public function sendEmail()
     {
-        $usuario = Auth::user();
-
-        if($usuario->rol_id != 4){
-            $this->grupos = Group::all();
-        }else{
-            $this->grupos = Group::where('teacher_id',$usuario->teacher_id)->get();
-        }
-    }
-
-    public function sendEmail(){
 
         return redirect('/Enviar-Email');
     }
 
     public function render()
     {
-        $this->user = Auth::user();
+        $user = Auth::user();
 
-        if (isset($this->user->teacher_id)) {
-            $grupos = Group::where('teacher_id', $this->user->teacher_id)->pluck('id');
+        if ($user->rol_id != 4) {
+            $gruposSelect = Group::all();
+        } else {
+            $gruposSelect = Group::where('teacher_id', $user->teacher_id)->get();
+        }
+
+        if (isset($user->teacher_id)) {
+            $grupos = Group::where('teacher_id', $user->teacher_id)->pluck('id');
 
             $query = Apprentice::whereIn('group_id', $grupos);
         } else {
             $query = Apprentice::query();
         }
 
-        if ($this->grupo == 'all') { 
+        if ($this->grupo == 'all') {
         } elseif ($this->grupo == 'none') {
             $query->whereNull('group_id');
         } else {
@@ -69,7 +64,7 @@ class ListAprendiz extends Component
 
         if ($this->sede_id != '') {
             $query->where('sede_id', $this->sede_id);
-        } 
+        }
 
         if ($this->estado == 'active') {
             $query->where('estado', 1);
@@ -79,11 +74,12 @@ class ListAprendiz extends Component
 
         $query->where('name', 'LIKE', '%' . $this->nameAprendiz . '%');
 
-        $this->aprendices = $query->get();
+        $aprendices = $query->get();
 
         return view('livewire.list-aprendiz', [
-            'user' => $this->user,
-            'aprendices' => $this->aprendices
+            'user' => $user,
+            'aprendices' => $aprendices,
+            'grupos' => $gruposSelect
         ]);
     }
 }
