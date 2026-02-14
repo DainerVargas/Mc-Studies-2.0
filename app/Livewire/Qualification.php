@@ -226,6 +226,11 @@ class Qualification extends Component
 
   public function deleteNotas()
   {
+    if (Auth::user()->rol_id != 1) {
+      $this->dispatch('error', 'No tienes permisos para eliminar.');
+      return;
+    }
+
     if ($this->selectGrupo != 'all') {
 
       $qualifications = ModelsQualification::where('teacher_id', $this->teacher->id)

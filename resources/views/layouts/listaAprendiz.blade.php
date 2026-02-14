@@ -16,7 +16,7 @@
                         </div>
                     </div>
                     <a href="{{ route('sendEmail') }}" class="ux-ap-btn-email">
-                        <span class="material-symbols-outlined">mail</span>
+                        <span class="material-symbols-outlined">email</span>
                         ENVIAR EMAIL
                     </a>
                 </div>
@@ -117,6 +117,11 @@
                                                 title="Editar">
                                                 <span class="material-symbols-outlined">edit</span>
                                                 Editar
+                                            </a>
+                                            <a href="{{ route('listaActividades', ['aprendiz_id' => $aprendiz->id]) }}"
+                                                class="ux-ap-btn-view" title="Ver Actividades">
+                                                <span class="material-symbols-outlined">visibility</span>
+                                                Ver Actividades
                                             </a>
                                             <form action="{{ route('deleteAprendiz', $aprendiz->id) }}" method="POST"
                                                 onsubmit="return confirm('¿Desea eliminar al aprendiz {{ $aprendiz->name }}?')">

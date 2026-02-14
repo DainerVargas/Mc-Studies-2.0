@@ -18,6 +18,7 @@ class InformeEstudiante extends Component
 	public $aprendices, $aprendizArray, $securityInforme;
 	public $vista = 0;
 	public $year, $module, $month, $nameApprentice = '', $yearCopia, $sede_id = '';
+	public $viewObservacion = 0, $currentObservacionId, $currentObservacionText = '';
 
 	public function mount()
 	{
@@ -150,18 +151,37 @@ class InformeEstudiante extends Component
 		return redirect()->route('copiaseguridad');
 	}
 
-	public function saveObservacion($id)
+	public function openObservacion($id)
 	{
-		$this->validate([
-			"observaciones.$id" => 'required'
-		]);
+		$this->viewObservacion = 1;
+		$this->resetViews(['viewObservacion']);
+		$this->currentObservacionId = $id;
+		$this->currentObservacionText = $this->observaciones[$id] ?? '';
 
 		$aprendiz = Apprentice::find($id);
 		if ($aprendiz) {
-			$aprendiz->update([
-				'observacion' => $this->observaciones[$id]
-			]);
+			$this->name = $aprendiz->name . ' ' . $aprendiz->apellido;
 		}
+	}
+
+	public function saveObservacion()
+	{
+		$this->validate([
+			"currentObservacionText" => 'required'
+		], [
+			'required' => 'La observación es requerida'
+		]);
+
+		$aprendiz = Apprentice::find($this->currentObservacionId);
+		if ($aprendiz) {
+			$aprendiz->update([
+				'observacion' => $this->currentObservacionText
+			]);
+			$this->observaciones[$this->currentObservacionId] = $this->currentObservacionText;
+		}
+
+		$this->viewObservacion = 0;
+		$this->currentObservacionText = '';
 	}
 
 	public function save(Apprentice $aprendiz)
@@ -270,130 +290,117 @@ class InformeEstudiante extends Component
 
 	public function render()
 	{
-		$query = Informe::query()->with('apprentice.attendant', 'apprentice.modality');
+		$query = Apprentice::query()
+			->where('estado', 1)
+			->with(['attendant', 'modality', 'becado', 'informe' => function ($q) {
+				$q->where('fechaRegistro', $this->year);
+				if (!empty($this->mes) && $this->mes != '00') {
+					$q->whereMonth('fecha', intval($this->mes));
+				}
+			}]);
 
+		// Filter: Sede
+		if (!empty($this->sede_id)) {
+			$query->where('sede_id', $this->sede_id);
+		}
+
+		// Filter: Modulo
 		if (!empty($this->modulo)) {
-			$query->whereHas('apprentice', function ($subQuery) {
-				if ($this->modulo == '1') {
-					$subQuery->where(function ($query) {
-						$query->whereMonth('fecha_inicio', '<=', 6);
-					});
-				} elseif ($this->modulo == '2') {
-					$subQuery->where(function ($query) {
-						$query->whereMonth('fecha_inicio', '>=', 7);
+			$query->whereHas('informe', function ($q) { // Check this logic. Was based on apprentice start date?
+				// Previous code:
+				// if ($this->modulo == '1') { $subQuery->where(function ($query) { $query->whereMonth('fecha_inicio', '<=', 6); }); }
+				// Ah, the previous code filtered APPRENTICE based on 'fecha_inicio'.
+				// Replicating:
+			});
+			// Re-implementing correct logic from previous code:
+			if ($this->modulo == '1') {
+				$query->whereMonth('fecha_inicio', '<=', 6);
+			} elseif ($this->modulo == '2') {
+				$query->whereMonth('fecha_inicio', '>=', 7);
+			}
+		}
+
+		// Filter: Search (Filtro)
+		if (!empty($this->filtro)) {
+			$words = preg_split('/\s+/', strtolower(trim($this->filtro)));
+
+			$query->where(function ($q) use ($words) {
+				foreach ($words as $word) {
+
+					if (strlen($word) <= 4) {
+						continue;
+					}
+
+					$term = '%' . $word . '%';
+
+					$q->orWhere(function ($subQ) use ($term) {
+						$subQ->where('name', 'LIKE', $term)
+							->orWhere('apellido', 'LIKE', $term);
 					});
 				}
 			});
 		}
 
-		if (!empty($this->sede_id)) {
-			$query->whereHas('apprentice', function ($subQuery) {
-				$subQuery->where('sede_id', $this->sede_id);
-			});
-		}
+		// Get Apprentices
+		$apprentices = $query->get();
 
-		if (!empty($this->mes) && $this->mes != '00') {
-			$query->whereNotNull('fecha')
-				->whereMonth('fecha', intval($this->mes));
-		}
-
-		$query->where('fechaRegistro', $this->year);
-
-		if (!empty($this->filtro)) {
-			$filtro = strtolower($this->filtro);
-
-			$query->whereHas('apprentice', function ($subQuery) use ($filtro) {
-				$subQuery->where(function ($query) use ($filtro) {
-					$query->whereRaw('LOWER(name) LIKE ?', ['%' . $filtro . '%'])
-						->orWhereRaw('LOWER(apellido) LIKE ?', ['%' . $filtro . '%'])
-						->orWhereHas('attendant', function ($attendantQuery) use ($filtro) {
-							$attendantQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $filtro . '%']);
-						});
-				});
-			});
-		}
-
-		$query->whereHas('apprentice', function ($subQuery) {
-			$subQuery->where('estado', 1);
+		// Process each apprentice to add calculated fields
+		$apprentices->each(function ($apprentice) {
+			$apprentice->total_abonos = $apprentice->informe->sum('abono');
+			// Latest informe for Edit button and Date display
+			$latest = $apprentice->informe->sortByDesc('fecha')->first();
+			$apprentice->latest_informe_id = $latest ? $latest->id : null;
+			$apprentice->latest_fecha = $latest ? $latest->fecha : null;
 		});
 
-		$informesAgrupados = (clone $query)
-			->selectRaw('apprentice_id, SUM(abono) as total_abonos')
-			->groupBy('apprentice_id')
-			->get();
-
-		$this->informes = (clone $query)
-			->selectRaw('MIN(id) as id, apprentice_id, MIN(fecha) as fecha')
-			->groupBy('apprentice_id')
-			->get();
-
-		foreach ($this->informes as $informe) {
-			$informe->total_abonos = $informesAgrupados->firstWhere('apprentice_id', $informe->apprentice_id)->total_abonos ?? 0;
-		}
-
+		// Filter: Estado (Pagado vs Pendiente)
 		if ($this->estado == '1') {
 			// PAGADOS
-			$this->informes = $this->informes->filter(function ($informe) {
-				$apprentice = optional($informe->apprentice);
+			$apprentices = $apprentices->filter(function ($apprentice) {
+				if ($apprentice->becado_id == 1) return true;
 				$valor = optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
 				$descuento = $apprentice->descuento ?? 0;
-				$pendiente = $valor - $descuento - $informe->total_abonos;
+				$pendiente = $valor - $descuento - $apprentice->total_abonos;
 				return $pendiente <= 0;
 			});
 		} elseif ($this->estado == '2') {
 			// PENDIENTES
-			$this->informes = $this->informes->filter(function ($informe) {
-				$apprentice = optional($informe->apprentice);
-				if ($apprentice->becado_id == 1) return false; // No mostrar becados
+			$apprentices = $apprentices->filter(function ($apprentice) {
+				if ($apprentice->becado_id == 1) return false;
 				$valor = optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
 				$descuento = $apprentice->descuento ?? 0;
-				$pendiente = $valor - $descuento - $informe->total_abonos;
+				$pendiente = $valor - $descuento - $apprentice->total_abonos;
 				return $pendiente > 0;
 			});
 		}
 
-
-		$this->totalModulos = $this->informes->sum(function ($informe) {
-			$apprentice = optional($informe->apprentice);
-
-			if ($apprentice->becado_id != 1 && $apprentice->estado == 1) {
-				return optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
-			}
-			return 0;
+		// Totals Calculation based on the LIST
+		$this->totalModulos = $apprentices->sum(function ($apprentice) {
+			if ($apprentice->becado_id == 1) return 0;
+			return optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
 		});
 
-		$this->totalDescuento = $this->informes->sum(function ($informe) {
-			return optional($informe->apprentice)->becado_id != 1 && optional($informe->apprentice)->estado == 1
-				? optional($informe->apprentice)->descuento ?? 0
-				: 0;
+		$this->totalDescuento = $apprentices->sum(function ($apprentice) {
+			if ($apprentice->becado_id == 1) return 0;
+			return $apprentice->descuento ?? 0;
 		});
 
-		$this->totalPendiente = $this->informes->sum(function ($informe) {
-			$apprentice = optional($informe->apprentice);
+		$this->totalAbono = $apprentices->sum('total_abonos');
 
-			if ($apprentice->becado_id != 1 && $apprentice->estado == 1) {
-				$valor = optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
-				$descuento = $apprentice->descuento ?? 0;
-
-				return $valor - $descuento - $informe->total_abonos;
-			}
-
-			return 0;
+		$this->totalPendiente = $apprentices->sum(function ($apprentice) {
+			if ($apprentice->becado_id == 1) return 0;
+			$valor = optional($apprentice->modality)->valor ?? $apprentice->valor ?? 0;
+			$descuento = $apprentice->descuento ?? 0;
+			$abono = $apprentice->total_abonos;
+			$p = $valor - $descuento - $abono;
+			return $p > 0 ? $p : 0;
 		});
-
-		$this->totalAbono = $this->informes->sum(function ($informe) {
-			$apprentice = optional($informe->apprentice);
-
-			if ($apprentice->becado_id != 1 && $apprentice->estado == 1) {
-				return $informe->total_abonos;
-			}
-			return 0;
-		});
-
 
 		$this->securityInformes();
 
-		return view('livewire.informe-estudiante');
+		return view('livewire.informe-estudiante', [
+			'estudiantes' => $apprentices
+		]);
 	}
 
 
@@ -430,7 +437,7 @@ class InformeEstudiante extends Component
 
 	private function resetViews($exceptions = [])
 	{
-		$views = ['view', 'vista', 'viewDescuento', 'viewplataforma'];
+		$views = ['view', 'vista', 'viewDescuento', 'viewplataforma', 'viewObservacion'];
 		foreach ($views as $view) {
 			if (!in_array($view, $exceptions)) {
 				$this->$view = 0;

@@ -19,3 +19,49 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# PWA Configuration
+<IfModule mod_mime.c>
+    # Manifest JSON
+    AddType application/manifest+json .webmanifest .json
+    
+    # Service Worker
+    AddType application/javascript .js
+    
+    # Web App
+    AddType text/cache-manifest .appcache
+</IfModule>
+
+# Service Worker no-cache headers (always get fresh version)
+<FilesMatch "sw\.js$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </IfModule>
+</FilesMatch>
+
+# Manifest caching
+<FilesMatch "manifest\.json$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public, max-age=604800"
+    </IfModule>
+</FilesMatch>
+
+# Enable GZIP compression for PWA files
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/manifest+json
+</IfModule>
+
+# Security headers for PWA
+<IfModule mod_headers.c>
+    # Enable PWA installation
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Allow manifest from any origin
+    <FilesMatch "manifest\.json$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>

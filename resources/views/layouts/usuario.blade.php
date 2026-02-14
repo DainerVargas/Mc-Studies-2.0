@@ -3,52 +3,37 @@
 @section('title', 'informacion del usuario')
 
 @section('usuario')
-    <div class="conteInfoUser">
-        <div class="links">
-            @php
-                if (request()->routeIs('usuario') == true) {
-                    $validat = true;
-                } else {
-                    $validat = false;
-                }
-            @endphp
-            <a class="{{ $validat ? 'active' : '' }}" href="{{ route('usuario') }}">Información</a>
-            @php
-                if (request()->routeIs('actualizar') == true) {
-                    $validat = true;
-                } else {
-                    $validat = false;
-                }
-            @endphp
-            <a class="{{ $validat ? 'active' : '' }}" href="{{ route('actualizar') }}">Actualizar Contraseña</a>
+    <div class="user-layout-container">
+        <div class="user-sidebar">
+            <a class="{{ request()->routeIs('usuario') ? 'active' : '' }}" href="{{ route('usuario') }}">
+                <span class="material-symbols-outlined" style="margin-right: 10px;">person</span>
+                Información
+            </a>
+
+            <a class="{{ request()->routeIs('actualizar') ? 'active' : '' }}" href="{{ route('actualizar') }}">
+                <span class="material-symbols-outlined" style="margin-right: 10px;">lock_reset</span>
+                Actualizar Contraseña
+            </a>
+
             @if ($user->rol_id == 1)
-                @php
-                    if (request()->routeIs('agregar') == true) {
-                        $validat = true;
-                    } else {
-                        $validat = false;
-                    }
-                @endphp
-                <a class="{{ $validat ? 'active' : '' }}" href="{{ route('agregar') }}">Añadir Usuario</a>
-                @php
-                    if (request()->routeIs('listado') == true) {
-                        $validat = true;
-                    } else {
-                        $validat = false;
-                    }
-                @endphp
-                <a class="{{ $validat ? 'active' : '' }}" href="{{ route('listado') }}">Lista de Usuario</a>
-                @php
-                    if (request()->routeIs('history') == true) {
-                        $validat = true;
-                    } else {
-                        $validat = false;
-                    }
-                @endphp
-                <a class="{{ $validat ? 'active' : '' }}" href="{{ route('history') }}">Historial de acciones</a>
+                <a class="{{ request()->routeIs('agregar') ? 'active' : '' }}" href="{{ route('agregar') }}">
+                    <span class="material-symbols-outlined" style="margin-right: 10px;">group_add</span>
+                    Añadir Usuario
+                </a>
+                
+                <a class="{{ request()->routeIs('listado') ? 'active' : '' }}" href="{{ route('listado') }}">
+                    <span class="material-symbols-outlined" style="margin-right: 10px;">list_alt</span>
+                    Lista de Usuarios
+                </a>
+
+                <a class="{{ request()->routeIs('history') ? 'active' : '' }}" href="{{ route('history') }}">
+                    <span class="material-symbols-outlined" style="margin-right: 10px;">history</span>
+                    Historial de acciones
+                </a>
             @endif
         </div>
-        <div class="contenedor">
+
+        <div class="user-content-area">
             @yield('user')
             @yield('actualizar')
             @yield('anadir')

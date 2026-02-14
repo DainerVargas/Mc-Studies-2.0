@@ -9,12 +9,14 @@
                         <p>Visualice y administre los registros de horas y pagos de los profesores.</p>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <a href="{{ route('teacher.hours-form') }}" class="btn-create">
-                        <span class="material-symbols-outlined">add_circle</span>
-                        <span>Registrar Horas</span>
-                    </a>
-                </div>
+                @if (auth()->user()->rol_id == 1)
+                    <div class="header-actions">
+                        <a href="{{ route('teacher.hours-form') }}" class="btn-create">
+                            <span class="material-symbols-outlined">add_circle</span>
+                            <span>Registrar Horas</span>
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <div class="card-filters">
@@ -77,26 +79,34 @@
                                             <span class="material-symbols-outlined">check_circle</span>
                                             <span>Completado</span>
                                         </div>
-                                    @else
+                                    @elseif (auth()->user()->rol_id == 1)
                                         <button wire:confirm="¿Confirma que se ha realizado el pago?"
                                             wire:click="pay({{ $registerHour->id }})" class="btn-pay">
                                             <span class="material-symbols-outlined">payments</span>
                                             <span>Pendiente</span>
                                         </button>
+                                    @else
+                                        <div class="status-pill status-pending"
+                                            style="background: #fefce8; color: #a16207;">
+                                            <span class="material-symbols-outlined">hourglass_empty</span>
+                                            <span>Pendiente</span>
+                                        </div>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="action-grid">
-                                        <a href="{{ route('teacher.hours-form', $registerHour->id) }}"
-                                            class="action-btn edit-btn" title="Editar">
-                                            <span class="material-symbols-outlined">edit</span>
-                                        </a>
-                                        <button class="action-btn delete-btn"
-                                            wire:click="delete({{ $registerHour->id }})"
-                                            wire:confirm="¿Desea eliminar este registro permanentemente?"
-                                            title="Eliminar">
-                                            <span class="material-symbols-outlined">delete</span>
-                                        </button>
+                                        @if (auth()->user()->rol_id == 1)
+                                            <a href="{{ route('teacher.hours-form', $registerHour->id) }}"
+                                                class="action-btn edit-btn" title="Editar">
+                                                <span class="material-symbols-outlined">edit</span>
+                                            </a>
+                                            <button class="action-btn delete-btn"
+                                                wire:click="delete({{ $registerHour->id }})"
+                                                wire:confirm="¿Desea eliminar este registro permanentemente?"
+                                                title="Eliminar">
+                                                <span class="material-symbols-outlined">delete</span>
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

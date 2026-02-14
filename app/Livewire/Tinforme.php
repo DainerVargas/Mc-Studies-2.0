@@ -4,19 +4,22 @@ namespace App\Livewire;
 
 use App\Models\Teacher;
 use App\Models\Tinforme as ModelsTinforme;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Tinforme extends Component
 {
     public $tinformes, $profesores, $filtro = '', $informe = [], $view;
 
-    public $name, $abono, $teacher, $selectTeachers = [] ,$message2, $year;
+    public $name, $abono, $teacher, $selectTeachers = [] ,$message2, $year, $user;
 
     public function mount()
     {
         $this->tinformes = ModelsTinforme::all();
         $this->profesores = Teacher::all();
         $this->year = date('Y');
+
+        $this->user = Auth::user();
     }
 
     public function active($value){

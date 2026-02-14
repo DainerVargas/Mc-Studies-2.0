@@ -19,6 +19,10 @@ class ApprenticeController extends Controller
     {
         $user = Auth::user();
 
+        if ($user->rol_id == 5) {
+            return redirect()->route('mis_hijos');
+        }
+
         // Sedes and Groups for filters
         if ($user->rol_id != 4) {
             $gruposSelect = \App\Models\Group::all();
@@ -36,7 +40,23 @@ class ApprenticeController extends Controller
 
         // Apply Search Filter
         if ($request->has('name') && $request->name != '') {
-            $query->where('name', 'LIKE', '%' . $request->name . '%');
+            $words = preg_split('/\s+/', strtolower(trim($request->name)));
+
+            $query->where(function ($q) use ($words) {
+                foreach ($words as $word) {
+
+                    if (strlen($word) <= 4) {
+                        continue;
+                    }
+
+                    $term = '%' . $word . '%';
+
+                    $q->orWhere(function ($subQ) use ($term) {
+                        $subQ->where('name', 'LIKE', $term)
+                            ->orWhere('apellido', 'LIKE', $term);
+                    });
+                }
+            });
         }
 
         // Apply Group Filter

@@ -6,6 +6,7 @@ use App\Mail\SendMail;
 use App\Models\Apprentice;
 use App\Models\Group;
 use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -56,6 +57,10 @@ class SendEmail extends Component
 
     public function delete(Message $message)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->dispatch('error', 'No tienes permisos para eliminar.');
+            return;
+        }
         $message->delete();
         $this->messages = Message::all();
     }

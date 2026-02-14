@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ApprenticeController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AttendantController;
@@ -18,7 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 /* LOGIN */
 
-Route::get('/', [AuthenticationController::class, 'index'])->middleware('guest')->name('index');
+Route::get('/', function () {
+    return redirect()->route('login');
+})->name('index');
 
 Route::get('Login', [AuthenticationController::class, 'login'])->middleware('guest')->name('login');
 
@@ -80,6 +83,7 @@ Route::get('Editar-Informacion', [UserController::class, 'actualizar'])->middlew
 Route::post('Editar-Informacion/{user}', [UserController::class, 'updateUser'])->middleware('auth')->name('updateUser');
 
 Route::get('Agregar-Usuarios', [UserController::class, 'agregar'])->middleware('auth')->name('agregar');
+Route::post('Agregar-Usuarios', [UserController::class, 'storeUser'])->middleware('auth')->name('storeUser');
 
 Route::get('Listado-Usuarios', [UserController::class, 'listado'])->middleware('auth')->name('listado');
 
@@ -145,6 +149,14 @@ Route::get('Certificado/{aprendiz}', [DescargaController::class, 'certificado'])
 Route::get('Calificacion Grupo', [DescargaController::class, 'groupCalification'])->middleware('auth')->name('groupCalification');
 
 Route::get('Descarga-Calificacion', [DescargaController::class, 'donwloadQualification'])->middleware('auth')->name('donwloadQualification');
+
+/* ACUDIENTE ROUTES */
+Route::get('Reuniones', \App\Livewire\ReunionComponent::class)->middleware('auth')->name('reuniones');
+Route::get('Actividades-Acudiente', \App\Livewire\ActivityComponent::class)->middleware('auth')->name('actividades');
+Route::get('Mis-Hijos', \App\Livewire\MyChildrenComponent::class)->middleware('auth')->name('mis_hijos');
+
+/* ACTIVITIES */
+Route::get('Lista-Actividades', [ActivityController::class, 'index'])->middleware('auth')->name('listaActividades');
 
 Route::get('/optimize', function () {
     Artisan::call('optimize:clear');

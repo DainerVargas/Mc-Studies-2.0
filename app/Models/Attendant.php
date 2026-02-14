@@ -14,6 +14,11 @@ class Attendant extends Model
         return $this->hasMany(Apprentice::class);
     }
 
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
 
     protected $fillable = [
         'name',

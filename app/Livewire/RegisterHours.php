@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\RegisterHours as ModelsRegisterHours;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -21,6 +22,10 @@ class RegisterHours extends Component
 
     public function delete($value)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->dispatch('error', 'No tienes permisos para eliminar.');
+            return;
+        }
         ModelsRegisterHours::where('id', $value)->delete();
     }
 

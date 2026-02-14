@@ -1,0 +1,493 @@
+// Variables
+$primary: #05ccd1;
+$primary-dark: #04b3b8;
+$secondary: #99bf51;
+$text-dark: #2d3436;
+$text-muted: #636e72;
+$white: #ffffff;
+$bg-light: #f8f9fa;
+$border-color: #e1e1e1;
+
+// Mixins
+@mixin flexible($justify: center, $align: center, $direction: row) {
+    display: flex;
+    justify-content: $justify;
+    align-items: $align;
+    flex-direction: $direction;
+}
+
+@mixin card-shadow {
+    background: $white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+// Layout Container
+.user-layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 90px); // Subtract header height
+    background-color: $bg-light;
+    gap: 30px;
+    padding: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    @media (max-width: 900px) {
+        padding: 20px;
+        gap: 20px;
+    }
+}
+
+// Sidebar Navigation
+.user-sidebar {
+    width: 100%;
+    flex-shrink: 0;
+    @include card-shadow;
+    padding: 20px;
+    height: fit-content;
+    display: flex;
+    gap: 10px;
+
+    @media (max-width: 900px) {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 15px;
+        gap: 15px;
+        white-space: nowrap;
+        scrollbar-width: none; // Firefox
+
+        &::-webkit-scrollbar {
+            display: none; // Chrome/Safari
+        }
+    }
+
+    a {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: $text-muted;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+
+        &:hover {
+            background-color: rgba($primary, 0.08);
+            color: $primary;
+            transform: translateX(5px);
+        }
+
+        &.active {
+            background: linear-gradient(135deg, $primary, $primary-dark);
+            color: $white;
+            box-shadow: 0 4px 15px rgba($primary, 0.3);
+        }
+
+        @media (max-width: 900px) {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+
+            &:hover {
+                transform: translateY(-2px);
+            }
+        }
+    }
+}
+
+// Main Content Area
+.user-content-area {
+    flex: 1;
+    width: 100%;
+
+    // Wrapper for list views or simple content
+    .user-content-wrapper {
+        @include card-shadow;
+        padding: 30px;
+        width: 100%;
+        box-sizing: border-box;
+
+        @media (max-width: 768px) {
+            padding: 20px;
+        }
+    }
+}
+
+// Profile Header Card (Image + Name) used in Actualizar
+.profile-header-card {
+    @include card-shadow;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 30px;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+    }
+
+    .profile-image-container {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid rgba($primary, 0.1);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .profile-info {
+        h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
+            color: $text-dark;
+        }
+
+        p {
+            margin: 0;
+            color: $primary;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba($primary, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+    }
+}
+
+// Password Update Form
+.password-update-card {
+    @include card-shadow;
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+
+    @media (max-width: 600px) {
+        padding: 25px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: $text-dark;
+        font-size: 1.4rem;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .input-group {
+        position: relative;
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: $text-muted;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+
+            input {
+                width: 100%;
+                padding: 12px 45px 12px 15px;
+                border: 2px solid $bg-light;
+                background-color: $bg-light;
+                border-radius: 12px;
+                font-size: 1rem;
+                color: $text-dark;
+                box-sizing: border-box;
+                transition: all 0.3s ease;
+
+                &:focus {
+                    outline: none;
+                    border-color: $primary;
+                    background-color: $white;
+                    box-shadow: 0 0 0 4px rgba($primary, 0.1);
+                }
+
+                &::placeholder {
+                    color: lighten($text-muted, 20%);
+                }
+            }
+
+            .eye-icon {
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: $text-muted;
+                cursor: pointer;
+                user-select: none;
+                transition: color 0.3s;
+
+                &:hover {
+                    color: $primary;
+                }
+            }
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .success-message {
+            color: $secondary;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, $primary, $primary-dark);
+        color: $white;
+        border: none;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+        box-shadow: 0 4px 15px rgba($primary, 0.3);
+        width: 100%; // Make it full width for better impact
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba($primary, 0.4);
+            background: linear-gradient(
+                135deg,
+                lighten($primary, 5%),
+                $primary
+            );
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    // Adapt select for premium look
+    select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid $bg-light;
+        background-color: $bg-light;
+        border-radius: 12px;
+        font-size: 1rem;
+        color: $text-dark;
+        transition: all 0.3s ease;
+        appearance: none; // Custom arrow needed or keep default
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23636e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 16px;
+
+        &:focus {
+            outline: none;
+            border-color: $primary;
+            background-color: $white;
+            box-shadow: 0 0 0 4px rgba($primary, 0.1);
+        }
+    }
+}
+
+// User Table Styles
+.user-table-card {
+    @include card-shadow;
+    padding: 30px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    background: linear-gradient(to bottom, #ffffff, #fcfcfc);
+
+    h2 {
+        color: $text-dark;
+        margin-bottom: 25px;
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        position: relative;
+        padding-left: 15px;
+
+        &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: $primary;
+            border-radius: 4px;
+        }
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 12px;
+
+        thead {
+            th {
+                color: #94a3b8;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 0.75rem;
+                text-align: left;
+                padding: 10px 20px;
+                border: none;
+                white-space: nowrap;
+            }
+        }
+
+        tbody {
+            tr {
+                background-color: $white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+                border-radius: 12px;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+                td {
+                    padding: 12px 20px;
+                    vertical-align: middle;
+                    color: $text-dark;
+                    font-size: 0.95rem;
+                    border: 1px solid rgba(0, 0, 0, 0.03);
+                    border-left: none;
+                    border-right: none;
+
+                    &:first-child {
+                        border-left: 1px solid rgba(0, 0, 0, 0.03);
+                        border-top-left-radius: 12px;
+                        border-bottom-left-radius: 12px;
+                        font-weight: 700;
+                        color: $primary;
+                        width: 50px;
+                    }
+
+                    &:last-child {
+                        border-right: 1px solid rgba(0, 0, 0, 0.03);
+                        border-top-right-radius: 12px;
+                        border-bottom-right-radius: 12px;
+                        text-align: right;
+                    }
+                }
+
+                &:hover {
+                    transform: translateY(-3px) scale(1.002);
+                    box-shadow: 0 12px 24px -10px rgba($primary, 0.15);
+                    border-color: rgba($primary, 0.2);
+
+                    td {
+                        background-color: rgba($primary, 0.01);
+                        border-top-color: rgba($primary, 0.1);
+                        border-bottom-color: rgba($primary, 0.1);
+
+                        &:first-child {
+                            border-left-color: rgba($primary, 0.1);
+                        }
+                        &:last-child {
+                            border-right-color: rgba($primary, 0.1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .user-info-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .avatar-small {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px; // Slightly rounded square for modern look
+            object-fit: cover;
+            border: 2px solid $white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: $text-dark;
+            display: block;
+            font-size: 0.95rem;
+        }
+    }
+
+    .role-badge {
+        display: inline-block;
+        background: rgba($primary, 0.08);
+        color: $primary;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid rgba($primary, 0.15);
+    }
+
+    .btn-action {
+        padding: 8px 18px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+        &.safe {
+            background-color: rgba($secondary, 0.08);
+            color: $secondary;
+            border-color: rgba($secondary, 0.2);
+            cursor: default;
+        }
+
+        &.delete {
+            background-color: #fff1f0;
+            color: #ff4d4f;
+            border-color: #ffa39e;
+
+            &:hover {
+                background-color: #ff4d4f;
+                color: $white;
+                border-color: #ff4d4f;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(#ff4d4f, 0.2);
+            }
+        }
+    }
+}

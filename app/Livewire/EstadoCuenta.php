@@ -76,6 +76,10 @@ class EstadoCuenta extends Component
 
     public function eliminar(Informe $informe)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->message2 = "No tienes permisos para eliminar este registro.";
+            return;
+        }
 
         if (!$informe) {
             $this->message2 = "El informe no existe.";
@@ -88,7 +92,7 @@ class EstadoCuenta extends Component
             $this->message2 = "No se puede eliminar el único informe del aprendiz.";
         } else {
             $informe->delete();
-            $this->informes = Informe::all();
+            $this->informes = Informe::where('apprentice_id', $this->aprendiz->id)->get();
         }
     }
 
@@ -105,4 +109,3 @@ class EstadoCuenta extends Component
         return view('livewire.estado-cuenta', ['user' => $user]);
     }
 }
-

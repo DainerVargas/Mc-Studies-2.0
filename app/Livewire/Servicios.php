@@ -7,6 +7,7 @@ use App\Models\MetodoPago;
 use App\Models\Pago;
 use App\Models\Service;
 use App\Models\typeService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
@@ -15,8 +16,8 @@ class Servicios extends Component
 {
     use WithFileUploads;
 
-    public $showS = false, $showC = false, $show = 1;
-    public $type = 'null', $nameService = '', $nameEstudiante = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id, $showU, $date = '', $pay_id = '';
+    public $showServiceModal = false, $showCategoryModal = false, $showPayModal = false, $show = 1;
+    public $type = 'null', $nameService = '', $nameEstudiante = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id = null, $date = '', $pay_id = '';
     public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate, $saldoCaja = 0, $year, $year2;
 
     public function mount()
@@ -35,11 +36,8 @@ class Servicios extends Component
 
     public function view($option)
     {
-        $this->show = $option;
-        $this->showU = false;
-        $this->showS = false;
-        $this->showC = false;
         Session::put('show', $option);
+        $this->js('window.location.reload()');
     }
     public function setServiceIdAndSave($id)
     {
@@ -65,28 +63,28 @@ class Servicios extends Component
     }
     public function showService()
     {
-        $this->showS = true;
-        $this->showC = false;
-        $this->showU = false;
+        $this->showServiceModal = true;
+        $this->showCategoryModal = false;
+        $this->showPayModal = false;
     }
     public function close()
     {
-        $this->showS = false;
-        $this->showC = false;
-        $this->showU = false;
-        $this->reset(['name', 'valor', 'type_service_id']);
+        $this->showServiceModal = false;
+        $this->showCategoryModal = false;
+        $this->showPayModal = false;
+        $this->reset(['name', 'valor', 'type_service_id', 'pay_id', 'search']);
     }
     public function showCategory()
     {
-        $this->showS = false;
-        $this->showU = false;
-        $this->showC = true;
+        $this->showCategoryModal = true;
+        $this->showServiceModal = false;
+        $this->showPayModal = false;
     }
     public function showUpdate(Service $servicio)
     {
-        $this->showS = false;
-        $this->showU = true;
-        $this->showC = false;
+        $this->showServiceModal = true;
+        $this->showCategoryModal = false;
+        $this->showPayModal = false;
 
         $this->service_id = $servicio->id;
         $this->name = $servicio->name;
@@ -96,26 +94,26 @@ class Servicios extends Component
     }
 
     public function next()
-	{
-		$this->year += 1;
-		$this->services = Service::whereYear('fecha', $this->year)->get();
-	}
+    {
+        $this->year += 1;
+        $this->services = Service::whereYear('fecha', $this->year)->get();
+    }
 
     public function nextpay()
-	{
-		$this->year2 += 1;
-		$this->pagos = Pago::whereYear('created_at', $this->year2)->get();
-	}
-	public function previous()
-	{
-		$this->year -= 1;
-		$this->services = Service::whereYear('fecha', $this->year)->get();
-	}
-	public function previouspay()
-	{
-		$this->year2 -= 1;
-		$this->pagos = Pago::whereYear('created_at', $this->year2)->get();
-	}
+    {
+        $this->year2 += 1;
+        $this->pagos = Pago::whereYear('created_at', $this->year2)->get();
+    }
+    public function previous()
+    {
+        $this->year -= 1;
+        $this->services = Service::whereYear('fecha', $this->year)->get();
+    }
+    public function previouspay()
+    {
+        $this->year2 -= 1;
+        $this->pagos = Pago::whereYear('created_at', $this->year2)->get();
+    }
 
     public function updateService(Service $servicio)
     {
@@ -138,9 +136,9 @@ class Servicios extends Component
             $this->services = Service::all();
 
             $this->reset(['name', 'valor', 'type_service_id']);
-            $this->showS = false;
-            $this->showC = false;
-            $this->showU = false;
+            $this->showServiceModal = false;
+            $this->showCategoryModal = false;
+            $this->showPayModal = false;
             $this->service_id = '';
         }
     }
@@ -167,8 +165,8 @@ class Servicios extends Component
             $this->services = Service::all();
 
             $this->reset(['name', 'valor', 'type_service_id']);
-            $this->showS = false;
-            $this->showC = false;
+            $this->showServiceModal = false;
+            $this->showCategoryModal = false;
         }
     }
     public function saveCategory()
@@ -181,17 +179,25 @@ class Servicios extends Component
             typeService::create($validate);
             $this->typeService = typeService::all();
             $this->reset(['name']);
-            $this->showS = false;
-            $this->showC = false;
+            $this->showServiceModal = false;
+            $this->showCategoryModal = false;
         }
     }
     public function delete(Service $service)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->dispatch('error', 'No tienes permisos para eliminar.');
+            return;
+        }
         $service->delete();
         $this->services = Service::all();
     }
     public function deletePay($id)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->dispatch('error', 'No tienes permisos para eliminar.');
+            return;
+        }
         $pago = Pago::find($id);
         if ($pago) {
             $pago->delete();
@@ -247,6 +253,7 @@ class Servicios extends Component
     }
     public function showPay($id = null)
     {
+        $this->showPayModal = true;
         $pay = Pago::find($id);
         if ($pay) {
             $this->idEstudentCreate = $pay->apprentice_id;
@@ -255,10 +262,12 @@ class Servicios extends Component
             $this->metodoCreate = $pay->metodo_pago_id;
             $this->dineroCreate = $pay->dinero;
             $this->pay_id = $pay->id;
+            $this->search = $pay->egresado ?? '';
         } else {
-            $this->reset(['idEstudentCreate', 'montoCreate', 'dateCreate', 'metodoCreate', 'dineroCreate']);
+            $this->reset(['idEstudentCreate', 'montoCreate', 'dateCreate', 'metodoCreate', 'dineroCreate', 'pay_id', 'search']);
         }
-        $this->showU = true;
+        $this->showServiceModal = false;
+        $this->showCategoryModal = false;
     }
     public function updatedSearch()
     {
@@ -308,10 +317,11 @@ class Servicios extends Component
         $this->pagos = Pago::all();
         $this->reset(['idEstudentCreate', 'montoCreate', 'dateCreate', 'metodoCreate', 'dineroCreate', 'search']);
         $this->pay_id = '';
-        $this->showU = false;
+        $this->showPayModal = false;
     }
 
-    public function donwload(){
+    public function donwload()
+    {
 
         session()->put('pagos', $this->pagos);
         return redirect()->route('informe.caja',);

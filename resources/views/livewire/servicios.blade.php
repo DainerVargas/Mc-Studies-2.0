@@ -67,8 +67,8 @@
                 <tbody>
                     @php $suma = 0; @endphp
                     @forelse ($services as $key => $service)
-                        @php $suma += $service->valor; @endphp
-                        <tr>
+                        <tr wire:key="service-{{ $service->id }}">
+                            @php $suma += $service->valor; @endphp
                             <td style="font-weight: 600; color: #718096;">#{{ $key + 1 }}</td>
                             <td><span style="font-weight: 700;">{{ $service->name }}</span></td>
                             <td style="font-weight: 700; color: #05ccd1;">
@@ -96,10 +96,12 @@
                                     <button wire:click="showUpdate({{ $service->id }})" class="btn-update">
                                         <span class="material-symbols-outlined">edit</span>
                                     </button>
-                                    <button wire:click="delete({{ $service->id }})"
-                                        wire:confirm="¿Desea eliminar el servicio?" class="btn-delete">
-                                        <span class="material-symbols-outlined">delete</span>
-                                    </button>
+                                    @if (auth()->user()->rol_id == 1)
+                                        <button wire:click="delete({{ $service->id }})"
+                                            wire:confirm="¿Desea eliminar el servicio?" class="btn-delete">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -122,88 +124,6 @@
                 </tfoot>
             </table>
         </div>
-
-        @if ($showS || $showC || $showU)
-            <div class="conteCreate">
-                @if ($showS || $showU)
-                    <div class="conteCreateService">
-                        <div class="modal-header">
-                            <h3>{{ $showU ? 'Actualizar Servicio' : 'Nuevo Servicio' }}</h3>
-                            <p>{{ $showU ? 'Modifique los detalles del servicio seleccionado' : 'Registre un nuevo gasto o servicio en el sistema' }}
-                            </p>
-                            <button class="close-modal" wire:click="close">
-                                <span class="material-symbols-outlined">close</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="conteDivs">
-                                <div class="Input">
-                                    <label>Nombre del Servicio</label>
-                                    <input type="text" wire:model="name" placeholder="Ej: Pago de luz">
-                                </div>
-                                <div class="Input">
-                                    <label>Valor</label>
-                                    <input type="text" wire:model="valor" placeholder="0.00">
-                                </div>
-                            </div>
-                            <div class="conteDivs">
-                                <div class="Input">
-                                    <label>Fecha</label>
-                                    <input type="date" wire:model="fecha">
-                                </div>
-                                <div class="Input">
-                                    <label>Categoría</label>
-                                    <select wire:model="type_service_id">
-                                        <option value="null">Seleccione...</option>
-                                        @foreach ($typeService as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn-cancel" wire:click="close">Cancelar</button>
-                            @if ($showU)
-                                <button class="btn-save" wire:click="updateService({{ $service_id }})">
-                                    <span class="material-symbols-outlined">save</span> Guardar Cambios
-                                </button>
-                            @else
-                                <button class="btn-save" wire:click="saveService">
-                                    <span class="material-symbols-outlined">add_circle</span> Registrar Servicio
-                                </button>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-
-                @if ($showC)
-                    <div class="conteCreateCategory">
-                        <div class="modal-header">
-                            <h3>Nueva Categoría</h3>
-                            <p>Organice sus servicios mediante categorías personalizadas</p>
-                            <button class="close-modal" wire:click="close">
-                                <span class="material-symbols-outlined">close</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="conteDivs">
-                                <div class="Input">
-                                    <label>Nombre de Categoría</label>
-                                    <input type="text" wire:model="name" placeholder="Ej: Mantenimiento">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn-cancel" wire:click="close">Cancelar</button>
-                            <button class="btn-save" wire:click="saveCategory">
-                                <span class="material-symbols-outlined">check_circle</span> Crear Categoría
-                            </button>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        @endif
     @else
         <div class="modern-filters">
             <div class="filter-header">
@@ -215,8 +135,7 @@
                     <button class="filter-btn dark" wire:click="showPay">
                         <span class="material-symbols-outlined">add_box</span> Nuevo Movimiento
                     </button>
-                    <button class="filter-btn outline" wire:click="donwload"
-                        wire:confirm="¿Descargar informe de caja?">
+                    <button class="filter-btn outline" wire:click="donwload">
                         <span class="material-symbols-outlined">download</span> Reporte PDF
                     </button>
                 </div>
@@ -284,13 +203,13 @@
                 <tbody>
                     @php $total = 0; @endphp
                     @forelse ($pagos as $key => $pago)
-                        @php
-                            $total += $pago->monto;
-                            $name = $pago->apprentice
-                                ? $pago->apprentice->name . ' ' . $pago->apprentice->apellido
-                                : $pago->egresado;
-                        @endphp
-                        <tr>
+                        <tr wire:key="pago-{{ $pago->id }}">
+                            @php
+                                $total += $pago->monto;
+                                $name = $pago->apprentice
+                                    ? $pago->apprentice->name . ' ' . $pago->apprentice->apellido
+                                    : $pago->egresado;
+                            @endphp
                             <td style="font-weight: 600; color: #718096;">#{{ $key + 1 }}</td>
                             <td><span style="font-weight: 700;">{{ $name }}</span></td>
                             <td
@@ -309,10 +228,12 @@
                                     <button wire:click="showPay({{ $pago->id }})" class="btn-update">
                                         <span class="material-symbols-outlined">edit</span>
                                     </button>
-                                    <button wire:click="deletePay({{ $pago->id }})"
-                                        wire:confirm="¿Eliminar este registro?" class="btn-delete">
-                                        <span class="material-symbols-outlined">delete</span>
-                                    </button>
+                                    @if (auth()->user()->rol_id == 1)
+                                        <button wire:click="deletePay({{ $pago->id }})"
+                                            wire:confirm="¿Eliminar este registro?" class="btn-delete">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -335,74 +256,209 @@
                 </tfoot>
             </table>
         </div>
+    @endif
 
-        @if ($showU)
-            <div class="conteCreate">
-                <div class="conteCreateService">
-                    <div class="modal-header">
-                        <h3>{{ $pay_id ? 'Actualizar Movimiento' : 'Nuevo Movimiento' }}</h3>
-                        <p>{{ $pay_id ? 'Gestione los detalles del registro contable' : 'Registre un nuevo ingreso o egreso en la caja' }}
-                        </p>
-                        <button class="close-modal" wire:click="close">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
+    {{-- MODAL: NUEVO/EDITAR SERVICIO --}}
+    @if ($showServiceModal)
+        <div class="srv-modal-container" wire:key="modal-service-container">
+            <div class="srv-modal-content" wire:key="modal-service-form">
+                <div class="srv-modal-header">
+                    <button class="srv-btn-close" wire:click="close">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                    <h3>{{ $service_id ? 'Actualizar Servicio' : 'Nuevo Servicio' }}</h3>
+                    <p>{{ $service_id ? 'Modifique los detalles del servicio seleccionado' : 'Registre un nuevo gasto o servicio en el sistema' }}
+                    </p>
+                </div>
+                <div class="srv-modal-body">
+                    <div class="srv-form-row">
+                        <div class="srv-input-group">
+                            <label>Nombre del Servicio</label>
+                            <input type="text" wire:model="name" placeholder="Ej: Pago de luz">
+                            @error('name')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="srv-input-group">
+                            <label>Valor</label>
+                            <input type="text" wire:model="valor" placeholder="0.00">
+                            @error('valor')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <div class="conteDivs">
-                            <div class="Input">
-                                <label>Concepto / Egreso</label>
-                                <input type="text" wire:model.live="search" placeholder="Especifique concepto...">
-                            </div>
-                            <div class="Input">
-                                <label>O Estudiante</label>
+                    <div class="srv-form-row">
+                        <div class="srv-input-group">
+                            <label>Fecha</label>
+                            <input type="date" wire:model="fecha">
+                            @error('fecha')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="srv-input-group">
+                            <label>Categoría</label>
+                            <select wire:model="type_service_id">
+                                <option value="">Seleccione...</option>
+                                @foreach ($typeService as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('type_service_id')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="srv-modal-footer">
+                    <button class="srv-btn-cancel" wire:click="close">Cancelar</button>
+                    @if ($service_id)
+                        <button class="srv-btn-save" wire:click="updateService({{ $service_id }})">
+                            <span class="material-symbols-outlined">save</span> Guardar Cambios
+                        </button>
+                    @else
+                        <button class="srv-btn-save" wire:click="saveService">
+                            <span class="material-symbols-outlined">add_circle</span> Registrar Servicio
+                        </button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- MODAL: NUEVA CATEGORÍA --}}
+    @if ($showCategoryModal)
+        <div class="srv-modal-container" wire:key="modal-category-container">
+            <div class="srv-modal-content" wire:key="modal-category-form">
+                <div class="srv-modal-header">
+                    <button class="srv-btn-close" wire:click="close">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                    <h3>Nueva Categoría</h3>
+                    <p>Organice sus servicios mediante categorías personalizadas</p>
+                </div>
+                <div class="srv-modal-body">
+                    <div class="srv-form-row">
+                        <div class="srv-input-group">
+                            <label>Nombre de Categoría</label>
+                            <input type="text" wire:model="name" placeholder="Ej: Mantenimiento">
+                            @error('name')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="srv-modal-footer">
+                    <button class="srv-btn-cancel" wire:click="close">Cancelar</button>
+                    <button class="srv-btn-save" wire:click="saveCategory">
+                        <span class="material-symbols-outlined">check_circle</span> Crear Categoría
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- MODAL: NUEVO/EDITAR MOVIMIENTO (CAJA) --}}
+    @if ($showPayModal)
+        <div class="srv-modal-container" wire:key="modal-pay-container">
+            <div class="srv-modal-content" wire:key="modal-pay-form">
+                <div class="srv-modal-header">
+                    <button class="srv-btn-close" wire:click="close">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                    <h3>{{ $pay_id ? 'Actualizar Movimiento' : 'Nuevo Movimiento' }}</h3>
+                    <p>{{ $pay_id ? 'Gestione los detalles del registro contable de caja' : 'Registre un nuevo ingreso o egreso en la caja del sistema' }}
+                    </p>
+                </div>
+                <div class="srv-modal-body">
+                    <div class="srv-form-row">
+                        <div class="srv-input-group">
+                            <label>Tipo de Operación</label>
+                            <select wire:model.live="dineroCreate">
+                                <option value="">Seleccione tipo...</option>
+                                <option value="Ingresado">Ingreso</option>
+                                <option value="Egresado">Egreso</option>
+                            </select>
+                            @error('dineroCreate')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="srv-input-group">
+                            <label>Monto</label>
+                            <input type="text" wire:model="montoCreate" placeholder="0.00">
+                            @error('montoCreate')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="srv-form-row">
+                        @if ($dineroCreate == 'Ingresado')
+                            <div class="srv-input-group" wire:key="input-estudent">
+                                <label>Estudiante</label>
                                 <select wire:model="idEstudentCreate">
-                                    <option value="">Seleccione...</option>
+                                    <option value="">Seleccione estudiante...</option>
                                     @foreach ($estudents as $estudent)
                                         <option value="{{ $estudent->id }}">{{ $estudent->name }}
                                             {{ $estudent->apellido }}</option>
                                     @endforeach
                                 </select>
+                                @error('idEstudentCreate')
+                                    <span class="error"
+                                        style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                                @enderror
                             </div>
-                        </div>
-                        <div class="conteDivs">
-                            <div class="Input">
-                                <label>Monto</label>
-                                <input type="text" wire:model="montoCreate" placeholder="0.00">
+                        @else
+                            <div class="srv-input-group" wire:key="input-concept">
+                                <label>Concepto / Egreso</label>
+                                <input type="text" wire:model="search"
+                                    placeholder="Especifique concepto del egreso...">
+                                @error('search')
+                                    <span class="error"
+                                        style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                                @enderror
                             </div>
-                            <div class="Input">
-                                <label>Fecha</label>
-                                <input type="date" wire:model="dateCreate">
-                            </div>
-                        </div>
-                        <div class="conteDivs">
-                            <div class="Input">
-                                <label>Método</label>
-                                <select wire:model="metodoCreate">
-                                    <option value="null">Seleccione...</option>
-                                    @foreach ($metodoPagos as $metodoItem)
-                                        <option value="{{ $metodoItem->id }}">{{ $metodoItem->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="Input">
-                                <label>Tipo</label>
-                                <select wire:model="dineroCreate">
-                                    <option value="null">Seleccione...</option>
-                                    <option value="Ingresado">Ingreso</option>
-                                    <option value="Egresado">Egreso</option>
-                                </select>
-                            </div>
+                        @endif
+                        <div class="srv-input-group">
+                            <label>Método de Pago</label>
+                            <select wire:model="metodoCreate">
+                                <option value="">Seleccione método...</option>
+                                @foreach ($metodoPagos as $metodoItem)
+                                    <option value="{{ $metodoItem->id }}">{{ $metodoItem->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('metodoCreate')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button class="btn-cancel" wire:click="close">Cancelar</button>
-                        <button class="btn-save" wire:click="createPay({{ $pay_id }})">
-                            <span class="material-symbols-outlined">{{ $pay_id ? 'save' : 'add_box' }}</span>
-                            {{ $pay_id ? 'Actualizar' : 'Registrar' }}
-                        </button>
+
+                    <div class="srv-form-row">
+                        <div class="srv-input-group" style="max-width: 50%;">
+                            <label>Fecha del Movimiento</label>
+                            <input type="date" wire:model="dateCreate">
+                            @error('dateCreate')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
                 </div>
+                <div class="srv-modal-footer">
+                    <button class="srv-btn-cancel" wire:click="close">Cancelar</button>
+                    <button class="srv-btn-save" wire:click="createPay({{ $pay_id }})">
+                        <span class="material-symbols-outlined">{{ $pay_id ? 'save' : 'add_box' }}</span>
+                        {{ $pay_id ? 'Guardar Cambios' : 'Registrar Movimiento' }}
+                    </button>
+                </div>
             </div>
-        @endif
+        </div>
     @endif
 </div>

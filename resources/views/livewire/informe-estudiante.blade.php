@@ -97,64 +97,63 @@
                         $plataformaTotal = 0;
                         $fechaPlataforma = Date::now()->year;
                     @endphp
-                    @forelse ($informes ?? [] as $informe)
+                    @forelse ($estudiantes ?? [] as $estudiante)
                         @php
                             $abonoColor = '#2d3748';
-                            if ($informe->total_abonos <= 300000) {
+                            // Use total_abonos attached to the student object
+                            $totalAbonos = $estudiante->total_abonos ?? 0;
+
+                            if ($totalAbonos <= 300000) {
                                 $abonoColor = '#e74c3c';
-                            } elseif ($informe->total_abonos < 800000) {
+                            } elseif ($totalAbonos < 800000) {
                                 $abonoColor = '#f39c12';
                             } else {
                                 $abonoColor = '#27ae60';
                             }
 
-                            $isBecado = $informe->apprentice->becado_id == 1;
+                            $isBecado = $estudiante->becado_id == 1;
                             $valorModulo =
-                                $informe->apprentice->modality_id != 4
-                                    ? $informe->apprentice->modality->valor
-                                    : $informe->apprentice->valor;
-                            $pendiente = $isBecado
-                                ? 0
-                                : $valorModulo - $informe->total_abonos - $informe->apprentice->descuento;
+                                $estudiante->modality_id != 4 ? $estudiante->modality->valor : $estudiante->valor;
+                            $pendiente = $isBecado ? 0 : $valorModulo - $totalAbonos - $estudiante->descuento;
 
-                            if (!$isBecado && $informe->apprentice->fechaPlataforma == $fechaPlataforma) {
-                                $plataformaTotal += $informe->apprentice->plataforma ?? 0;
+                            if (!$isBecado && $estudiante->fechaPlataforma == $fechaPlataforma) {
+                                $plataformaTotal += $estudiante->plataforma ?? 0;
                             }
                         @endphp
 
-                        <tr class="{{ $pendiente <= 0 ? 'active' : '' }}">
-                            <td>{{ $count++ }}</td>
+                        <tr wire:key="student-row-{{ $estudiante->id }}" class="{{ $pendiente <= 0 ? 'active' : '' }}">
+                            <td>{{ $estudiante->id }}</td>
                             <td>
                                 <div style="display: flex; flex-direction: column;">
                                     <small
-                                        style="color: #718096; font-size: 0.75rem;">{{ $informe->apprentice->attendant->name }}</small>
-                                    <a href="{{ route('estadoCuenta', $informe->apprentice->id) }}">
-                                        {{ $informe->apprentice->name }} {{ $informe->apprentice->apellido }}
+                                        style="color: #718096; font-size: 0.75rem; font-weight: bold;">{{ $estudiante->attendant->name }}</small>
+                                    <a href="{{ route('estadoCuenta', $estudiante->id) }}">
+                                        {{ $estudiante->name }} {{ $estudiante->apellido }}
                                     </a>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge-entity">{{ $informe->apprentice->becado->name ?? 'N/A' }}</span>
+                                <span class="badge-entity">{{ $estudiante->becado->name ?? 'N/A' }}</span>
                             </td>
                             <td>${{ number_format($isBecado ? 0 : $valorModulo, 0, ',', '.') }}</td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    ${{ number_format($isBecado ? 0 : $informe->apprentice->descuento, 0, ',', '.') }}
+                                    ${{ number_format($isBecado ? 0 : $estudiante->descuento, 0, ',', '.') }}
                                     @if (!$isBecado)
-                                        <span wire:click="descuento({{ $informe->apprentice->id }})"
+                                        <span wire:click="descuento({{ $estudiante->id }})"
                                             class="material-symbols-outlined"
                                             style="font-size: 16px; cursor: pointer; color: #a0aec0;">edit</span>
                                     @endif
                                 </div>
                             </td>
                             <td style="color: {{ $abonoColor }}; font-weight: 700;">
-                                ${{ number_format($isBecado ? 0 : $informe->total_abonos, 0, ',', '.') }}
+                                ${{ number_format($isBecado ? 0 : $totalAbonos, 0, ',', '.') }}
                             </td>
                             <td style="font-weight: 700;">${{ number_format($pendiente, 0, ',', '.') }}</td>
                             <td>
-                                @if ($informe->apprentice->plataforma == null || $informe->apprentice->plataforma == 0)
+                                @if ($estudiante->plataforma == null || $estudiante->plataforma == 0)
                                     <button wire:confirm="¿Deseas abonar la plataforma?" class="update-badge"
-                                        wire:click="plataforma({{ $informe->apprentice->id }})">
+                                        wire:click="plataforma({{ $estudiante->id }})">
                                         <span class="material-symbols-outlined">add_card</span> $140mil
                                     </button>
                                 @else
@@ -162,7 +161,7 @@
                                         <span class="material-symbols-outlined"
                                             style="font-size: 18px;">check_circle</span>
                                         Ok
-                                        <span wire:click="activePlataforma({{ $informe->apprentice->id }})"
+                                        <span wire:click="activePlataforma({{ $estudiante->id }})"
                                             class="material-symbols-outlined"
                                             style="font-size: 16px; cursor: pointer; color: #a0aec0;">edit</span>
                                     </div>
@@ -170,7 +169,7 @@
                             </td>
                             <td>
                                 @if ($pendiente > 0)
-                                    <button class="update-badge" wire:click="abonar({{ $informe->apprentice->id }})">
+                                    <button class="update-badge" wire:click="abonar({{ $estudiante->id }})">
                                         <span class="material-symbols-outlined">payments</span> Abonar
                                     </button>
                                 @else
@@ -179,17 +178,25 @@
                             </td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 5px; font-size: 0.85rem;">
-                                    {{ $informe->fecha ?? 'Sin fecha' }}
-                                    <span wire:click="aumentar({{ $informe->id }})" class="material-symbols-outlined"
-                                        style="font-size: 16px; cursor: pointer; color: #a0aec0;">edit</span>
+                                    <span
+                                        style="font-weight: bold;">{{ $estudiante->latest_fecha ?? 'Sin fecha' }}</span>
+                                    @if ($estudiante->latest_informe_id)
+                                        <span wire:click="aumentar({{ $estudiante->latest_informe_id }})"
+                                            class="material-symbols-outlined"
+                                            style="font-size: 16px; cursor: pointer; color: #a0aec0;">edit</span>
+                                    @endif
                                 </div>
                             </td>
                             <td>
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <textarea class="observaciones" wire:model.defer="observaciones.{{ $informe->apprentice->id }}" rows="1"></textarea>
-                                    <img wire:click="saveObservacion({{ $informe->apprentice->id }})" class="save-icon"
-                                        src="{{ asset('images/save.png') }}" alt="Guardar">
-                                </div>
+                                <button class="update-badge" wire:click="openObservacion({{ $estudiante->id }})"
+                                    style="display: flex; align-items: center; gap: 5px;">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">edit_note</span>
+                                    @if ($estudiante->observacion)
+                                        {{ Str::limit($estudiante->observacion, 20) }}
+                                    @else
+                                        Añadir observación
+                                    @endif
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -344,6 +351,38 @@
                 </div>
             </div>
         @endif
+
+        @if ($viewObservacion == 1)
+            <div class="modern-modal-overlay">
+                <div class="modern-modal">
+                    <span wire:click="ocultar" class="material-symbols-outlined close-btn">close</span>
+                    <div class="modal-header">
+                        <h2>Observaciones del Estudiante</h2>
+                        <p>Agregar o editar notas importantes sobre {{ $name }}</p>
+                    </div>
+                    <form wire:submit="saveObservacion">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Estudiante</label>
+                                <input wire:model="name" type="text" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Observaciones</label>
+                                <textarea wire:model="currentObservacionText" rows="6"
+                                    placeholder="Escribe aquí las observaciones sobre el estudiante..." style="resize: vertical; min-height: 120px;"
+                                    autofocus></textarea>
+                                @error('currentObservacionText')
+                                    <small style="color: #e74c3c;">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit">Guardar Observación</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
     @elseif($active == 2)
         @livewire('tinforme')
     @else
@@ -436,7 +475,7 @@
                             $extension = pathinfo($informe->comprobante, PATHINFO_EXTENSION);
                         @endphp
 
-                        <tr>
+                        <tr wire:key="security-row-{{ $informe->id ?? $key }}">
                             <td>{{ $key + 1 }}</td>
                             <td>
                                 <div style="display: flex; flex-direction: column;">

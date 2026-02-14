@@ -12,10 +12,6 @@ use Illuminate\Support\Facades\Auth;
 class AuthenticationController extends Controller
 {
 
-    public function index()
-    {
-        return view('layouts.login');
-    }
 
     public function login()
     {
@@ -26,10 +22,16 @@ class AuthenticationController extends Controller
     {
 
         if (Auth::attempt($request->only('usuario', 'password'))) {
-
             $request->session()->regenerate();
             $request->session()->regenerateToken();
 
+            $user = Auth::user();
+
+            if ($user->rol_id == 5) { // Acudiente
+                return redirect()->route('mis_hijos');
+            }
+
+            // Administrador y otros roles (Secretaria, Asistente, Profesor)
             return redirect()->route('listaAprendiz');
         }
 
@@ -41,20 +43,29 @@ class AuthenticationController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('index');
+        return redirect()->route('login');
     }
 
     public function registrar()
     {
+        if (Auth::check() && Auth::user()->rol_id != 1) {
+            if (Auth::user()->rol_id == 5) {
+                return redirect()->route('mis_hijos');
+            }
+            return redirect()->route('listaAprendiz');
+        }
         return view('registro');
     }
 
     public function historial()
     {
         $user = Auth::user();
+        if ($user->rol_id != 1) {
+            return redirect()->route('listaAprendiz');
+        }
         $mes = Carbon::now()->format('m');
         $year = Carbon::now()->format('y');
-       /*  dd($year, $mes); */
+        /*  dd($year, $mes); */
         return view('layouts.historial', compact('user'));
     }
 }

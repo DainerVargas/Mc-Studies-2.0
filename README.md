@@ -1,13 +1,55 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><img src="public/Logo.png" width="200" alt="MC Studies Logo"></p>
+
+<h1 align="center">MC Language Studies 📚</h1>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+Sistema de Gestión Académica - Ahora como Progressive Web App 🚀
 </p>
 
-## About Laravel
+<p align="center">
+<img src="https://img.shields.io/badge/Laravel-10.x-red" alt="Laravel">
+<img src="https://img.shields.io/badge/PWA-Ready-blue" alt="PWA">
+<img src="https://img.shields.io/badge/Livewire-3.x-pink" alt="Livewire">
+<img src="https://img.shields.io/badge/Status-Production-green" alt="Status">
+</p>
+
+---
+
+## 📱 Nueva Característica: Progressive Web App (PWA)
+
+**MC Studies ahora puede ser instalada en dispositivos móviles y computadoras como una aplicación nativa!**
+
+### ✨ Características PWA
+
+- 📲 **Instalable** - Agrégala a la pantalla de inicio
+- 🚀 **Rendimiento** - Carga más rápido que un sitio web
+- 📴 **Offline** - Funciona parcialmente sin conexión
+- 🔔 **Notificaciones** - (Preparado para implementar)
+- 💾 **Caché Inteligente** - Ahorra datos móviles
+- 🎨 **Experiencia Nativa** - Se ve y funciona como app nativa
+
+### 📚 Documentación PWA
+
+- **[📱 Guía de Instalación para Usuarios](PWA_INSTALLATION_GUIDE.md)** - Cómo instalar en Android, iOS, Windows y macOS
+- **[🔧 Documentación Técnica](PWA_TECHNICAL_DOCS.md)** - Para desarrolladores
+- **[✅ Checklist de Verificación](PWA_CHECKLIST.md)** - Testing completo
+- **[⚡ Prueba Rápida](PWA_QUICK_TEST.md)** - Verificación en 5 minutos
+- **[📊 Resumen Ejecutivo](PWA_RESUMEN.md)** - Overview completo
+
+### 🚀 Instalación Rápida
+
+```bash
+# 1. Accede a la aplicación
+http://localhost/Mc-Studies2
+
+# 2. Busca el icono + en la barra de direcciones (Chrome/Edge)
+# 3. Click en "Instalar"
+# 4. ¡Listo! Ya tienes la app en tu dispositivo
+```
+
+---
+
+## 📋 About MC Studies
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 

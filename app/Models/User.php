@@ -19,6 +19,7 @@ class User extends Authenticatable
         'email',
         'image',
         'usuario',
+        'attendant_id',
     ];
 
     public function rol()
@@ -29,6 +30,11 @@ class User extends Authenticatable
     public function teacher()
     {
         return $this->belongsTo(Teacher::class);
+    }
+
+    public function attendant()
+    {
+        return $this->belongsTo(Attendant::class);
     }
 
     /**

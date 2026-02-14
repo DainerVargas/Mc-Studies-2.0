@@ -26,7 +26,7 @@
             <h2>Profesor: <span>{{ $profesor }}</span></h2>
         </div>
 
-        @if ($user->rol_id == 1)
+        @if ($user->rol_id != 4 && $user->rol_id != 5)
             <div class="status-control">
                 <div class="status-indicator {{ $aprendiz->estado == 1 ? 'active' : 'inactive' }}">
                     {{ $aprendiz->estado == 1 ? 'Activo' : 'Inactivo' }}
@@ -70,9 +70,11 @@
                         <span class="material-symbols-outlined">rewarded_ads</span>
                     </div>
 
-                    <div title="Certificado" wire:click="showCertificate" class="btn-icon">
-                        <span class="material-symbols-outlined">license</span>
-                    </div>
+                    @if ($user->rol_id != 5)
+                        <div title="Certificado" wire:click="showCertificate" class="btn-icon">
+                            <span class="material-symbols-outlined">license</span>
+                        </div>
+                    @endif
                 </div>
 
                 @if ($valor == 1 && (!$aprendiz->comprobante || $aprendiz->comprobante == 'Sin comprobante'))

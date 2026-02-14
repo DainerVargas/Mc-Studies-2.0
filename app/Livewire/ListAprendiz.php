@@ -21,6 +21,11 @@ class ListAprendiz extends Component
 
     public function delete(Apprentice $apprentice)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->dispatch('error', 'No tienes permisos para eliminar.');
+            return;
+        }
+
         $informes = Informe::where('apprentice_id', $apprentice->id)->get();
 
         foreach ($informes as $informe) {
@@ -72,7 +77,7 @@ class ListAprendiz extends Component
             $query->where('estado', 0);
         }
 
-        $query->where('name', 'LIKE', '%' . $this->nameAprendiz . '%');
+        $query->where('name', 'LIKE', '%' . $this->nameAprendiz . '%')->orWhere('apellido', 'LIKE', '%' . $this->nameAprendiz . '%');
 
         $aprendices = $query->get();
 

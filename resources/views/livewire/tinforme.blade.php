@@ -79,13 +79,15 @@
                             </span>
                         </td>
                         <td style="text-align: center;">
-                            <button class="update-badge"
-                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; border-color: rgba(231, 76, 60, 0.2); margin: 0 auto;"
-                                wire:click="eliminar({{ $informe->id }})"
-                                wire:confirm="¿Estás seguro de eliminar este registro?">
-                                <span class="material-symbols-outlined">delete</span>
-                                Eliminar
-                            </button>
+                            @if ($user->rol_id == 1)
+                                <button class="update-badge"
+                                    style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; border-color: rgba(231, 76, 60, 0.2); margin: 0 auto;"
+                                    wire:click="eliminar({{ $informe->id }})"
+                                    wire:confirm="¿Estás seguro de eliminar este registro?">
+                                    <span class="material-symbols-outlined">delete</span>
+                                    Eliminar
+                                </button>
+                            @endif
                         </td>
                         <td style="text-align: center;">
                             <input type="checkbox"

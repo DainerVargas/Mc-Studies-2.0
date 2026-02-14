@@ -62,9 +62,14 @@ class Apprentice extends Model
         return $this->belongsTo(Rol::class);
     }
 
+    public function activities()
+    {
+        return $this->hasMany(AcademicActivity::class);
+    }
+
     protected $casts = [
-    'fecha_nacimiento' => 'date',
-];
+        'fecha_nacimiento' => 'date',
+    ];
 
     protected $fillable = [
         'name',

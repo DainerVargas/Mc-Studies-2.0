@@ -2,5 +2,7 @@
 @section('title', 'Listado Usuarios')
 
 @section('listado')
-    @livewire('listado-usuarios')
+    <div class="user-content-wrapper">
+        @livewire('listado-usuarios')
+    </div>
 @endsection

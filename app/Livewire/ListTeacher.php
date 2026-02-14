@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\Teacher;
 use App\Models\Tinforme;
 use App\Models\TypeTeacher;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -40,6 +41,11 @@ class ListTeacher extends Component
 
     public function delete(Teacher $teacher)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->dispatch('error', 'No tienes permisos para eliminar.');
+            return;
+        }
+
         $grupos = Group::where('teacher_id', $teacher->id)->get();
         $informes = Tinforme::where('teacher_id', $teacher->id)->get();
         foreach ($grupos as $grupo) {
@@ -48,7 +54,7 @@ class ListTeacher extends Component
         }
 
         Account::where('teacher_id', $teacher->id)->delete();
-        
+
         foreach ($informes as $informe) {
             $informe->delete();
         }
@@ -125,7 +131,25 @@ class ListTeacher extends Component
             $query->where('estado', 0);
         }
 
-        $query->where('name', 'LIKE', '%' . $this->filtro . '%');
+        if ($this->filtro != '') {
+            $words = preg_split('/\s+/', strtolower(trim($this->filtro)));
+
+            $query->where(function ($q) use ($words) {
+                foreach ($words as $word) {
+
+                    if (strlen($word) <= 4) {
+                        continue;
+                    }
+
+                    $term = '%' . $word . '%';
+
+                    $q->orWhere(function ($subQ) use ($term) {
+                        $subQ->where('name', 'LIKE', $term)
+                            ->orWhere('apellido', 'LIKE', $term);
+                    });
+                }
+            });
+        }
 
         $this->profesores = $query->get();
 

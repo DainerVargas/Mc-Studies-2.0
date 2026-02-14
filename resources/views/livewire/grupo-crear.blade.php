@@ -86,11 +86,13 @@
                             </td>
                             <td>
                                 <div class="flex">
-                                    <button class="delete" wire:click="delete({{ $grupo->id }})"
-                                        wire:confirm="¿Desea elimiar el grupo {{ $grupo->name }} ?"><span
-                                            class="material-symbols-outlined">
-                                            delete
-                                        </span> Eliminar</button>
+                                    @if (auth()->user()->rol_id == 1)
+                                        <button class="delete" wire:click="delete({{ $grupo->id }})"
+                                            wire:confirm="¿Desea elimiar el grupo {{ $grupo->name }} ?"><span
+                                                class="material-symbols-outlined">
+                                                delete
+                                            </span> Eliminar</button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

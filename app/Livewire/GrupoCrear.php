@@ -9,6 +9,7 @@ use App\Models\Qualification;
 use App\Models\Teacher;
 use App\Models\Type;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class GrupoCrear extends Component
@@ -89,6 +90,11 @@ class GrupoCrear extends Component
 
     public function delete(Group $grupo)
     {
+        if (Auth::user()->rol_id != 1) {
+            $this->dispatch('error', 'No tienes permisos para eliminar.');
+            return;
+        }
+
         $grupo->teacher_id = null;
         $grupo->type_id = null;
         $aprentices = Apprentice::where('group_id', $grupo->id)->get();

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+use App\Models\Attendant;
+
 class AgregarUsuarios extends Component
 {
 
@@ -17,19 +19,32 @@ class AgregarUsuarios extends Component
 
     public $user, $image, $name, $rolname, $typeName, $type, $email, $usuario, $password;
 
-    public $rols, $message, $teachers, $teacherId;
+    public $rols, $message, $teachers, $teacherId, $attendants, $attendantId;
 
     public function mount()
     {
         $this->rols = Rol::all();
         $this->teachers = Teacher::all();
+        $this->attendants = Attendant::all();
     }
 
-    public function updatedTeacherId() {
+    public function updatedTeacherId()
+    {
 
         $teacher = Teacher::find($this->teacherId);
-        $this->name = $teacher->name;
-        $this->email = $teacher->email;
+        if ($teacher) {
+            $this->name = $teacher->name;
+            $this->email = $teacher->email;
+        }
+    }
+
+    public function updatedAttendantId()
+    {
+        $attendant = Attendant::find($this->attendantId);
+        if ($attendant) {
+            $this->name = $attendant->name . ' ' . $attendant->apellido;
+            $this->email = $attendant->email;
+        }
     }
 
     public function save()
@@ -69,6 +84,7 @@ class AgregarUsuarios extends Component
             $usuario->image = $imageName;
             $usuario->rol_id = $this->type;
             $usuario->teacher_id = $this->teacherId;
+            $usuario->attendant_id = $this->attendantId;
             $usuario->save();
 
             $this->message = '🎉 ¡Registro Exitoso! 🎉';
@@ -79,6 +95,8 @@ class AgregarUsuarios extends Component
             $this->image = '';
             $this->type = '';
             $this->typeName = '';
+            $this->teacherId = '';
+            $this->attendantId = '';
         }
     }
     public function render()

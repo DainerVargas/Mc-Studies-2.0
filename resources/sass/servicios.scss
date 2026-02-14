@@ -311,16 +311,34 @@ $radius: 12px;
 }
 
 // Reuse classes from informe-estudiante.scss where possible
-.badge-category {
+.badge-category,
+.badge-income,
+.badge-expense {
     padding: 6px 14px;
-    background: #f0f7ff;
-    color: #007bff;
     border-radius: 30px;
     font-size: 0.7rem;
     font-weight: 800;
-    border: 1px solid #e0efff;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+    display: inline-block;
+}
+
+.badge-category {
+    background: #f0f7ff;
+    color: #007bff;
+    border: 1px solid #e0efff;
+}
+
+.badge-income {
+    background: #f0fff4;
+    color: #27ae60;
+    border: 1px solid #c6f6d5;
+}
+
+.badge-expense {
+    background: #fff5f5;
+    color: #e74c3c;
+    border: 1px solid #fed7d7;
 }
 
 .btn-update,
@@ -367,184 +385,201 @@ $radius: 12px;
 }
 
 // Premium Modals
-.conteCreate {
+// Premium Modals
+.srv-modal-container {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.4);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 999999;
     padding: 20px;
     box-sizing: border-box;
 
-    .conteCreateService,
-    .conteCreateCategory {
+    .srv-modal-content {
         background: #fff;
         width: 100%;
-        max-width: 580px;
-        border-radius: 28px;
-        overflow: hidden;
+        max-width: 600px;
+        max-height: 90vh;
+        border-radius: 24px;
+        display: flex;
+        flex-direction: column;
         position: relative;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        animation: modalScaleUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        animation: srvModalFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
 
-        .modal-header {
+        .srv-modal-header {
             background: linear-gradient(135deg, $primary 0%, #049bb0 100%);
-            padding: 2.5rem;
+            padding: 1.5rem 2.5rem;
             color: #fff;
             position: relative;
-            text-align: center;
+            text-align: left;
+            flex-shrink: 0;
 
             h3 {
                 margin: 0;
-                font-size: 1.75rem;
-                font-weight: 900;
-                letter-spacing: -0.02em;
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                font-size: 1.5rem;
+                font-weight: 800;
+                letter-spacing: -0.01em;
+                padding-right: 40px;
             }
 
             p {
-                margin: 8px 0 0;
-                font-size: 0.9rem;
-                opacity: 0.9;
-                font-weight: 500;
+                margin: 4px 0 0;
+                font-size: 0.85rem;
+                opacity: 0.85;
+                font-weight: 400;
             }
-        }
 
-        .modal-body {
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .modal-footer {
-            padding: 0 2.5rem 2.5rem;
-            display: flex;
-            gap: 1rem;
-
-            button {
-                flex: 1;
-                height: 54px;
-                border-radius: 16px;
-                font-weight: 800;
-                font-size: 1rem;
-                cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            .srv-btn-close {
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.2);
+                color: #fff;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                gap: 10px;
+                cursor: pointer;
+                transition: all 0.2s;
+                border: none;
+                z-index: 10;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: scale(1.1);
+                }
+
+                span {
+                    font-size: 20px;
+                }
+            }
+        }
+
+        .srv-modal-body {
+            padding: 2rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+
+            &::-webkit-scrollbar {
+                width: 5px;
+            }
+            &::-webkit-scrollbar-track {
+                background: #f1f5f9;
+            }
+            &::-webkit-scrollbar-thumb {
+                background: #cbd5e0;
+                border-radius: 10px;
+            }
+        }
+
+        .srv-modal-footer {
+            padding: 1.25rem 2.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+            flex-shrink: 0;
+
+            button {
+                padding: 0 1.5rem;
+                height: 46px;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
                 border: none;
 
-                &.btn-save {
+                &.srv-btn-save {
                     background: $primary;
                     color: #fff;
-                    box-shadow: 0 10px 20px rgba(5, 204, 209, 0.2);
-
+                    box-shadow: 0 4px 6px rgba(5, 204, 209, 0.2);
                     &:hover {
-                        transform: translateY(-3px);
-                        box-shadow: 0 15px 25px rgba(5, 204, 209, 0.3);
                         background: darken($primary, 5%);
+                        transform: translateY(-1px);
                     }
                 }
 
-                &.btn-cancel {
-                    background: #f1f5f9;
-                    color: #64748b;
-
+                &.srv-btn-cancel {
+                    background: #e2e8f0;
+                    color: #475569;
                     &:hover {
-                        background: #e2e8f0;
-                        color: #1e293b;
+                        background: #cbd5e1;
                     }
                 }
             }
         }
 
-        .conteDivs {
+        .srv-form-row {
             display: flex;
             gap: 1.5rem;
             width: 100%;
+            flex-wrap: wrap;
 
-            .Input {
+            .srv-input-group {
                 flex: 1;
+                min-width: 200px;
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: 6px;
 
                 label {
                     font-size: 0.75rem;
-                    font-weight: 800;
-                    color: #94a3b8;
+                    font-weight: 700;
+                    color: #64748b;
                     text-transform: uppercase;
-                    letter-spacing: 0.05em;
-                    padding-left: 4px;
+                    letter-spacing: 0.025em;
                 }
 
                 input,
                 select {
-                    height: 50px;
-                    padding: 0 1.25rem;
-                    background: #f8fafc;
-                    border: 2px solid #f1f5f9;
-                    border-radius: 14px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    color: $dark;
-                    transition: all 0.3s ease;
+                    height: 44px;
+                    padding: 0 1rem;
+                    background: #fcfcfc;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 10px;
+                    font-size: 0.95rem;
+                    font-weight: 500;
+                    color: #1e293b;
+                    transition: border-color 0.2s;
 
                     &:focus {
                         outline: none;
                         border-color: $primary;
-                        background: #fff;
-                        box-shadow: 0 8px 20px rgba(5, 204, 209, 0.08);
+                        box-shadow: 0 0 0 3px rgba(5, 204, 209, 0.1);
                     }
                 }
-            }
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            z-index: 10;
-            border: none;
-
-            &:hover {
-                background: rgba(255, 255, 255, 0.3);
-                transform: rotate(90deg);
-            }
-
-            span {
-                font-size: 24px;
             }
         }
     }
 }
 
-@keyframes modalScaleUp {
+@keyframes srvModalFade {
     from {
-        transform: scale(0.9) translateY(30px);
         opacity: 0;
+        transform: scale(0.95) translateY(10px);
     }
     to {
-        transform: scale(1) translateY(0);
         opacity: 1;
+        transform: scale(1) translateY(0);
     }
 }

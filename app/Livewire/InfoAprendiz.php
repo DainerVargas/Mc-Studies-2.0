@@ -99,6 +99,7 @@ class InfoAprendiz extends Component
         // Get qualifications fresh data
         $qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
         session()->put('qualifications', $qualifications);
+        session()->forget('aprendiz');
 
         return redirect()->route('donwloadQualification');
     }

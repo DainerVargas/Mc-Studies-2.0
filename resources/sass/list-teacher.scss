@@ -1,0 +1,527 @@
+@use "funciones";
+
+/* LISTA-TEACHER - Professional Design */
+.teacher-list {
+    // Was flex(start, center) -> flex(start)
+    @include funciones.flex(start);
+    flex-direction: column;
+    width: 100%;
+    padding: 2rem;
+    box-sizing: border-box;
+    background-color: #f7f6f6;
+    min-height: calc(100vh - 6vw); // Adjust based on header height
+
+    &__header {
+        // Was flex(space-between, center) -> flex(space-between)
+        @include funciones.flex(space-between);
+        width: 100%;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    &__search {
+        // Was flex(start, center) -> flex(start)
+        @include funciones.flex(start);
+        position: relative;
+        width: 300px;
+
+        label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            display: none; // Hidden for cleaner look, placeholder handles it
+        }
+
+        input {
+            width: 100%;
+            height: 45px;
+            padding: 0 1.2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+
+            &:focus {
+                border-color: #05ccd1;
+                background-color: white;
+                box-shadow: 0 0 0 3px rgba(5, 204, 209, 0.1);
+            }
+
+            &::placeholder {
+                color: #a0a0a0;
+            }
+        }
+    }
+
+    &__filters {
+        // Was flex(start, center) -> flex(start)
+        @include funciones.flex(start);
+        gap: 1rem;
+    }
+
+    &__status-filters {
+        @include funciones.flex(center);
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        padding: 0.3rem;
+
+        .status-radio {
+            position: relative;
+            display: flex;
+
+            input[type="radio"] {
+                display: none;
+
+                &:checked + label {
+                    background-color: white;
+                    color: #05ccd1;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    font-weight: 600;
+                }
+            }
+
+            label {
+                padding: 0.5rem 1.2rem;
+                cursor: pointer;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+                font-size: 0.9rem;
+                color: #666;
+                user-select: none;
+
+                &:hover {
+                    color: #333;
+                }
+            }
+        }
+    }
+
+    &__actions {
+        // Was flex(end, center) -> flex(end) or align(flex-end, center) if justify is end
+        // flex(end) -> justify-content: end; align-items: center; which is valid CSS3, but maybe justify-content: flex-end is safer.
+        // I'll stick to flex(end) assuming the user's environment supports it or the mixin handles it.
+        @include funciones.flex(end);
+        gap: 1rem;
+
+        .btn-add {
+            @include funciones.flex(center);
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #05ccd1 0%, #04b0b5 100%);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(5, 204, 209, 0.2);
+            font-size: 0.95rem;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(5, 204, 209, 0.3);
+            }
+
+            img {
+                width: 1.2rem;
+                height: 1.2rem;
+                filter: brightness(0) invert(1); // Make icon white
+            }
+        }
+
+        .btn-hours {
+            background: white;
+            color: #99bf51;
+            border: 1px solid #99bf51;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+
+            &:hover {
+                background-color: #99bf51;
+                color: white;
+            }
+        }
+    }
+
+    &__content {
+        width: 100%;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        padding: 1rem;
+        box-sizing: border-box;
+        overflow-x: auto;
+    }
+
+    &__table-wrapper {
+        width: 100%;
+    }
+
+    .teacher-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+
+        thead {
+            tr {
+                th {
+                    padding: 1rem;
+                    text-align: left;
+                    font-weight: 600;
+                    color: #4a5568;
+                    border-bottom: 2px solid #eef0f5;
+                    font-size: 0.95rem;
+                    white-space: nowrap;
+
+                    &:first-child {
+                        padding-left: 1.5rem;
+                    }
+                    &:last-child {
+                        padding-right: 1.5rem;
+                    }
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                transition: background-color 0.2s;
+
+                &:hover {
+                    background-color: #fcfcfc;
+
+                    td {
+                        border-bottom-color: #e0e0e0;
+                    }
+                }
+
+                td {
+                    padding: 1rem;
+                    color: #2d3748;
+                    border-bottom: 1px solid #edf2f7;
+                    vertical-align: middle;
+                    font-size: 0.95rem;
+
+                    &:first-child {
+                        padding-left: 1.5rem;
+                        color: #718096;
+                        font-weight: 500;
+                    }
+                    &:last-child {
+                        padding-right: 1.5rem;
+                    }
+
+                    .name-wrapper {
+                        // Was flex(start, center) -> flex(start)
+                        @include funciones.flex(start);
+                        gap: 1rem;
+
+                        .avatar {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            border: 2px solid white;
+                        }
+
+                        .name-link {
+                            color: #2d3748;
+                            text-decoration: none;
+                            font-weight: 500;
+                            transition: color 0.2s;
+
+                            &:hover {
+                                color: #05ccd1;
+                            }
+                        }
+                    }
+
+                    .action-btn {
+                        padding: 0.5rem 1rem;
+                        border-radius: 6px;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        border: 1px solid transparent;
+                        background: transparent;
+
+                        &--primary {
+                            color: #05ccd1;
+                            border-color: #05ccd1;
+
+                            &:hover {
+                                background-color: #05ccd1;
+                                color: white;
+                            }
+                        }
+
+                        &--secondary {
+                            color: #718096;
+                            border-color: #cbd5e0;
+
+                            &:hover {
+                                border-color: #a0aec0;
+                                color: #4a5568;
+                            }
+                        }
+                    }
+
+                    .status-badge {
+                        padding: 0.3rem 0.8rem;
+                        border-radius: 20px;
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        text-transform: capitalize;
+                        text-align: center;
+                        display: inline-block;
+                        min-width: 80px;
+
+                        &--active {
+                            background-color: #e6fffa;
+                            color: #047857; // Darker green text
+                        }
+
+                        &--inactive {
+                            background-color: #fff5f5;
+                            color: #c53030; // Darker red text
+                        }
+                    }
+
+                    .icon-btn {
+                        @include funciones.flex(center);
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 8px;
+                        border: none;
+                        background: transparent;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        color: #718096;
+
+                        &--edit {
+                            &:hover {
+                                background-color: #ebf8ff;
+                                color: #3182ce;
+                            }
+                        }
+
+                        &--delete {
+                            &:hover {
+                                background-color: #fff5f5;
+                                color: #e53e3e;
+                            }
+                        }
+
+                        span {
+                            font-size: 1.2rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* MODAL - Professional Design */
+.teacher-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    // Was flex(center, center) -> flex(center) for justify:center, align:center
+    @include funciones.flex(center);
+
+    &__close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: white;
+        cursor: pointer;
+
+        span {
+            font-size: 2rem;
+            transition: transform 0.2s;
+            &:hover {
+                transform: rotate(90deg);
+            }
+        }
+    }
+
+    &__form {
+        position: relative;
+        background-color: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        width: 500px;
+        max-width: 90%;
+        animation: modalSlideUp 0.3s ease-out;
+
+        @keyframes modalSlideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    }
+
+    &__image-upload {
+        @include funciones.flex(center);
+        margin-bottom: 2rem;
+        position: relative;
+
+        .image-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 4px solid white;
+        }
+
+        .upload-label {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background-color: #05ccd1;
+            border-radius: 50%;
+            @include funciones.flex(center);
+            cursor: pointer;
+            border: 2px solid white;
+            transition: transform 0.2s;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+
+            img {
+                width: 16px;
+                height: 16px;
+                filter: brightness(0) invert(1);
+            }
+        }
+
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #05ccd1;
+            font-size: 2rem;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+    }
+
+    &__row {
+        // Was flex(space-between, center) -> flex(space-between)
+        @include funciones.flex(space-between);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+
+        &:last-of-type {
+            margin-bottom: 2rem;
+        }
+    }
+
+    &__input-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        position: relative;
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background-color: #f7fafc;
+            transition: all 0.2s;
+            box-sizing: border-box;
+
+            &:focus {
+                background-color: white;
+                border-color: #05ccd1;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(5, 204, 209, 0.1);
+            }
+        }
+
+        .error-msg {
+            font-size: 0.75rem;
+            color: #e53e3e;
+            position: absolute;
+            bottom: -1.2rem;
+            left: 0;
+        }
+    }
+
+    &__btn-submit {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #05ccd1 0%, #04b0b5 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+        box-shadow: 0 4px 6px rgba(5, 204, 209, 0.2);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(5, 204, 209, 0.3);
+        }
+    }
+}

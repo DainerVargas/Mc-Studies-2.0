@@ -2,109 +2,87 @@
 @section('title', 'Actualizar información')
 
 @section('actualizar')
-    <div class="conteInformacion">
-        <div class="conteImg">
+    <div class="profile-header-card">
+        <div class="profile-image-container">
             @if ($user->image)
-                <img src="/users/{{ $user->image }}" alt="">
+                <img src="/users/{{ $user->image }}" alt="Foto de perfil">
             @else
-                <img src="/images/perfil.png" alt="">
+                <img src="/images/perfil.png" alt="Foto por defecto">
             @endif
-            <div class="informacion">
-                <h2>{{ $user->name }}</h2>
-                <p>{{ $user->rol->name }}</p>
-            </div>
         </div>
-        <div class="containerForm">
-            <h2>Actualizar Contraseña</h2>
-            <form action="{{ route('updateUser', $user->id) }}" method="POST">
-                @csrf
-                <div class="containerContents">
-                    <div class="conteInput">
-                        <input type="password" id="antigua" name="antigua" class="input" placeholder="antigua" value="{{old('antigua')}}">
-                        <label for="" class="label">Antigua Contraseña</label>
-                        @error('antigua')
-                            <small class="errors" style="color red">{{ $message }}</small>
-                        @enderror
-                        <span id="eye1" class="material-symbols-outlined eye">
-                            visibility_off
-                        </span>
-                    </div>
-                    <div class="conteInput">
-                        <input type="password" class="input" id="nueva" name="nueva" placeholder="nueva" value="{{old('nueva')}}">
-                        <label for="" class="label">Nueva Contraseña</label>
-                        @error('nueva')
-                            <small class="errors" id="left" style="color:red">{{ $message }}</small>
-                        @enderror
-                        <span id="eye2" class="material-symbols-outlined eye">
-                            visibility_off
-                        </span>
-                    </div>
-                    <div class="conteInput">
-                        <input type="password" class="input" id="confirm" name="confirm" placeholder="email" value="{{old('confirm')}}">
-                        <label for="" class="label">Confirmar Contraseña</label>
-                        @error('confirm')
-                            <small class="errors" style="color:red">{{ $message }}</small>
-                        @enderror
-                        @error('message')
-                            <small class="errors" style="color:green">{{ $message }}</small>
-                        @enderror
-                        <span id="eye3" class="material-symbols-outlined eye">
-                            visibility_off
-                        </span>
-                    </div>
-                </div>
-                <button type="submit" class="btnActualizar">Actualizar Contraseña</button>
-            </form>
+        <div class="profile-info">
+            <h2>{{ $user->name }}</h2>
+            <p>{{ $user->rol->name }}</p>
         </div>
     </div>
 
+    <div class="password-update-card">
+        <h2>Actualizar Contraseña</h2>
+        <form action="{{ route('updateUser', $user->id) }}" method="POST">
+            @csrf
+
+            <div class="input-group">
+                <label for="antigua">Antigua Contraseña</label>
+                <div class="input-wrapper">
+                    <input type="password" id="antigua" name="antigua" placeholder="Ingrese contraseña actual"
+                        value="{{ old('antigua') }}">
+                    <span id="eye1" class="material-symbols-outlined eye-icon">visibility_off</span>
+                </div>
+                @error('antigua')
+                    <small class="error-message">{{ $message }}</small>
+                @enderror
+            </div>
+
+            <div class="input-group">
+                <label for="nueva">Nueva Contraseña</label>
+                <div class="input-wrapper">
+                    <input type="password" id="nueva" name="nueva" placeholder="Nueva contraseña"
+                        value="{{ old('nueva') }}">
+                    <span id="eye2" class="material-symbols-outlined eye-icon">visibility_off</span>
+                </div>
+                @error('nueva')
+                    <small class="error-message">{{ $message }}</small>
+                @enderror
+            </div>
+
+            <div class="input-group">
+                <label for="confirm">Confirmar Contraseña</label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirm" name="confirm" placeholder="Confirme nueva contraseña"
+                        value="{{ old('confirm') }}">
+                    <span id="eye3" class="material-symbols-outlined eye-icon">visibility_off</span>
+                </div>
+                @error('confirm')
+                    <small class="error-message">{{ $message }}</small>
+                @enderror
+                @error('message')
+                    <small class="success-message">{{ $message }}</small>
+                @enderror
+            </div>
+
+            <button type="submit" class="btn-update">Actualizar</button>
+        </form>
+    </div>
+
     <script>
-        let antigua = document.getElementById("antigua");
-        let confirm = document.getElementById("confirm");
-        let nueva = document.getElementById("nueva");
+        // Toggle Password Visibility
+        function toggleVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
 
-        let eye1 = document.getElementById("eye1");
-        let eye2 = document.getElementById("eye2");
-        let eye3 = document.getElementById("eye3");
+            icon.addEventListener('click', () => {
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.textContent = "visibility";
+                } else {
+                    input.type = "password";
+                    icon.textContent = "visibility_off";
+                }
+            });
+        }
 
-        let count = 0;
-        eye1.addEventListener('click', () => {
-            count++;
-            if (count === 1) {
-                eye1.innerHTML = "visibility";
-                antigua.type = "text";
-            } else {
-                eye1.innerHTML = "visibility_off";
-                antigua.type = "password";
-                count = 0;
-            }
-        });
-
-        let count2 = 0;
-        eye2.addEventListener('click', () => {
-            count2++;
-            if (count2 === 1) {
-                eye2.innerHTML = "visibility";
-                nueva.type = "text";
-            } else {
-                eye2.innerHTML = "visibility_off";
-                nueva.type = "password";
-                count2 = 0;
-            }
-        });
-
-        let count3 = 0;
-        eye3.addEventListener('click', () => {
-            count3++;
-            if (count3 === 1) {
-                eye3.innerHTML = "visibility";
-                confirm.type = "text";
-            } else {
-                eye3.innerHTML = "visibility_off";
-                confirm.type = "password";
-                count3 = 0;
-            }
-        });
-
+        toggleVisibility('antigua', 'eye1');
+        toggleVisibility('nueva', 'eye2');
+        toggleVisibility('confirm', 'eye3');
     </script>
 @endsection
