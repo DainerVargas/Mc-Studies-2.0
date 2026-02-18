@@ -4,17 +4,50 @@ namespace App\Livewire;
 
 use App\Models\RegisterHours as ModelsRegisterHours;
 use App\Models\Teacher;
+use App\Mail\PaymentReportMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class RegisterHours extends Component
 {
     public $filtro = '', $date = '';
+    public $showModal = false;
+    public $selectedHourId;
+    public $metodoPago = 'Transferencia';
+    public $enviarEmail = true;
 
-    public function pay($value)
+    public function openPayModal($id)
     {
-        ModelsRegisterHours::find($value)->update(['pago' => true]);
+        $this->selectedHourId = $id;
+        $this->showModal = true;
+    }
+
+    public function closePayModal()
+    {
+        $this->showModal = false;
+        $this->reset(['selectedHourId', 'metodoPago', 'enviarEmail']);
+    }
+
+    public function pay()
+    {
+        $registerHour = ModelsRegisterHours::with('teacher')->find($this->selectedHourId);
+
+        if ($registerHour) {
+            $registerHour->update([
+                'pago' => true,
+                'metodo' => $this->metodoPago
+            ]);
+
+            if ($this->enviarEmail) {
+                Mail::to($registerHour->teacher->email)->send(new PaymentReportMail($registerHour, $this->metodoPago));
+            }
+
+            $this->dispatch('success', 'Pago registrado correctamente.');
+        }
+
+        $this->closePayModal();
     }
 
     public function updatedFiltro() {}

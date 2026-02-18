@@ -53,6 +53,9 @@
     <main>
         @yield('login')
     </main>
+
+    <!-- PWA Install Prompt -->
+    @include('components.pwa-install-prompt')
 </body>
 
 </html>

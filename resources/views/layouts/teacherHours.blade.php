@@ -81,6 +81,7 @@
                                     <th>Viernes</th>
                                     <th>Sábado</th>
                                     <th class="text-center">Estado</th>
+                                    <th>Método</th>
                                     <th class="text-center">Horas</th>
                                     <th class="text-right">Total</th>
                                 </tr>
@@ -100,6 +101,19 @@
                                                 {{ $detail->pago ? 'Pagado' : 'Pendiente' }}
                                             </span>
                                         </td>
+                                        <td>
+                                            @if ($detail->metodo)
+                                                <div style="display: flex; align-items: center; gap: 6px; color: #475569;">
+                                                    <span class="material-symbols-outlined" style="font-size: 18px;">
+                                                        {{ $detail->metodo == 'Efectivo' ? 'payments' : 'account_balance' }}
+                                                    </span>
+                                                    <span
+                                                        style="font-size: 0.85rem; font-weight: 600;">{{ $detail->metodo }}</span>
+                                                </div>
+                                            @else
+                                                <span class="text-muted" style="font-size: 0.8rem;">-</span>
+                                            @endif
+                                        </td>
                                         <td class="text-center"><strong>{{ $detail->horas }}</strong></td>
                                         @php
                                             $subtotal = $detail->horas * $teacher->precio_hora;
@@ -110,7 +124,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="empty-state">
+                                        <td colspan="10" class="empty-state">
                                             <span class="material-symbols-outlined">database_off</span>
                                             <p>No se encontraron registros de horas con los filtros seleccionados.</p>
                                         </td>
@@ -120,9 +134,10 @@
                             @if ($hoursDetails && $hoursDetails->count() > 0)
                                 <tfoot>
                                     <tr>
-                                        <td colspan="8" class="text-right total-label">Resumen Total General:</td>
+                                        <td colspan="9" class="text-right total-label">Resumen Total General:</td>
                                         <td class="text-right total-value">
-                                            <span class="total-price-tag"></span>${{ number_format($totalPrice, 0) }}</span>
+                                            <span
+                                                class="total-price-tag"></span>${{ number_format($totalPrice, 0) }}</span>
                                         </td>
                                     </tr>
                                 </tfoot>

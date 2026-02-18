@@ -7,10 +7,18 @@
                     <input type="text" wire:model.live="nameAprendiz" placeholder="Buscar aprendiz...">
                 </div>
             </form>
-            <button type="button" wire:click="sendEmail" class="ux-ap-btn-email">
-                <span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 8px;">mail</span>
-                Enviar Email
-            </button>
+            <div class="ux-ap-actions-group">
+                <button type="button" wire:click="sendEmail" class="ux-ap-btn-email">
+                    <span class="material-symbols-outlined"
+                        style="vertical-align: middle; margin-right: 8px;">mail</span>
+                    Enviar Email
+                </button>
+                <a href="{{ route('listaActividades') }}" class="ux-ap-btn-activity">
+                    <span class="material-symbols-outlined"
+                        style="vertical-align: middle; margin-right: 8px;">list_alt</span>
+                    Lista Actividades
+                </a>
+            </div>
         </div>
 
         <div class="ux-ap-filter-bottom">
@@ -153,7 +161,7 @@
                                         <small>{{ $activity->created_at->format('d/m/Y H:i') }}</small>
                                     </div>
                                     @if ($activity->archivo)
-                                        <a href="{{ asset('storage/' . $activity->archivo) }}" target="_blank"
+                                        <a href="{{ asset('users/' . $activity->archivo) }}" target="_blank"
                                             class="ux-ap-btn-download">
                                             <span class="material-symbols-outlined">download</span>
                                         </a>

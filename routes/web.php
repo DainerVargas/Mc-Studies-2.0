@@ -157,6 +157,7 @@ Route::get('Mis-Hijos', \App\Livewire\MyChildrenComponent::class)->middleware('a
 
 /* ACTIVITIES */
 Route::get('Lista-Actividades', [ActivityController::class, 'index'])->middleware('auth')->name('listaActividades');
+Route::delete('Lista-Actividades/{assignedActivity}', [ActivityController::class, 'destroy'])->middleware('auth')->name('listaActividades.destroy');
 
 Route::get('/optimize', function () {
     Artisan::call('optimize:clear');

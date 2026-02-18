@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectGuestsTo(fn() => route('login'));
-        $middleware->redirectTo(function () {
+        $middleware->redirectUsersTo(function () {
             $user = Illuminate\Support\Facades\Auth::user();
             if ($user) {
                 if ($user->rol_id == 5) { // Acudiente

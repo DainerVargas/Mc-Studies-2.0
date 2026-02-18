@@ -16,6 +16,7 @@ class RegisterHours extends Model
         'viernes',
         'sabado',
         'pago',
+        'metodo',
     ];
 
     public function teacher()

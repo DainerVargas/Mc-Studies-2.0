@@ -72,8 +72,7 @@
                                         'attendant_id',
                                         $user->attendant->id,
                                     )
-                                        ->whereIn('estado', ['confirmada', 'cancelada', 'completada'])
-                                        ->where('updated_at', '>=', now()->subDays(3)) // Show notification for recent updates
+                                        ->where('estado', 'pendiente')
                                         ->count();
                                 } else {
                                     $attendantMeetings = 0;
@@ -186,7 +185,23 @@
         @yield('send')
         @yield('qualification')
         @yield('registerHours')
-        {{ $slot ?? '' }}
+        @if (
+            !$__env->hasSection('listaAprendiz') &&
+                !$__env->hasSection('informacion') &&
+                !$__env->hasSection('listaProfesor') &&
+                !$__env->hasSection('grupo') &&
+                !$__env->hasSection('update') &&
+                !$__env->hasSection('informe') &&
+                !$__env->hasSection('estadoCuenta') &&
+                !$__env->hasSection('usuario') &&
+                !$__env->hasSection('historial') &&
+                !$__env->hasSection('asistencia') &&
+                !$__env->hasSection('servicios') &&
+                !$__env->hasSection('send') &&
+                !$__env->hasSection('qualification') &&
+                !$__env->hasSection('registerHours'))
+            {{ $slot ?? '' }}
+        @endif
 
         <!-- PWA Install Prompt -->
         @include('components.pwa-install-prompt')

@@ -368,10 +368,10 @@ $gray-text: #64748b;
     .nav-links {
         display: flex;
         align-items: center;
-        gap: 3rem;
+        gap: 1rem; // Reduced gap
         flex: 1;
         justify-content: space-between;
-        margin-left: 3rem;
+        margin-left: 1rem; // Reduced margin to align closer to left
 
         .mobile-header {
             display: none;
@@ -380,7 +380,7 @@ $gray-text: #64748b;
         .links-group {
             display: flex;
             align-items: center;
-            gap: 2.5rem;
+            gap: 1.5rem; // Reduced gap between links
         }
 
         a {
@@ -423,7 +423,7 @@ $gray-text: #64748b;
         .user {
             display: flex;
             align-items: center;
-            margin-left: 0; // Removed margin-left:10px
+            margin-left: 0;
             gap: 12px;
             background-color: rgba(255, 255, 255, 0.15);
             padding: 8px 18px;
@@ -460,11 +460,12 @@ $gray-text: #64748b;
                 font-size: 0.95rem;
                 font-weight: 700;
                 text-decoration: none;
-                padding: 10px 18px;
+                padding: 10px 15px; // Reduced padding
                 border-radius: 12px;
                 transition: all 0.2s;
                 white-space: nowrap;
                 background-color: rgba(255, 255, 255, 0.12);
+                min-width: max-content; // Ensure text is not cut off
 
                 span {
                     font-size: 1.25rem !important;

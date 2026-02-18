@@ -4,17 +4,40 @@
     deferredPrompt: null,
     isIOS: false,
     showIOSPrompt: false,
+    isFirefox: false,
+    showFirefoxPrompt: false,
     init() {
-        // Detectar si es iOS
-        this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const ua = navigator.userAgent.toLowerCase();
+
+        // Detectar iOS
+        this.isIOS = /ipad|iphone|ipod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        // Detectar Firefox en Android
+        // Se asegura que sea Firefox Y Android, para no mostrarlo en Desktop
+        this.isFirefox = /firefox/.test(ua) && /android/.test(ua);
+
+        // Debug: Forzar visualización con parámetros URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('force-ios')) this.isIOS = true;
+        if (urlParams.has('force-firefox')) this.isFirefox = true;
 
         // Detectar si ya está en modo standalone (ya instalada)
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
 
-        if (this.isIOS && !isStandalone) {
-            // Mostrar prompt de iOS después de unos segundos si no está instalada
+        console.log('PWA Debug:', { isIOS: this.isIOS, isFirefox: this.isFirefox, isStandalone, ua });
+
+        if (isStandalone) return;
+
+        if (this.isIOS) {
+            // Mostrar prompt de iOS después de unos segundos
             setTimeout(() => {
                 this.showIOSPrompt = true;
+            }, 3000);
+        } else if (this.isFirefox) {
+            // Mostrar prompt de Firefox después de unos segundos
+            setTimeout(() => {
+                this.showFirefoxPrompt = true;
             }, 3000);
         }
 
@@ -26,17 +49,20 @@
 
         window.addEventListener('appinstalled', () => {
             this.showInstall = false;
+            this.showIOSPrompt = false;
+            this.showFirefoxPrompt = false;
             this.deferredPrompt = null;
         });
     }
-}" x-init="init()" class="pwa-container">
+}" x-init="init()" class="pwa-container" x-cloak>
 
+    <!-- Prompt para Android/Chrome -->
     <!-- Prompt para Android/Chrome -->
     <div x-show="showInstall" x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 transform translate-y-2"
         x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 transform translate-y-0"
-        x-transition:leave-end="opacity-0 transform translate-y-2" class="pwa-install-prompt" style="display: none;">
+        x-transition:leave-end="opacity-0 transform translate-y-2" class="pwa-install-prompt">
 
         <div class="pwa-install-content">
             <div class="pwa-icon">
@@ -80,7 +106,7 @@
         x-transition:enter-end="opacity-100 transform translate-y-0"
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 transform translate-y-0"
-        x-transition:leave-end="opacity-0 transform translate-y-2" class="pwa-ios-prompt" style="display: none;">
+        x-transition:leave-end="opacity-0 transform translate-y-2" class="pwa-ios-prompt">
 
         <div class="pwa-ios-content">
             <div class="ios-header">
@@ -88,8 +114,8 @@
                     <img src="{{ asset('Logo.png') }}" alt="MC Studies">
                 </div>
                 <div class="ios-text">
-                    <h4>Instalar en tu iPhone</h4>
-                    <p>Para descargar la app, sigue estos pasos:</p>
+                    <h4>Instalar en iOS</h4>
+                    <p>Sigue estos pasos para instalar la App:</p>
                 </div>
                 <button @click="showIOSPrompt = false" class="ios-close">
                     <span class="material-symbols-outlined">close</span>
@@ -99,13 +125,48 @@
             <div class="ios-steps">
                 <div class="ios-step">
                     <span class="step-num">1</span>
-                    <p>Pulsa el botón <strong>Compartir</strong> <span class="ios-icon-share"></span> en la barra
+                    <p>Toca el botón <strong>Compartir</strong> <span class="ios-icon-share"></span> en la barra
                         inferior.</p>
                 </div>
                 <div class="ios-step">
                     <span class="step-num">2</span>
-                    <p>Desliza hacia abajo y pulsa en <strong>Añadir a la pantalla de inicio</strong> <span
-                            class="ios-icon-add"></span>.</p>
+                    <p>Busca y selecciona <strong>Añadir a inicio</strong> <span class="ios-icon-add"></span>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt específico para Firefox Android -->
+    <div x-show="showFirefoxPrompt" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform translate-y-2"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform translate-y-2" class="pwa-ios-prompt">
+
+        <div class="pwa-ios-content">
+            <div class="ios-header">
+                <div class="pwa-icon-small">
+                    <img src="{{ asset('Logo.png') }}" alt="MC Studies">
+                </div>
+                <div class="ios-text">
+                    <h4>Instalar en Firefox</h4>
+                    <p>Instala la App desde el menú:</p>
+                </div>
+                <button @click="showFirefoxPrompt = false" class="ios-close">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="ios-steps">
+                <div class="ios-step">
+                    <span class="step-num">1</span>
+                    <p>Toca el menú <strong>Opciones</strong> <span
+                            class="material-symbols-outlined nav-icon-inline">more_vert</span>.</p>
+                </div>
+                <div class="ios-step">
+                    <span class="step-num">2</span>
+                    <p>Selecciona <strong>Instalar</strong>.</p>
                 </div>
             </div>
         </div>
@@ -316,7 +377,18 @@
         .pwa-install-prompt,
         .pwa-ios-prompt {
             width: calc(100% - 20px);
+            bottom: 20px;
         }
+    }
+
+    .nav-icon-inline {
+        font-size: 18px !important;
+        vertical-align: middle;
+        color: #666;
+    }
+
+    [x-cloak] {
+        display: none !important;
     }
 </style>
 

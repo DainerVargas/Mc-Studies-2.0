@@ -15,10 +15,17 @@
                                 placeholder="Buscar aprendiz..." onchange="this.form.submit()">
                         </div>
                     </div>
-                    <a href="{{ route('sendEmail') }}" class="ux-ap-btn-email">
-                        <span class="material-symbols-outlined">email</span>
-                        ENVIAR EMAIL
-                    </a>
+                    <div class="ux-ap-actions-group">
+                        <a href="{{ route('sendEmail') }}" class="ux-ap-btn-email">
+                            <span class="material-symbols-outlined">email</span>
+                            ENVIAR EMAIL
+                        </a>
+                        <a href="{{ route('listaActividades') }}" class="ux-ap-btn-activity">
+                            <span class="material-symbols-outlined"
+                                style="vertical-align: middle; margin-right: 8px;">list_alt</span>
+                            Lista Actividades
+                        </a>
+                    </div>
                 </div>
 
                 <div class="ux-ap-filter-bottom">

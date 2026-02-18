@@ -80,8 +80,7 @@
                                             <span>Completado</span>
                                         </div>
                                     @elseif (auth()->user()->rol_id == 1)
-                                        <button wire:confirm="¿Confirma que se ha realizado el pago?"
-                                            wire:click="pay({{ $registerHour->id }})" class="btn-pay">
+                                        <button wire:click="openPayModal({{ $registerHour->id }})" class="btn-pay">
                                             <span class="material-symbols-outlined">payments</span>
                                             <span>Pendiente</span>
                                         </button>
@@ -126,6 +125,41 @@
             </div>
         </div>
     </div>
+
+    @if ($showModal)
+        <div class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <span class="material-symbols-outlined">payments</span>
+                    <h2>Confirmar Pago</h2>
+                    <button wire:click="closePayModal" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label>Método de Pago</label>
+                        <select wire:model="metodoPago" class="form-select">
+                            <option value="Transferencia">Transferencia Bancaria</option>
+                            <option value="Efectivo">Efectivo</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="switch">
+                            <input type="checkbox" wire:model="enviarEmail">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Enviar aviso por email al profesor</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button wire:click="closePayModal" class="btn-cancel">Cancelar</button>
+                    <button wire:click="pay" class="btn-confirm-pay">
+                        Confirmar y Procesar
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <style>
         .main-container {
@@ -415,6 +449,203 @@
 
         .text-muted {
             color: #94a3b8;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #1e293b;
+        }
+
+        .modal-header span {
+            color: #99BF51;
+            background: #f0f7e6;
+            padding: 8px;
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 0;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #1e293b;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-confirm-pay {
+            flex: 2;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: #99BF51;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-confirm-pay:hover {
+            background: #84a844;
+            transform: translateY(-1px);
+        }
+
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #99BF51;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </div>
