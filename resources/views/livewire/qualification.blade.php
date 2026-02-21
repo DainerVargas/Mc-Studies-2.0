@@ -1,175 +1,211 @@
-<div class="componente">
-    <div class="conteFiltro" id="conteFiltro">
-        <form>
-            <div class="conteInput">
-                <label for="filtro">Estudiantes</label>
-                <input type="text" wire:model.live="nameAprendiz" placeholder="Nombre del estudiantes">
-            </div>
-            <div class="mes">
-                <select wire:model.live="semestre">
-                    <option value="" hidden selected>Resultados</option>
-                    <option value="1">Resultado 1</option>
-                    <option value="2">Resultado 2</option>
-                    <option value="3">Resultado 3</option>
-                    <option value="4">Resultado Final</option>
-                </select>
-            </div>
-            <div class="mes">
-                <select wire:model.live="selectGrupo">
-                    <option value="all" selected>Grupos</option>
-                    @foreach ($grupos as $grupo)
-                        <option value="{{ $grupo->id }}">{{ $grupo->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="mes">
-                <select wire:model.live="number">
-                    <option value="" hidden selected>Semestre</option>
-                    <option value="Primer">Semestre 1</option>
-                    <option value="Segundo">Semestre 2</option>
-                    <option value="Tercer">Semestre 3</option>
-                    <option value="Final">Semestre Final</option>
-                </select>
-            </div>
-        </form>
-    </div>
+<div style="width: 100%;">
+    @vite(['resources/sass/qualification-premium.scss'])
 
-    @if ($message)
-        <p style="color: red" class="alert">{{ $message }}</p>
-    @endif
-    @if ($success)
-        <p style="color: green" class="alert">{{ $success }}</p>
-    @endif
-    <p style="color: red" class="alert">{{ $messageSemestre }}</p>
-    <div class="containerConte">
-        <div class="conteTable">
-            <table class="table table-bordered">
+    <div class="ql-container">
+        <div class="ql-header">
+            <h1 class="ql-title">Registro de Calificaciones</h1>
+            <p class="ql-subtitle">Gestiona el progreso académico de tus estudiantes</p>
+        </div>
+
+        <!-- Filtros -->
+        <div class="ql-filters-card">
+            <div class="ql-filters-grid">
+                <div class="ql-filter-group">
+                    <label for="year" class="ql-label">Año</label>
+                    <select wire:model.live="selectedYear" id="year" class="ql-select">
+                        @for ($y = date('Y'); $y >= 2020; $y--)
+                            <option value="{{ $y }}">{{ $y }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="ql-filter-group">
+                    <label for="group" class="ql-label">Grupo</label>
+                    <select wire:model.live="selectedGroup" id="group" class="ql-select">
+                        <option value="">Seleccione un grupo...</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="ql-filter-group">
+                    <label for="semester" class="ql-label">Semestre</label>
+                    <select wire:model.live="selectedSemester" id="semester" class="ql-select">
+                        <option value="" selected hidden>Seleccione semestre...</option>
+                        <option value="1">Semestre 1</option>
+                        <option value="2">Semestre 2</option>
+                    </select>
+                </div>
+
+                <div class="ql-filter-group">
+                    <label for="result" class="ql-label">Resultado / Periodo</label>
+                    <select wire:model.live="selectedResult" id="result" class="ql-select">
+                        <option value="" selected hidden>Seleccione resultado...</option>
+                        <option value="1">Primer Resultado</option>
+                        <option value="2">Segundo Resultado</option>
+                        <option value="3">Tercer Resultado</option>
+                        <option value="final">Resultado Final</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        @if (session()->has('message'))
+            <div class="ql-alert ql-alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
+
+        @if (session()->has('error'))
+            <div class="ql-alert ql-alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <!-- Tabla de Calificaciones -->
+        <div class="ql-table-container">
+            <table class="ql-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Estudiante</th>
-                        <th>Listening</th>
-                        <th>Writing</th>
-                        <th>Reading</th>
-                        <th>Speaking</th>
-                        <th>Worksheet A</th>
-                        <th>Worksheet E</th>
-                        <th>Actividades A</th>
-                        <th>Actividades E</th>
-                        <th>Observaciones</th>
-                        <th>Descargar</th>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Estudiante</th>
+                        <th colspan="4" class="ql-center">Habilidades (0-100)</th>
+                        <th colspan="2" class="ql-center">Actividades</th>
+                        <th colspan="2" class="ql-center">Worksheets</th>
+                        <th rowspan="2">Observación</th>
+                        <th rowspan="2">Reporte</th>
+                    </tr>
+                    <tr>
+                        <th>Listen.</th>
+                        <th>Write.</th>
+                        <th>Read.</th>
+                        <th>Speak.</th>
+                        <th>Asig.</th>
+                        <th>Ent.</th>
+                        <th>Asig.</th>
+                        <th>Ent.</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($estudiantes as $index => $estudiante)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $estudiante->name }} {{ $estudiante->apellido }}</td>
-
-                            {{-- Listening --}}
-                            <td>
-                                <input placeholder="Nota" type="number" min="0" max="100"
-                                    wire:model="listening.{{ $estudiante->id }}"
-                                    @if (!$userEsAdmin && isset($estudiante->qualification[3]->listening)) disabled @endif>
-
-                                @if (isset($erroresCampo["listening_{$estudiante->id}"]))
-                                    <small style="color: red;">
-                                        {{ $erroresCampo["listening_{$estudiante->id}"] }}
-                                    </small>
-                                @endif
-                            </td>
-
-                            {{-- Writing --}}
-                            <td>
-                                <input placeholder="Nota" type="number" min="0" max="100"
-                                    wire:model="writing.{{ $estudiante->id }}"
-                                    @if (!$userEsAdmin && isset($estudiante->qualification[3]->writing)) disabled @endif>
-
-                                @if (isset($erroresCampo["writing_{$estudiante->id}"]))
-                                    <small style="color: red;">
-                                        {{ $erroresCampo["writing_{$estudiante->id}"] }}
-                                    </small>
-                                @endif
-                            </td>
-
-                            {{-- Reading --}}
-                            <td>
-                                <input placeholder="Nota" type="number" min="0" max="100"
-                                    wire:model="reading.{{ $estudiante->id }}"
-                                    @if (!$userEsAdmin && isset($estudiante->qualification[3]->reading)) disabled @endif>
-
-                                @if (isset($erroresCampo["reading_{$estudiante->id}"]))
-                                    <small style="color: red;">
-                                        {{ $erroresCampo["reading_{$estudiante->id}"] }}
-                                    </small>
-                                @endif
-                            </td>
-
-                            {{-- Speaking --}}
-                            <td>
-                                <input placeholder="Nota" type="number" min="0" max="100"
-                                    wire:model="speaking.{{ $estudiante->id }}"
-                                    @if (!$userEsAdmin && isset($estudiante->qualification[3]->speaking)) disabled @endif>
-
-                                @if (isset($erroresCampo["speaking_{$estudiante->id}"]))
-                                    <small style="color: red;">
-                                        {{ $erroresCampo["speaking_{$estudiante->id}"] }}
-                                    </small>
-                                @endif
+                    @forelse($students as $index => $student)
+                        <tr
+                            wire:key="student-{{ $student->id }}-{{ $selectedYear }}-{{ $selectedSemester }}-{{ $selectedResult }}">
+                            <td class="ql-index">{{ $index + 1 }}</td>
+                            <td class="ql-student-name">
+                                {{ $student->name }} {{ $student->apellido }}
                             </td>
                             <td>
-                                <input type="number" min="0" max="100"
-                                    wire:model="worksheetAsignados.{{ $estudiante->id }}">
+                                <input placeholder="Nota" type="number"
+                                    wire:model.blur="listening.{{ $student->id }}" class="ql-input-number"
+                                    min="0" max="100" @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("listening.{$student->id}")
+                                    <span class="ql-error-tip">Req.</span>
+                                @enderror
                             </td>
                             <td>
-                                <input type="number" min="0" max="100"
-                                    wire:model="worksheetEntregados.{{ $estudiante->id }}">
+                                <input placeholder="Nota" type="number" wire:model.blur="writing.{{ $student->id }}"
+                                    class="ql-input-number" min="0" max="100"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("writing.{$student->id}")
+                                    <span class="ql-error-tip">Req.</span>
+                                @enderror
                             </td>
                             <td>
-                                <input type="number" min="0" max="100"
-                                    wire:model="actividadesAsignados.{{ $estudiante->id }}">
+                                <input placeholder="Nota" type="number" wire:model.blur="reading.{{ $student->id }}"
+                                    class="ql-input-number" min="0" max="100"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("reading.{$student->id}")
+                                    <span class="ql-error-tip">Req.</span>
+                                @enderror
                             </td>
                             <td>
-                                <input type="number" min="0" max="100"
-                                    wire:model="actividadesEntregados.{{ $estudiante->id }}">
+                                <input placeholder="Nota" type="number" wire:model.blur="speaking.{{ $student->id }}"
+                                    class="ql-input-number" min="0" max="100"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("speaking.{$student->id}")
+                                    <span class="ql-error-tip">Error</span>
+                                @enderror
                             </td>
-
                             <td>
-                                @if (isset($speaking[$estudiante->id]))
-                                    <div class="form-control" style="background-color: #f5f5f5;">
-                                        {{ $observaciones[$selectGrupo][$estudiante->id] ?? 'No hay observacion' }}
-                                    </div>
-                                @else
-                                    <textarea rows="2" cols="15" wire:model.defer="observaciones.{{ $selectGrupo }}.{{ $estudiante->id }}"
-                                        class="form-control"></textarea>
-                                @endif
+                                <input type="number" wire:model.blur="actividades_asignados.{{ $student->id }}"
+                                    class="ql-input-count" placeholder="0"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("actividades_asignados.{$student->id}")
+                                    <span class="ql-error-tip">!</span>
+                                @enderror
                             </td>
-
                             <td>
-                                <div class="flex">
-                                    <button class="update"
-                                        wire:click="download({{ $estudiante->id }})">Descargar</button>
-                                </div>
+                                <input type="number" wire:model.blur="actividades_entregados.{{ $student->id }}"
+                                    class="ql-input-count" placeholder="0"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("actividades_entregados.{$student->id}")
+                                    <span class="ql-error-tip">!</span>
+                                @enderror
+                            </td>
+                            <td>
+                                <input type="number" wire:model.blur="worksheet_asignados.{{ $student->id }}"
+                                    class="ql-input-count" placeholder="0"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("worksheet_asignados.{$student->id}")
+                                    <span class="ql-error-tip">!</span>
+                                @enderror
+                            </td>
+                            <td>
+                                <input type="number" wire:model.blur="worksheet_entregados.{{ $student->id }}"
+                                    class="ql-input-count" placeholder="0"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                @error("worksheet_entregados.{$student->id}")
+                                    <span class="ql-error-tip">!</span>
+                                @enderror
+                            </td>
+                            <td>
+                                <textarea wire:model.blur="observaciones.{{ $student->id }}" class="ql-textarea" placeholder="Sin observaciones..."
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif></textarea>
+                                @error("observaciones.{$student->id}")
+                                    <span class="ql-error-tip">!</span>
+                                @enderror
+                            </td>
+                            <td class="ql-center">
+                                <button wire:click="download({{ $student->id }})" class="ql-btn ql-btn-download">
+                                    Descargar PDF
+                                </button>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="13" class="ql-empty">
+                                @if (!$selectedGroup)
+                                    Seleccione un grupo para cargar los estudiantes.
+                                @else
+                                    No hay estudiantes registrados en este grupo.
+                                @endif
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
-            @if ($userEsAdmin)
-                <div class="flex">
-                    <button class="buttonsave" class="btn btn-success mt-3" wire:click="guardarNotas">
-                        Actualizar
-                    </button>
-                    <button class="buttonsave" style="background-color: red; color: white; border: 1px solid red;"
-                        wire:click="deleteNotas" wire:confirm="¿Estás seguro que deseas eliminar estas notas?">
-                        Eliminar
-                    </button>
-                </div>
-            @else
-                <button class="buttonsave" class="btn btn-success mt-3" wire:click="guardarNotas">
-                    Guardar calificaciones
-                </button>
-            @endif
         </div>
+
+        @if (count($students) > 0)
+            <div class="ql-actions">
+                <button wire:click="guardarNotas" class="ql-btn ql-btn-save">
+                    <div wire:loading.remove wire:target="guardarNotas">
+                        <i class="fas @if ($exists) fa-sync-alt @else fa-save @endif"></i>
+                        @if ($exists)
+                            Actualizar Calificaciones
+                        @else
+                            Guardar Calificaciones
+                        @endif
+                    </div>
+                    <div wire:loading wire:target="guardarNotas">
+                        <i class="fas fa-spinner fa-spin"></i> Procesando...
+                    </div>
+                </button>
+                <button wire:click="descargarGrupo" class="ql-btn ql-btn-secondary">
+                    <i class="fas fa-users"></i> Informe Grupal
+                </button>
+            </div>
+        @endif
     </div>
 </div>

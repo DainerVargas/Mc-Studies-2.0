@@ -227,6 +227,20 @@
                         <td>{{ number_format($avgWriting, 2) }}%</td>
                     </tr>
                     <tr>
+                        <td>Actividades Asig./Ent.</td>
+                        @foreach ($qualifications as $q)
+                            <td>{{ $q->actividades_asignados }} / {{ $q->actividades_entregados }}</td>
+                        @endforeach
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Worksheets Asig./Ent.</td>
+                        @foreach ($qualifications as $q)
+                            <td>{{ $q->worksheet_asignados }} / {{ $q->worksheet_entregados }}</td>
+                        @endforeach
+                        <td>-</td>
+                    </tr>
+                    <tr>
                         <td><strong>Consolidado Final</strong></td>
                         @foreach ($totalesExamen as $promedioExamen)
                             <td><strong>{{ number_format($promedioExamen, 2) }}%</strong></td>
@@ -235,6 +249,13 @@
                     </tr>
                 </tbody>
             </table>
+
+            @if ($qualifications[0]->observacion)
+                <div style="margin-top: 20px;">
+                    <h2>Observaciones:</h2>
+                    <p>{{ $qualifications[0]->observacion }}</p>
+                </div>
+            @endif
         </div>
 
         <p class="note">

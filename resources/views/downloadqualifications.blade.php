@@ -125,8 +125,10 @@
 
 
         <div class="datos-aprendiz">
-            <span><strong>Estudiante:</strong> {{ $qualifications[0]->apprentice->name }} {{ $qualifications[0]->apprentice->apellido }}</span>
-            <span><strong>Profesor:</strong> {{ $qualifications[0]->teacher->name }} {{ $qualifications[0]->teacher->apellido }}</span>
+            <span><strong>Estudiante:</strong> {{ $qualifications[0]->apprentice->name }}
+                {{ $qualifications[0]->apprentice->apellido }}</span>
+            <span><strong>Profesor:</strong> {{ $qualifications[0]->teacher->name }}
+                {{ $qualifications[0]->teacher->apellido }}</span>
             <span><strong>Grupo:</strong> {{ $qualifications[0]->group->name ?? 'Sin Grupo' }}</span>
         </div>
 
@@ -166,16 +168,23 @@
                         $totalSpeaking += $qualification->speaking;
                         $totalWriting += $qualification->writing;
 
-                        $resultado = 'Resultado ' . ($qualification->semestre ?? '—');
+                        $resName =
+                            $qualification->resultado == 'final'
+                                ? 'Calculado'
+                                : 'Resultado ' . $qualification->resultado;
                     @endphp
 
                     <tr>
-                        <td>{{ $resultado }}</td>
-                        <td>{{ $qualification->listening }}</td>
-                        <td>{{ $qualification->reading }}</td>
-                        <td>{{ $qualification->speaking }}</td>
-                        <td>{{ $qualification->writing }}</td>
-                        <td class="promedio">{{ number_format($promedioFila, 2) }}</td>
+                        <td style="text-align: left; padding-left: 20px;">
+                            <strong style="color: #0a58ca;">{{ $resName }}</strong>
+                        </td>
+                        <td>{{ number_format($qualification->listening, 1) }}</td>
+                        <td>{{ number_format($qualification->reading, 1) }}</td>
+                        <td>{{ number_format($qualification->speaking, 1) }}</td>
+                        <td>{{ number_format($qualification->writing, 1) }}</td>
+                        <td class="promedio" style="color: {{ $promedioFila >= 75 ? '#198754' : '#dc3545' }}">
+                            {{ number_format($promedioFila, 2) }}
+                        </td>
                     </tr>
                 @empty
                     <tr>
@@ -201,11 +210,17 @@
 
         <div class="observaciones">
             <h4>Observaciones</h4>
-            @forelse ($qualifications as $qualification)
-                <ul>{{ $qualification->observacion }}</ul>
-            @empty
-                <ul>No tiene ninguna observacion</ul>
-            @endforelse
+            @foreach ($qualifications as $qualification)
+                @if ($qualification->observacion)
+                    <div style="margin-bottom: 5px; font-size: 13px;">
+                        <strong>{{ $qualification->resultado == 'final' ? 'Final' : 'Periodo ' . $qualification->resultado }}:</strong>
+                        {{ $qualification->observacion }}
+                    </div>
+                @endif
+            @endforeach
+            @if ($qualifications->whereNotNull('observacion')->where('observacion', '!=', '')->isEmpty())
+                <p style="font-size: 13px; color: #666;">No hay observaciones registradas para este periodo.</p>
+            @endif
         </div>
 
     </div>

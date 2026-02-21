@@ -327,7 +327,7 @@ class InformeEstudiante extends Component
 			$query->where(function ($q) use ($words) {
 				foreach ($words as $word) {
 
-					if (strlen($word) <= 4) {
+					if (strlen($word) <= 3) {
 						continue;
 					}
 

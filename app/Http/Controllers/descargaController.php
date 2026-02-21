@@ -76,18 +76,27 @@ class descargaController extends Controller
     public function qualificationDownload()
     {
         $qualifications = session()->get('qualifications');
-        $semestre = session()->get('number');
-        if ($semestre == 'Final' || $semestre == 'Tercer') {
+        $resultado = session()->get('number'); // Contiene 'Primer', 'Segundo', 'Tercer' o 'Final'
+
+        if (!$qualifications || count($qualifications) === 0) {
+            return redirect()->back()->with('error', 'No se encontraron datos para generar el reporte.');
+        }
+
+        // Pasamos 'semestre' para mantener compatibilidad con las vistas existentes
+        $semestre = $resultado;
+
+        if ($resultado == 'Final' || $resultado == 'Tercer') {
             $pdf = Pdf::loadView('qualificationDownload', compact('qualifications', 'semestre'));
             return $pdf->download("Calificaciones-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
-        } elseif ($semestre == 'Primer') {
+        } elseif ($resultado == 'Primer') {
             $pdf = Pdf::loadView('qualificationFirst', compact('qualifications', 'semestre'));
             return $pdf->download("Reporte-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
-        } elseif ($semestre == 'Segundo') {
+        } elseif ($resultado == 'Segundo') {
             $pdf = Pdf::loadView('qualificationSecond', compact('qualifications', 'semestre'));
             return $pdf->download("Reporte-" . $qualifications[0]->apprentice->name . " " . $qualifications[0]->apprentice->apellido . ".pdf");
         }
-        /* return view('qualificationFirst', compact('qualifications', 'semestre')); */
+
+        return redirect()->back()->with('error', 'Periodo no reconocido.');
     }
 
     public function copiaseguridad()

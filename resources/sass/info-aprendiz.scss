@@ -226,7 +226,8 @@ $radius: 20px;
                 .actions-grid {
                     display: flex;
                     justify-content: center;
-                    gap: 12px;
+                    flex-wrap: wrap;
+                    gap: 10px;
                     margin-bottom: 20px;
 
                     .btn-icon {

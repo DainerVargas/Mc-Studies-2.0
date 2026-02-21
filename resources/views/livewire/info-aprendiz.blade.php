@@ -75,6 +75,10 @@
                             <span class="material-symbols-outlined">license</span>
                         </div>
                     @endif
+
+                    <div title="Ver asistencias" wire:click="showAttendance" class="btn-icon">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                    </div>
                 </div>
 
                 @if ($valor == 1 && (!$aprendiz->comprobante || $aprendiz->comprobante == 'Sin comprobante'))
@@ -193,11 +197,42 @@
                 </div>
                 <h4>Calificaciones del Aprendiz</h4>
 
-                <div class="modern-table-wrapper">
+                <div class="ql-filters-modal"
+                    style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="ql-filter-group">
+                        <label
+                            style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">AÑO</label>
+                        <select wire:model.live="selectedYear"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-weight: 600;">
+                            @for ($i = date('Y'); $i >= 2023; $i--)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="ql-filter-group">
+                        <label
+                            style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">SEMESTRE</label>
+                        <select wire:model.live="selectedSemester"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-weight: 600;">
+                            <option value="">Todos los semestres</option>
+                            <option value="1">Semestre 1</option>
+                            <option value="2">Semestre 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                @if (session()->has('error_modal'))
+                    <div
+                        style="background: #fef2f2; color: #b91c1c; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid #fecaca; text-align: center;">
+                        <i class="fas fa-exclamation-circle"></i> {{ session('error_modal') }}
+                    </div>
+                @endif
+
+                <div class="modern-table-wrapper" style="max-height: 300px; overflow-y: auto;">
                     <table class="modern-table">
                         <thead>
                             <tr>
-                                <th>Resultado</th>
+                                <th>Periodo</th>
                                 <th>Listening</th>
                                 <th>Reading</th>
                                 <th>Speaking</th>
@@ -227,35 +262,42 @@
                                     $totalSpeaking += $qualification->speaking;
                                     $totalWriting += $qualification->writing;
 
-                                    $resultado = match ($qualification->semestre) {
-                                        1 => 'Resultado 1',
-                                        2 => 'Resultado 2',
-                                        3 => 'Resultado 3',
-                                        default => 'Resultado',
+                                    $resLabel = match ($qualification->resultado) {
+                                        '1' => 'Resultado 1',
+                                        '2' => 'Resultado 2',
+                                        '3' => 'Resultado 3',
+                                        default => 'Resultado ' . $qualification->resultado,
                                     };
                                 @endphp
                                 <tr>
-                                    <td>{{ $resultado }}</td>
-                                    <td>{{ $qualification->listening }}</td>
-                                    <td>{{ $qualification->reading }}</td>
-                                    <td>{{ $qualification->speaking }}</td>
-                                    <td>{{ $qualification->writing }}</td>
-                                    <td>{{ number_format($promedioFila, 2) }}</td>
+                                    <td>{{ $resLabel }}</td>
+                                    <td>{{ number_format($qualification->listening, 1) }}</td>
+                                    <td>{{ number_format($qualification->reading, 1) }}</td>
+                                    <td>{{ number_format($qualification->speaking, 1) }}</td>
+                                    <td>{{ number_format($qualification->writing, 1) }}</td>
+                                    <td
+                                        style="font-weight: bold; color: {{ $promedioFila >= 75 ? '#166534' : '#b91c1c' }}">
+                                        {{ number_format($promedioFila, 2) }}
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" style="padding: 30px;">Sin resultados registrados</td>
+                                    <td colspan="6"
+                                        style="padding: 30px; text-align: center; color: #94a3b8; font-style: italic;">
+                                        No se encontraron calificaciones para los filtros seleccionados.
+                                    </td>
                                 </tr>
                             @endforelse
 
-                            @if ($count > 0)
-                                <tr class="total-row">
-                                    <td>Promedio Global</td>
-                                    <td>{{ number_format($totalListening / $count, 2) }}</td>
-                                    <td>{{ number_format($totalReading / $count, 2) }}</td>
-                                    <td>{{ number_format($totalSpeaking / $count, 2) }}</td>
-                                    <td>{{ number_format($totalWriting / $count, 2) }}</td>
-                                    <td>{{ number_format(($totalListening + $totalReading + $totalSpeaking + $totalWriting) / ($count * 4), 2) }}
+                            @if ($count > 1)
+                                <tr class="total-row" style="background: #f0fdf4; font-weight: bold;">
+                                    <td>PROM. GLOBAL</td>
+                                    <td>{{ number_format($totalListening / $count, 1) }}</td>
+                                    <td>{{ number_format($totalReading / $count, 1) }}</td>
+                                    <td>{{ number_format($totalSpeaking / $count, 1) }}</td>
+                                    <td>{{ number_format($totalWriting / $count, 1) }}</td>
+                                    <td style="color: #166534;">
+                                        {{ number_format(($totalListening + $totalReading + $totalSpeaking + $totalWriting) / ($count * 4), 2) }}
                                     </td>
                                 </tr>
                             @endif
@@ -296,6 +338,105 @@
                 <button class="btn-generate" wire:click="generateCertificate">
                     Generar Certificado Oficial
                 </button>
+            </div>
+        </div>
+    @endif
+
+    <!-- Attendance Modal -->
+    @if ($viewAttendance)
+        <div class="custom-modal-overlay">
+            <div class="modal-body" style="max-width: 600px;">
+                <div class="close-icon" wire:click="showAttendance">
+                    <span class="material-symbols-outlined">close</span>
+                </div>
+                <h4>Asistencias de {{ $aprendiz->name }}</h4>
+
+                <div class="ql-filters-modal"
+                    style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="ql-filter-group">
+                        <label
+                            style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">AÑO</label>
+                        <select wire:model.live="attendanceYear"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-weight: 600;">
+                            @for ($i = date('Y'); $i >= 2023; $i--)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="ql-filter-group">
+                        <label
+                            style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">ESTADO</label>
+                        <select wire:model.live="attendanceStatus"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-weight: 600;">
+                            <option value="">Todas</option>
+                            <option value="Presente">Presente</option>
+                            <option value="Ausente">Ausente</option>
+                            <option value="Tarde">Tarde</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modern-table-wrapper" style="max-height: 400px; overflow-y: auto;">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($attendances as $asistencia)
+                                <tr>
+                                    <td style="font-weight: 600; color: #334155;">
+                                        {{ Carbon\Carbon::parse($asistencia->fecha)->format('d/m/Y') }}
+                                    </td>
+                                    <td>
+                                        @php
+                                            $statusColor = match ($asistencia->estado) {
+                                                'Presente' => '#166534',
+                                                'Ausente' => '#b91c1c',
+                                                'Tarde' => '#c2410c',
+                                                default => '#475569',
+                                            };
+                                            $statusBg = match ($asistencia->estado) {
+                                                'presente' => '#f0fdf4',
+                                                'ausente' => '#fef2f2',
+                                                'tarde' => '#fff7ed',
+                                                default => '#f8fafc',
+                                            };
+                                        @endphp
+                                        <span
+                                            style="padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; background: {{ $statusBg }}; color: {{ $statusColor }}; border: 1px solid {{ $statusColor }}33;">
+                                            {{ $asistencia->estado }}
+                                        </span>
+                                    </td>
+                                    <td style="font-size: 0.85rem; color: #64748b;">
+                                        {{ $asistencia->observaciones ?: 'Sin observaciones' }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3"
+                                        style="padding: 40px; text-align: center; color: #94a3b8; font-style: italic;">
+                                        <div
+                                            style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 48px;">event_busy</span>
+                                            No se encontraron registros de asistencia.
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-footer" style="justify-content: center;">
+                    <button class="btn-secondary" wire:click="showAttendance" style="width: 100%; max-width: 200px;">
+                        Cerrar
+                    </button>
+                </div>
             </div>
         </div>
     @endif

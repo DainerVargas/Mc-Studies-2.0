@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\Level;
 use App\Models\Modality;
 use App\Models\Qualification;
+use App\Models\Asistencia;
 use App\Models\Teacher;
 use Carbon\Carbon;
 use DateTime;
@@ -22,10 +23,20 @@ class InfoAprendiz extends Component
     public $aprendiz;
     public $textReconocimiento;
 
+    // Filters for qualification modal
+    public $selectedYear;
+    public $selectedSemester = null;
+    public $selectedResult = '';
+
     // UI State
     public $view = false;
     public $viewCertificate = false;
     public $valor = 0; // 0: hidden, 1: viewer
+    public $viewAttendance = false;
+
+    // Filters for attendance
+    public $attendanceYear;
+    public $attendanceStatus = '';
 
     // Computed properties or passed directly to render to avoid hydration overhead
     // public $grupos; 
@@ -35,9 +46,8 @@ class InfoAprendiz extends Component
     public function mount(Apprentice $aprendiz)
     {
         $this->aprendiz = $aprendiz;
-
-        // Removed session-based UI state initialization to prevent conflicts
-        // The component should start with modales closed unless logic dictates otherwise
+        $this->selectedYear = date('Y');
+        $this->attendanceYear = date('Y');
     }
 
     public function toggleEstado()
@@ -80,6 +90,11 @@ class InfoAprendiz extends Component
         }
     }
 
+    public function showAttendance()
+    {
+        $this->viewAttendance = !$this->viewAttendance;
+    }
+
     public function generateCertificate()
     {
         $this->validate([
@@ -96,8 +111,21 @@ class InfoAprendiz extends Component
 
     public function donwloadQualification()
     {
-        // Get qualifications fresh data
-        $qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
+        $query = Qualification::with(['apprentice', 'teacher', 'group'])
+            ->where('apprentice_id', $this->aprendiz->id)
+            ->where('year', (string)$this->selectedYear);
+
+        if ($this->selectedSemester) {
+            $query->where('semestre', $this->selectedSemester);
+        }
+
+        $qualifications = $query->get();
+
+        if ($qualifications->isEmpty()) {
+            session()->flash('error_modal', 'No hay calificaciones para los filtros seleccionados.');
+            return;
+        }
+
         session()->put('qualifications', $qualifications);
         session()->forget('aprendiz');
 
@@ -106,7 +134,21 @@ class InfoAprendiz extends Component
 
     public function sendQualification()
     {
-        $qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
+        $query = Qualification::with(['apprentice', 'teacher', 'group'])
+            ->where('apprentice_id', $this->aprendiz->id)
+            ->where('year', (string)$this->selectedYear);
+
+        if ($this->selectedSemester) {
+            $query->where('semestre', $this->selectedSemester);
+        }
+
+        $qualifications = $query->get();
+
+        if ($qualifications->isEmpty()) {
+            session()->flash('error_modal', 'No hay calificaciones para los filtros seleccionados.');
+            return;
+        }
+
         session()->put('qualifications', $qualifications);
         session()->put('aprendiz', $this->aprendiz);
 
@@ -120,11 +162,29 @@ class InfoAprendiz extends Component
         $hoy = new DateTime();
         $edadActualizada = $hoy->diff($fechaNacimiento)->y;
 
-        // Fetch data here to avoid public property hydration issues
-        $qualifications = Qualification::where('apprentice_id', $this->aprendiz->id)->get();
+        // Fetch data here with filters
+        $query = Qualification::where('apprentice_id', $this->aprendiz->id)
+            ->where('year', (string)$this->selectedYear);
+
+        if ($this->selectedSemester) {
+            $query->where('semestre', $this->selectedSemester);
+        }
+
+        $qualifications = $query->orderBy('resultado', 'asc')->get();
+
+        // Fetch attendance data
+        $attendanceQuery = Asistencia::where('apprentice_id', $this->aprendiz->id)
+            ->whereYear('fecha', $this->attendanceYear);
+
+        if ($this->attendanceStatus) {
+            $attendanceQuery->where('estado', $this->attendanceStatus);
+        }
+
+        $attendances = $attendanceQuery->orderBy('fecha', 'desc')->get();
+
         $grupos = Group::all();
         $user = Auth::user();
 
-        return view('livewire.info-aprendiz', compact('qualifications', 'edadActualizada', 'user'));
+        return view('livewire.info-aprendiz', compact('qualifications', 'edadActualizada', 'user', 'attendances'));
     }
 }

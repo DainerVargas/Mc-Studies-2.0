@@ -19,7 +19,9 @@ class Qualification extends Model
         'actividades_entregados',
         'actividades_asignados',
         'semestre',
+        'resultado',
         'observacion',
+        'year',
     ];
 
     public function teacher()
