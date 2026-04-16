@@ -253,7 +253,83 @@
         $allSkillsApproved = collect($promedios)->every(fn($value) => $value >= 75);
     @endphp
 
-    <div class="content">
+    <main class="content">
+        @php
+            use App\Models\AssignedActivity;
+            use App\Models\AcademicActivity;
+            use Carbon\Carbon;
+
+            $keywords = ['worksheet', 'pelicula', 'movie', 'serie', 'series'];
+            // Priorizamos el semestre de la sesión, si no existe usamos el guardado en el objeto
+            $semester = (int) (session('selectedSemester') ?? $qualifications[0]->semestre ?? 1);
+            $year = (int) (session('selectedYear') ?? $qualifications[0]->year ?? date('Y'));
+
+            // Función para calcular actividades Live para una calificación dada
+            $getLiveCounts = function ($q) use ($keywords, $semester, $year) {
+                $result = (int) $q->resultado;
+                $groupId = $q->group_id;
+                $studentId = $q->apprentice_id;
+                $startDate = null;
+                $endDate = null;
+
+                if ($semester == 1) {
+                    if ($result == 1) {
+                        $startDate = Carbon::createFromDate($year, 2, 1)->startOfDay();
+                        $endDate = Carbon::createFromDate($year, 3, 31)->endOfDay();
+                    } elseif ($result == 2) {
+                        $startDate = Carbon::createFromDate($year, 4, 1)->startOfDay();
+                        $endDate = Carbon::createFromDate($year, 4, 30)->endOfDay();
+                    } elseif ($result == 3) {
+                        $startDate = Carbon::createFromDate($year, 5, 1)->startOfDay();
+                        $endDate = Carbon::createFromDate($year, 5, 31)->endOfDay();
+                    }
+                } else {
+                    if ($result == 1) {
+                        $startDate = Carbon::createFromDate($year, 8, 1)->startOfDay();
+                        $endDate = Carbon::createFromDate($year, 9, 30)->endOfDay();
+                    } elseif ($result == 2) {
+                        $startDate = Carbon::createFromDate($year, 10, 1)->startOfDay();
+                        $endDate = Carbon::createFromDate($year, 10, 31)->endOfDay();
+                    } elseif ($result == 3) {
+                        $startDate = Carbon::createFromDate($year, 11, 1)->startOfDay();
+                        $endDate = Carbon::createFromDate($year, 11, 30)->endOfDay();
+                    }
+                }
+
+                $asignadasAct = 0; $asignadasWork = 0; $entregadasAct = 0; $entregadasWork = 0;
+
+                if ($startDate) {
+                    $baseAsig = AssignedActivity::whereHas('groups', function ($g) use ($groupId) {
+                        $g->where('groups.id', $groupId);
+                    })->whereBetween('created_at', [$startDate, $endDate]);
+
+                    $asignadasWork = (clone $baseAsig)->where(function ($g) use ($keywords) {
+                            foreach ($keywords as $word) { $g->orWhere('titulo', 'like', "%{$word}%"); }
+                        })->count();
+                    $asignadasAct = (clone $baseAsig)->where(function ($g) use ($keywords) {
+                            foreach ($keywords as $word) { $g->where('titulo', 'not like', "%{$word}%"); }
+                        })->count();
+
+                    $baseEnt = AcademicActivity::where('apprentice_id', $studentId)->whereBetween('fecha', [$startDate, $endDate]);
+
+                    $entregadasWork = (clone $baseEnt)->where(function ($g) use ($keywords) {
+                            foreach ($keywords as $word) { $g->orWhere('titulo', 'like', "%{$word}%"); }
+                        })->count();
+                    $entregadasAct = (clone $baseEnt)->where(function ($g) use ($keywords) {
+                            foreach ($keywords as $word) { $g->where('titulo', 'not like', "%{$word}%"); }
+                        })->count();
+                }
+
+                return (object) [
+                    'asigAct' => $asignadasAct,
+                    'entAct' => $entregadasAct,
+                    'asigWork' => $asignadasWork,
+                    'entWork' => $entregadasWork,
+                ];
+            };
+
+            $liveCounts = $getLiveCounts($qualifications[0]);
+        @endphp
         <div class="header">
             <img src="{{ public_path('headerReporte.png') }}" alt="Resultado" class="result-image">
         </div>
@@ -273,22 +349,22 @@
                 <div class="card">
                     <div class="title">
                         <span>Worksheet entregados</span>
-                        <p>(Peliculas y seriesasignadas)</p>
+                        <p>(Peliculas y series asignadas)</p>
                     </div>
                     <div class="number">
                         <span class="greenA">{{ $qualifications[0]->worksheet_entregados }} <span class="black">/
-                                {{ $qualifications[0]->worksheet_asignados }}</span> </span>
+                                 {{ $qualifications[0]->worksheet_asignados }}</span> </span>
                         <span class="text">COMPLETADAS</span>
                     </div>
                 </div>
                 <div class="card">
                     <div class="title">
-                        <span>Actividades entregados</span>
+                        <span>Actividades entregadas</span>
                         <p>(Plataforma de Richmond)</p>
                     </div>
                     <div class="number">
-                        <span class="greenA">{{ $qualifications[0]->actividades_entregados }} <span class="black">/
-                                {{ $qualifications[0]->actividades_asignados }}</span> </span>
+                        <span class="greenA">{{ $liveCounts->entAct }} <span class="black">/
+                                {{ $liveCounts->asigAct }}</span> </span>
                         <span class="text">COMPLETADAS</span>
                     </div>
                 </div>

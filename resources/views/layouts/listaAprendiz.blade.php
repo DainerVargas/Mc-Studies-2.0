@@ -15,17 +15,34 @@
                                 placeholder="Buscar aprendiz..." onchange="this.form.submit()">
                         </div>
                     </div>
-                    <div class="ux-ap-actions-group">
-                        <a href="{{ route('sendEmail') }}" class="ux-ap-btn-email">
-                            <span class="material-symbols-outlined">email</span>
-                            ENVIAR EMAIL
-                        </a>
-                        <a href="{{ route('listaActividades') }}" class="ux-ap-btn-activity">
-                            <span class="material-symbols-outlined"
-                                style="vertical-align: middle; margin-right: 8px;">list_alt</span>
-                            Lista Actividades
-                        </a>
-                    </div>
+                    @if (auth()->check() && in_array(auth()->user()->rol_id, [1, 2, 3]))
+                        <div class="ux-ap-actions-group">
+                            @php
+                                $btnTargetId = $targetTeacherId ?? (auth()->user()->teacher_id ?? null);
+                            @endphp
+
+                            @if ($btnTargetId)
+                                <a href="{{ route('asistencias', $btnTargetId) }}" class="ux-ap-btn-asistencia"
+                                    title="Registro de Asistencia">
+                                    <span class="material-symbols-outlined">calendar_month</span>
+                                    ASISTENCIA
+                                </a>
+                                <a href="{{ route('qualification', $btnTargetId) }}" class="ux-ap-btn-calificacion"
+                                    title="Registro de Calificaciones">
+                                    <span class="material-symbols-outlined">grade</span>
+                                    CALIFICACIONES
+                                </a>
+                            @endif
+                            <a href="{{ route('sendEmail') }}" class="ux-ap-btn-email">
+                                <span class="material-symbols-outlined">email</span>
+                                ENVIAR EMAIL
+                            </a>
+                            <a href="{{ route('listaActividades') }}" class="ux-ap-btn-activity">
+                                <span class="material-symbols-outlined">list_alt</span>
+                                LISTA ACTIVIDADES
+                            </a>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="ux-ap-filter-bottom">
@@ -136,7 +153,6 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="ux-ap-btn-delete" title="Eliminar">
                                                     <span class="material-symbols-outlined">delete</span>
-                                                    Eliminar
                                                 </button>
                                             </form>
                                         </div>

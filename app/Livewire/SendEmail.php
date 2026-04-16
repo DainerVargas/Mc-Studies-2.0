@@ -15,44 +15,33 @@ class SendEmail extends Component
 {
     use  WithFileUploads;
 
-    public $estudiantes, $hidden = false, $hidden2 = false, $messages, $groups, $selectEstudents = [], $check = false;
-
-    public $asunto, $text, $message, $group = 'false', $name, $selects, $documento;
+    public $search = '';
+    public $group = 'all';
+    public $asunto, $text, $message, $documento;
+    public $selectEstudents = [];
+    public $hidden = false;
+    public $hidden2 = false;
 
     public function mount()
     {
-        $this->estudiantes = Apprentice::all();
-        $this->messages = Message::all();
-        $this->groups = Group::all();
+        // No need to load all students here if we do it in render
     }
 
     public function active()
     {
-        if ($this->hidden === false) {
-            $this->hidden = true;
-        } else {
-            $this->hidden = false;
-        }
+        $this->hidden = !$this->hidden;
     }
+
     public function show()
     {
-        if ($this->hidden2 === false) {
-            $this->hidden2 = true;
-        } else {
-            $this->hidden2 = false;
-        }
+        $this->hidden2 = !$this->hidden2;
     }
 
     public function save()
     {
-        if ($this->message != '') {
-            Message::create([
-                'message' => $this->message
-            ]);
-
-            $this->reset('message');
-        }
-        $this->messages = Message::all();
+        $this->validate(['message' => 'required|string']);
+        Message::create(['message' => $this->message]);
+        $this->reset('message');
     }
 
     public function delete(Message $message)
@@ -62,74 +51,103 @@ class SendEmail extends Component
             return;
         }
         $message->delete();
-        $this->messages = Message::all();
     }
 
-    public function select($estudentId)
+    public function selectStudent($id)
     {
-        if (in_array($estudentId, $this->selectEstudents)) {
-
-            $this->selectEstudents = array_values(array_diff($this->selectEstudents, [$estudentId]));
+        $id = (int) $id;
+        if (in_array($id, $this->selectEstudents, true)) {
+            $this->selectEstudents = array_values(array_diff($this->selectEstudents, [$id]));
         } else {
-            $this->selectEstudents[] = $estudentId;
+            $this->selectEstudents[] = $id;
         }
+        $this->syncSelects();
+    }
+
+    public function removeStudent($id)
+    {
+        $id = (int) $id;
+        $this->selectEstudents = array_values(array_diff($this->selectEstudents, [$id]));
+        $this->syncSelects();
     }
 
     public function selectAll()
     {
-        foreach ($this->estudiantes as $key => $estudiante) {
-            if (in_array($estudiante->id, $this->selectEstudents)) {
+        $currentIds = $this->getCurrentStudents()->pluck('id')->map(fn($id) => (int)$id)->toArray();
+        $selectedInCurrent = array_intersect($this->selectEstudents, $currentIds);
 
-                $this->selectEstudents = array_values(array_diff($this->selectEstudents, [$estudiante->id]));
-            } else {
-                $this->selectEstudents[] = $estudiante->id;
-            }
+        if (count($selectedInCurrent) === count($currentIds) && count($currentIds) > 0) {
+            // Unselect all VISIBLE
+            $this->selectEstudents = array_values(array_diff($this->selectEstudents, $currentIds));
+        } else {
+            // Select all VISIBLE
+            $this->selectEstudents = array_values(array_unique(array_merge($this->selectEstudents, $currentIds)));
         }
+        $this->syncSelects();
+    }
+
+    protected function syncSelects()
+    {
+        $this->selectEstudents = array_values(array_unique(array_map('intval', $this->selectEstudents)));
+    }
+
+    protected function getCurrentStudents()
+    {
+        $query = Apprentice::query();
+        if ($this->group !== 'all') {
+            $query->where('group_id', $this->group);
+        }
+        if (!empty($this->search)) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', "%{$this->search}%")
+                    ->orWhere('apellido', 'like', "%{$this->search}%");
+            });
+        }
+        return $query->get();
     }
 
     public function send()
     {
-        if ($this->asunto != '' && $this->text != '' && $this->selectEstudents != []) {
+        $this->validate([
+            'asunto' => 'required|string',
+            'text' => 'required|string',
+            'selectEstudents' => 'required|array|min:1'
+        ]);
 
-            $documento = $this->documento->store('', 'public');
+        $documentPath = $this->documento ? $this->documento->store('emails', 'public') : null;
+        $estudiantes = Apprentice::whereIn('id', $this->selectEstudents)->get();
 
-            $estudiantes = Apprentice::whereIn('id', $this->selectEstudents)->get();
-
-            foreach ($estudiantes as $estudiant) {
-                try {
-                    $email = $estudiant->edad >= 18 ? $estudiant->email : $estudiant->attendant->email;
-                    Mail::to($email)->send(new SendMail($this->asunto, $this->text, $documento));
-                } catch (\Throwable $th) {
-
-                    return redirect()->route('sendEmail')->with('error', 'Ha ocurrido un error');
+        foreach ($estudiantes as $estudiant) {
+            try {
+                $email = $estudiant->email ?? optional($estudiant->attendant)->email;
+                if ($email) {
+                    Mail::to($email)->send(new SendMail($this->asunto, $this->text, $documentPath));
                 }
+            } catch (\Exception $e) {
+                // Log error
             }
-
-            return redirect()->route('sendEmail')->with('success', 'Emails enviados satisfactoriamente');
-        } else {
-            dd('llena los campos');
         }
+
+        session()->flash('success', 'Correos enviados satisfactoriamente.');
+        return redirect()->route('sendEmail');
     }
 
     public function render()
     {
-        $query = Apprentice::query();
+        $estudiantes = $this->getCurrentStudents();
+        
+        // Ensure we load the latest selected info
+        $selectedStudentsInfo = Apprentice::whereIn('id', $this->selectEstudents)->get();
 
-        if ($this->group !== 'false') {
-            $query->where('group_id', $this->group);
-        }
+        $currentIds = $estudiantes->pluck('id')->map(fn($id) => (int)$id)->toArray();
+        $allSelectedInView = count($currentIds) > 0 && count(array_intersect($this->selectEstudents, $currentIds)) === count($currentIds);
 
-        if (!empty($this->name)) {
-            $query->where('name', 'like', "%{$this->name}%");
-        }
-
-        $this->estudiantes = $query->get();
-
-        $this->selectEstudents;
-
-        $this->selects = Apprentice::whereIn('id', $this->selectEstudents)->get();
-
-
-        return view('livewire.send-email');
+        return view('livewire.send-email', [
+            'estudiantes' => $estudiantes,
+            'selectedStudentsInfo' => $selectedStudentsInfo,
+            'allSelectedInView' => $allSelectedInView,
+            'groups' => Group::all(),
+            'messages' => Message::all(),
+        ]);
     }
 }

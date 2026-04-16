@@ -3,7 +3,7 @@
         <div class="header-content">
             <div class="title-tabs-wrapper">
                 <h2>Historial de Actividades</h2>
-                @if (Auth::user()->attendant)
+                @if (Auth::user()->attendant || Auth::user()->rol_id == 6)
                     <div class="tabs-navigation">
                         <button wire:click="$set('showAssigned', false)"
                             class="tab-btn {{ !$showAssigned ? 'active' : '' }}">
@@ -51,7 +51,7 @@
                     </div>
                 @endif
 
-                @if (Auth::user()->attendant)
+                @if (Auth::user()->attendant || Auth::user()->rol_id == 6)
                     <button wire:click="createActivity" class="btn-create">
                         <span class="material-symbols-outlined">upload_file</span>
                         <span class="btn-text">Registrar Actividad</span>
@@ -64,6 +64,31 @@
                 @endif
             </div>
         </div>
+
+        @if (Auth::user()->attendant || Auth::user()->rol_id == 6)
+            <div class="grading-scale-legend"
+                style="margin-top: 20px; padding: 12px 20px; background: #fff; border-radius: 16px; border: 1px solid #eef2f6; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                <span
+                    style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Escala
+                    de Evaluacion:</span>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <span class="feedback-badge excelente"
+                        style="font-size: 0.65rem; padding: 3px 10px;">Excelente</span>
+                    <span class="material-symbols-outlined"
+                        style="font-size: 1rem; color: #cbd5e1;">chevron_right</span>
+                    <span class="feedback-badge sobresaliente"
+                        style="font-size: 0.65rem; padding: 3px 10px;">Sobresaliente</span>
+                    <span class="material-symbols-outlined"
+                        style="font-size: 1rem; color: #cbd5e1;">chevron_right</span>
+                    <span class="feedback-badge aceptable"
+                        style="font-size: 0.65rem; padding: 3px 10px;">Aceptable</span>
+                    <span class="material-symbols-outlined"
+                        style="font-size: 1rem; color: #cbd5e1;">chevron_right</span>
+                    <span class="feedback-badge insuficiente"
+                        style="font-size: 0.65rem; padding: 3px 10px;">Insuficiente</span>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="scrollable-timeline-container">
@@ -94,7 +119,7 @@
                                     <h3>{{ $activity->titulo }}</h3>
                                     @if ($activity->created_at->diffInMinutes(now()) <= 10 || Auth::user()->rol_id == 1)
                                         <button wire:click="deleteActivity({{ $activity->id }})"
-                                            wire:confirm="¿Estás seguro de que deseas eliminar esta actividad?"
+                                            wire:confirm="Esta seguro de que deseas eliminar esta actividad?"
                                             class="btn-delete">
                                             <span class="material-symbols-outlined">delete</span>
                                         </button>
@@ -102,6 +127,33 @@
                                 </div>
                                 @if ($activity->descripcion)
                                     <p class="description">{{ $activity->descripcion }}</p>
+                                @endif
+
+                                @if ($activity->calificacion || $activity->comentario)
+                                    <div class="teacher-feedback-section"
+                                        style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 16px; border: 1px solid #eef2f6; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #fff; padding-bottom: 8px; flex-wrap: wrap; gap: 10px;">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span class="material-symbols-outlined"
+                                                    style="color: #6c5ce7; font-size: 1.1rem;">reviews</span>
+                                                <span
+                                                    style="font-weight: 800; color: #1e293b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Retroalimentacion</span>
+                                            </div>
+                                            @if ($activity->calificacion)
+                                                <span class="feedback-badge {{ strtolower($activity->calificacion) }}"
+                                                    style="white-space: nowrap; max-width: 100%; text-overflow: ellipsis; overflow: hidden;">
+                                                    {{ $activity->calificacion }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                        @if ($activity->comentario)
+                                            <p
+                                                style="margin: 0; color: #475569; font-size: 0.88rem; line-height: 1.5; font-style: italic; background: white; padding: 12px; border-radius: 12px; border: 1px solid #f1f5f9; word-break: break-word;">
+                                                "{{ $activity->comentario }}"
+                                            </p>
+                                        @endif
+                                    </div>
                                 @endif
                                 @if ($activity->archivo)
                                     @php
@@ -200,7 +252,7 @@
                                                 <span class="material-symbols-outlined">assignment</span>
                                             </div>
                                             <div class="file-info">
-                                                <span class="filename">Ver Guía / Actividad Asignada</span>
+                                                <span class="filename">Ver Guia / Actividad Asignada</span>
                                                 <span class="click-hint">Clic para descargar/ver</span>
                                             </div>
                                         </a>
@@ -243,7 +295,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label>Título de la Actividad</label>
+                        <label>Titulo de la Actividad</label>
                         <input type="text" wire:model="titulo" class="form-control"
                             placeholder="Ej: Entrega de taller...">
                         @error('titulo')
@@ -251,7 +303,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label>Descripción / Observaciones</label>
+                        <label>Descripcion / Observaciones</label>
                         <textarea wire:model="descripcion" class="form-control" rows="3"></textarea>
                         @error('descripcion')
                             <span class="error">{{ $message }}</span>
@@ -297,7 +349,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Título de la Actividad</label>
+                        <label>Titulo de la Actividad</label>
                         <input type="text" wire:model="assign_titulo" class="form-control"
                             placeholder="Ej: Taller de refuerzo...">
                         @error('assign_titulo')
@@ -326,7 +378,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label>Adjuntar Guía / Material / Video (Opcional - Max 1GB)</label>
+                        <label>Adjuntar Guia / Material / Video (Opcional - Max 1GB)</label>
                         <div x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true"
                             x-on:livewire-upload-finish="isUploading = false"
                             x-on:livewire-upload-error="isUploading = false"
@@ -442,12 +494,114 @@
             margin-left: 8px;
         }
 
+        .feedback-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .feedback-badge.excelente {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .feedback-badge.sobresaliente {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .feedback-badge.aceptable {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .feedback-badge.insuficiente {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .feedback-badge.pendiente {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
         .staff-name {
             font-size: 0.8rem;
             color: #64748b;
             font-weight: 500;
         }
 
-        {{-- Existing styles --}}
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 24px !important;
+            }
+
+            .title-tabs-wrapper {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 16px !important;
+            }
+
+            .filters-container {
+                flex-direction: column !important;
+                width: 100% !important;
+                gap: 12px !important;
+            }
+
+            .search-wrapper,
+            .filter-wrapper {
+                width: 100% !important;
+            }
+
+            .modern-search-input,
+            .modern-filter-select {
+                width: 100% !important;
+            }
+
+            .btn-create,
+            .btn-assign {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 14px !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .activities-timeline {
+                padding-left: 10px !important;
+            }
+
+            .timeline-content {
+                margin-left: 20px !important;
+            }
+
+            .content-card {
+                padding: 16px !important;
+            }
+
+            .card-header h3 {
+                font-size: 1.1rem !important;
+            }
+
+            .teacher-feedback-section {
+                padding: 12px !important;
+            }
+
+            .grading-scale-legend {
+                padding: 10px 15px !important;
+                gap: 10px !important;
+                justify-content: center;
+            }
+
+            .grading-scale-legend span:first-child {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 5px;
+            }
+        }
     </style>
 </div>

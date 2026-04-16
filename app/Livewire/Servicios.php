@@ -7,8 +7,11 @@ use App\Models\MetodoPago;
 use App\Models\Pago;
 use App\Models\Service;
 use App\Models\typeService;
+use App\Models\Document;
+use App\Models\DocumentCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 
@@ -19,6 +22,7 @@ class Servicios extends Component
     public $showServiceModal = false, $showCategoryModal = false, $showPayModal = false, $show = 1;
     public $type = 'null', $nameService = '', $nameEstudiante = '', $services, $typeService, $nameCategory, $name, $valor, $fecha, $type_service_id = null, $date = '', $pay_id = '';
     public $comprobante, $service_id, $metodoPagos, $pagos, $metodo = '', $dinero = '', $dateInicio = '', $dateFinal = '', $estudents, $search = '', $idEstudentCreate, $dateCreate, $montoCreate, $dineroCreate, $metodoCreate, $saldoCaja = 0, $year, $year2;
+    public $showDocumentModal = false, $showDocCategoryModal = false, $documents, $docCategories, $nameDoc, $categoryDoc_id, $fileDoc, $searchDoc = '', $categoryDocFilter = 'null';
 
     public function mount()
     {
@@ -32,6 +36,7 @@ class Servicios extends Component
         $this->estudents = Apprentice::all();
         $this->year = date('Y');
         $this->year2 = date('Y');
+        $this->docCategories = DocumentCategory::all();
     }
 
     public function view($option)
@@ -72,7 +77,9 @@ class Servicios extends Component
         $this->showServiceModal = false;
         $this->showCategoryModal = false;
         $this->showPayModal = false;
-        $this->reset(['name', 'valor', 'type_service_id', 'pay_id', 'search']);
+        $this->showDocumentModal = false;
+        $this->showDocCategoryModal = false;
+        $this->reset(['name', 'valor', 'type_service_id', 'pay_id', 'search', 'nameDoc', 'categoryDoc_id', 'fileDoc']);
     }
     public function showCategory()
     {
@@ -326,6 +333,70 @@ class Servicios extends Component
         session()->put('pagos', $this->pagos);
         return redirect()->route('informe.caja',);
     }
+
+    public function showDocument()
+    {
+        $this->showDocumentModal = true;
+        $this->showDocCategoryModal = false;
+        $this->showServiceModal = false;
+        $this->showCategoryModal = false;
+        $this->showPayModal = false;
+    }
+
+    public function showDocCategory()
+    {
+        $this->showDocCategoryModal = true;
+        $this->showDocumentModal = false;
+        $this->showServiceModal = false;
+        $this->showCategoryModal = false;
+        $this->showPayModal = false;
+    }
+
+    public function saveDocument()
+    {
+        $this->validate([
+            'nameDoc' => 'required',
+            'categoryDoc_id' => 'required',
+            'fileDoc' => 'required|max:102400|mimes:pdf,jpg,jpeg,png,doc,docx',
+        ], [
+            'required' => 'Este campo es requerido',
+            'max' => 'El archivo no debe pesar más de 100MB',
+            'mimes' => 'Formato no permitido (PDF, JPG, PNG, DOC, DOCX)',
+        ]);
+
+        $filePath = $this->fileDoc->store('documents', 'public');
+
+        Document::create([
+            'name' => $this->nameDoc,
+            'document_category_id' => $this->categoryDoc_id,
+            'file_path' => $filePath,
+        ]);
+
+        $this->reset(['nameDoc', 'categoryDoc_id', 'fileDoc']);
+        $this->showDocumentModal = false;
+        session()->flash('message', 'Documento guardado con éxito.');
+    }
+
+    public function saveDocCategory()
+    {
+        $this->validate([
+            'name' => 'required'
+        ]);
+
+        DocumentCategory::create(['name' => $this->name]);
+        $this->docCategories = DocumentCategory::all();
+        $this->reset(['name']);
+        $this->showDocCategoryModal = false;
+    }
+
+    public function deleteDocument($id)
+    {
+        $doc = Document::find($id);
+        if ($doc) {
+            Storage::disk('public')->delete($doc->file_path);
+            $doc->delete();
+        }
+    }
     public function render()
     {
         $query = Service::query();
@@ -350,6 +421,15 @@ class Servicios extends Component
         }
 
         $this->services = $query->get();
+
+        $docQuery = Document::query();
+        if ($this->searchDoc != '') {
+            $docQuery->where('name', 'LIKE', '%' . $this->searchDoc . '%');
+        }
+        if ($this->categoryDocFilter != 'null') {
+            $docQuery->where('document_category_id', $this->categoryDocFilter);
+        }
+        $this->documents = $docQuery->latest()->get();
 
         return view('livewire.servicios');
     }

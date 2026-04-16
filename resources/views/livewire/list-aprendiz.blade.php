@@ -7,18 +7,34 @@
                     <input type="text" wire:model.live="nameAprendiz" placeholder="Buscar aprendiz...">
                 </div>
             </form>
-            <div class="ux-ap-actions-group">
-                <button type="button" wire:click="sendEmail" class="ux-ap-btn-email">
-                    <span class="material-symbols-outlined"
-                        style="vertical-align: middle; margin-right: 8px;">mail</span>
-                    Enviar Email
-                </button>
-                <a href="{{ route('listaActividades') }}" class="ux-ap-btn-activity">
-                    <span class="material-symbols-outlined"
-                        style="vertical-align: middle; margin-right: 8px;">list_alt</span>
-                    Lista Actividades
-                </a>
-            </div>
+            @if (auth()->check() && in_array(auth()->user()->rol_id, [1, 2, 3]))
+                <div class="ux-ap-actions-group">
+                    @php
+                        $btnTargetId = $targetTeacherId ?? (auth()->user()->teacher_id ?? null);
+                    @endphp
+
+                    @if ($btnTargetId)
+                        <a href="{{ route('asistencias', $btnTargetId) }}" class="ux-ap-btn-asistencia"
+                            title="Registro de Asistencia">
+                            <span class="material-symbols-outlined">calendar_month</span>
+                            ASISTENCIA
+                        </a>
+                        <a href="{{ route('qualification', $btnTargetId) }}" class="ux-ap-btn-calificacion"
+                            title="Registro de Calificaciones">
+                            <span class="material-symbols-outlined">grade</span>
+                            CALIFICACIONES
+                        </a>
+                    @endif
+                    <button type="button" wire:click="sendEmail" class="ux-ap-btn-email">
+                        <span class="material-symbols-outlined">mail</span>
+                        ENVIAR EMAIL
+                    </button>
+                    <a href="{{ route('listaActividades') }}" class="ux-ap-btn-activity">
+                        <span class="material-symbols-outlined">list_alt</span>
+                        LISTA ACTIVIDADES
+                    </a>
+                </div>
+            @endif
         </div>
 
         <div class="ux-ap-filter-bottom">
@@ -117,7 +133,6 @@
                                             wire:confirm="¿Desea eliminar al aprendiz {{ $aprendiz->name }}?"
                                             title="Eliminar">
                                             <span class="material-symbols-outlined">delete</span>
-                                            Eliminar
                                         </button>
                                     </div>
                                 </td>

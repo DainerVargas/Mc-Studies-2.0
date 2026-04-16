@@ -1,5 +1,12 @@
 <div class="user-table-card">
-    <h2>Lista de usuarios</h2>
+    <div class="header-listado"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Lista de usuarios</h2>
+        <div class="search-container" style="position: relative; width: 300px;">
+            <input type="text" wire:model.live="search" placeholder="Buscar por nombre o email..."
+                style="width: 100%; padding: 10px 15px; border-radius: 10px; border: 1px solid #ddd; outline: none; font-size: 0.9rem;">
+        </div>
+    </div>
 
     <table>
         <thead>

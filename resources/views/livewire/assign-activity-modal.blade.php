@@ -8,14 +8,14 @@
         <div class="ux-modal-overlay">
             <div class="ux-modal-card">
                 <div class="ux-modal-header">
-                    <h3>Asignar Nueva Actividad por Grupos</h3>
+                    <h3>{{ $isEdit ? 'Editar Actividad' : 'Asignar Nueva Actividad por Grupos' }}</h3>
                     <button type="button" wire:click="$set('confirmingActivityAssignment', false)" class="ux-close-btn">
                         <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
                 <div class="ux-modal-body">
                     <div class="ux-form-group">
-                        <label>Título de la Actividad</label>
+                        <label>Titulo de la Actividad</label>
                         <input type="text" wire:model="assign_titulo" class="ux-form-control"
                             placeholder="Ej: Lectura semanal, Taller de refuerzo...">
                         @error('assign_titulo')
@@ -65,8 +65,10 @@
                     <button type="button" wire:click="$set('confirmingActivityAssignment', false)"
                         class="ux-btn-secondary">Cancelar</button>
                     <button type="button" wire:click="saveAssignedActivity" class="ux-btn-primary">
-                        <span wire:loading.remove wire:target="saveAssignedActivity">Asignar Actividad</span>
-                        <span wire:loading wire:target="saveAssignedActivity">Asignando...</span>
+                        <span wire:loading.remove
+                            wire:target="saveAssignedActivity">{{ $isEdit ? 'Guardar Cambios' : 'Asignar Actividad' }}</span>
+                        <span wire:loading
+                            wire:target="saveAssignedActivity">{{ $isEdit ? 'Guardando...' : 'Asignando...' }}</span>
                     </button>
                 </div>
             </div>

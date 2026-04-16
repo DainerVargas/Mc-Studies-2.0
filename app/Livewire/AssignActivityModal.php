@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Services\ActivityLogService;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Group;
@@ -13,6 +14,8 @@ class AssignActivityModal extends Component
     use WithFileUploads;
 
     public $confirmingActivityAssignment = false;
+    public $isEdit = false;
+    public $activityId;
     public $assign_titulo, $assign_descripcion, $assign_archivo;
     public $assign_groups = [];
     public $groups = [];
@@ -24,7 +27,22 @@ class AssignActivityModal extends Component
 
     public function openAssignModal()
     {
+        $this->reset(['assign_titulo', 'assign_descripcion', 'assign_archivo', 'assign_groups', 'isEdit', 'activityId']);
+        $this->confirmingActivityAssignment = true;
+    }
+
+    #[\Livewire\Attributes\On('editActivity')]
+    public function editActivity($id)
+    {
         $this->reset(['assign_titulo', 'assign_descripcion', 'assign_archivo', 'assign_groups']);
+        $this->activityId = $id;
+        $this->isEdit = true;
+
+        $activity = AssignedActivity::with('groups')->findOrFail($id);
+        $this->assign_titulo = $activity->titulo;
+        $this->assign_descripcion = $activity->descripcion;
+        $this->assign_groups = $activity->groups->pluck('id')->toArray();
+
         $this->confirmingActivityAssignment = true;
     }
 
@@ -34,45 +52,62 @@ class AssignActivityModal extends Component
             'assign_titulo' => 'required|string|max:255',
             'assign_groups' => 'required|array|min:1',
             'assign_descripcion' => 'nullable|string',
-            'assign_archivo' => 'nullable|file|max:10240',
+            'assign_archivo' => 'nullable|' . ($this->isEdit ? '' : 'file|max:10240'),
         ]);
 
         $filePath = null;
-        if ($this->assign_archivo) {
+        if ($this->assign_archivo instanceof \Illuminate\Http\UploadedFile) {
             $filePath = $this->assign_archivo->store('assigned_docs', 'public');
         }
 
-        $activity = AssignedActivity::create([
-            'titulo' => $this->assign_titulo,
-            'descripcion' => $this->assign_descripcion,
-            'archivo' => $filePath,
-            'user_id' => Auth::id(),
-        ]);
+        if ($this->isEdit) {
+            $activity = AssignedActivity::findOrFail($this->activityId);
+            $oldValues = $activity->toArray();
 
-        $activity->groups()->sync($this->assign_groups);
+            $data = [
+                'titulo' => $this->assign_titulo,
+                'descripcion' => $this->assign_descripcion,
+            ];
 
-        // Get Group Names for logging
-        $groupNames = Group::whereIn('id', $this->assign_groups)->pluck('name')->implode(', ');
+            if ($filePath) {
+                $data['archivo'] = $filePath;
+            }
 
-        // Log the deletion
-        \App\Models\ActivityLog::create([
-            'user_id' => Auth::id(),
-            'user_name' => Auth::user()->name,
-            'user_role' => Auth::user()->rol->name ?? 'Usuario',
-            'action_type' => 'CREAR',
-            'entity_type' => 'Actividad',
-            'entity_id' => $activity->id,
-            'description' => "Se asignó la actividad '{$activity->titulo}' a los grupos: {$groupNames}",
-            'new_values' => $activity->toArray(),
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-        ]);
+            $activity->update($data);
+            $activity->groups()->sync($this->assign_groups);
+
+            $action = 'EDITAR';
+            $description = "Se editó la actividad '{$activity->titulo}'";
+        } else {
+            $activity = AssignedActivity::create([
+                'titulo' => $this->assign_titulo,
+                'descripcion' => $this->assign_descripcion,
+                'archivo' => $filePath,
+                'user_id' => Auth::id(),
+            ]);
+
+            $activity->groups()->sync($this->assign_groups);
+            $oldValues = null;
+            $action = 'CREAR';
+            $groupNames = Group::whereIn('id', $this->assign_groups)->pluck('name')->implode(', ');
+            $description = "Se asignó la actividad '{$activity->titulo}' a los grupos: {$groupNames}";
+        }
+
+        ActivityLogService::log(
+            $action,
+            'Actividad',
+            $description,
+            $activity->id,
+            $oldValues,
+            $activity->toArray()
+        );
+
 
         $this->confirmingActivityAssignment = false;
-        $this->reset(['assign_titulo', 'assign_descripcion', 'assign_archivo', 'assign_groups']);
+        $this->reset(['assign_titulo', 'assign_descripcion', 'assign_archivo', 'assign_groups', 'isEdit', 'activityId']);
 
-        $this->dispatch('success', 'Actividad asignada correctamente a los grupos seleccionados.');
-        $this->dispatch('activityAssigned'); // Refresh other components if needed
+        $this->dispatch('success', $this->isEdit ? 'Actividad actualizada correctamente.' : 'Actividad asignada correctamente.');
+        $this->dispatch('activityAssigned');
     }
 
     public function render()

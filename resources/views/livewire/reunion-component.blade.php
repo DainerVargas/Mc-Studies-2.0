@@ -1,13 +1,13 @@
 <div class="reunion-container">
     <div class="header-section">
         <h2>
-            @if (Auth::user()->attendant)
+            @if (Auth::user()->attendant || Auth::user()->rol_id == 6)
                 Reuniones Programadas
             @else
                 Gestión de Reuniones
             @endif
         </h2>
-        @if (Auth::user()->attendant)
+        @if (Auth::user()->attendant || Auth::user()->rol_id == 6)
             <button wire:click="createMeeting" class="btn-create">
                 <span class="material-symbols-outlined">add</span>
                 Solicitar Reunión
@@ -29,7 +29,7 @@
     @endif
 
     <div class="meetings-list">
-        @if (!Auth::user()->attendant)
+        @if (!Auth::user()->attendant && Auth::user()->rol_id != 6)
 
             {{-- Admin Filter --}}
             <div class="filter-section">

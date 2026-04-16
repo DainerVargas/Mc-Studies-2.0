@@ -228,11 +228,13 @@
             <tr>
                 <th style="width: 5%;">#</th>
                 <th style="text-align: left; width: 35%;">Estudiante</th>
-                <th style="width: 12%;">Listening</th>
-                <th style="width: 12%;">Writing</th>
-                <th style="width: 12%;">Reading</th>
-                <th style="width: 12%;">Speaking</th>
-                <th style="width: 12%;">Promedio</th>
+                <th style="width: 10%;">Listening</th>
+                <th style="width: 10%;">Writing</th>
+                <th style="width: 10%;">Reading</th>
+                <th style="width: 10%;">Speaking</th>
+                <th style="width: 10%;">Richmond</th>
+                <th style="width: 10%;">Worksheets</th>
+                <th style="width: 10%;">Promedio</th>
             </tr>
         </thead>
         <tbody>
@@ -247,6 +249,12 @@
                     <td>{{ number_format($q->writing, 1) }}%</td>
                     <td>{{ number_format($q->reading, 1) }}%</td>
                     <td>{{ number_format($q->speaking, 1) }}%</td>
+                    <td style="color: #0e869c; font-weight: bold;">
+                        {{ $q->actividades_entregados }} / {{ $q->actividades_asignados }}
+                    </td>
+                    <td style="color: #64748b;">
+                        {{ $q->worksheet_entregados }} / {{ $q->worksheet_asignados }}
+                    </td>
                     <td style="font-weight: bold; color: {{ $promedio >= 75 ? '#166534' : '#b91c1c' }}">
                         {{ number_format($promedio, 1) }}%
                     </td>
@@ -307,13 +315,21 @@
         </div>
 
         <div class="stats-grid">
-            <div class="stat-card" style="width: 48%; margin-right: 4%;">
+            <div class="stat-card" style="width: 23%; margin-right: 2%;">
                 <div class="stat-value">{{ number_format($totalGeneral, 1) }}%</div>
-                <div class="stat-label">Promedio General del Grupo</div>
+                <div class="stat-label">Promedio Habilidades</div>
             </div>
-            <div class="stat-card" style="width: 48%;">
+            <div class="stat-card" style="width: 23%; margin-right: 2%;">
                 <div class="stat-value">{{ $approvedCount }} / {{ $studentsCount }}</div>
-                <div class="stat-label">Estudiantes con Promedio Sugerido (+75%)</div>
+                <div class="stat-label">Sugeridos (+75%)</div>
+            </div>
+            <div class="stat-card" style="width: 23%; margin-right: 2%;">
+                <div class="stat-value">{{ $qualifications->sum('actividades_entregados') }} / {{ $qualifications->sum('actividades_asignados') }}</div>
+                <div class="stat-label">Total Richmond (Grupo)</div>
+            </div>
+            <div class="stat-card" style="width: 23%;">
+                <div class="stat-value">{{ $qualifications->sum('worksheet_entregados') }} / {{ $qualifications->sum('worksheet_asignados') }}</div>
+                <div class="stat-label">Total Worksheets (Grupo)</div>
             </div>
         </div>
     </div>

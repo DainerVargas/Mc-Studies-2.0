@@ -19,7 +19,7 @@ class ApprenticeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->rol_id == 5) {
+        if ($user->rol_id == 5 || $user->rol_id == 6) {
             return redirect()->route('mis_hijos');
         }
 
@@ -27,12 +27,20 @@ class ApprenticeController extends Controller
         if ($user->rol_id != 4) {
             $gruposSelect = \App\Models\Group::all();
         } else {
-            $gruposSelect = \App\Models\Group::where('teacher_id', $user->teacher_id)->get();
+            $gruposSelect = \App\Models\Group::where('teacher_id', $user->teacher_id)
+                ->orWhereHas('tutors', function($q) use ($user) {
+                    $q->where('teacher_id', $user->teacher_id);
+                })
+                ->get();
         }
 
         // Base Query
         if (isset($user->teacher_id)) {
-            $gruposIds = \App\Models\Group::where('teacher_id', $user->teacher_id)->pluck('id');
+            $gruposIds = \App\Models\Group::where('teacher_id', $user->teacher_id)
+                ->orWhereHas('tutors', function($q) use ($user) {
+                    $q->where('teacher_id', $user->teacher_id);
+                })
+                ->pluck('id');
             $query = Apprentice::whereIn('group_id', $gruposIds);
         } else {
             $query = Apprentice::query();
@@ -80,8 +88,9 @@ class ApprenticeController extends Controller
         }
 
         $aprendices = $query->get();
+        $targetTeacherId = $user->teacher_id ?? (\App\Models\Teacher::first()->id ?? null);
 
-        return view('layouts.listaAprendiz', compact('user', 'aprendices', 'gruposSelect'));
+        return view('layouts.listaAprendiz', compact('user', 'aprendices', 'gruposSelect', 'targetTeacherId'));
     }
 
     public function info(Apprentice $aprendiz)
@@ -148,7 +157,8 @@ class ApprenticeController extends Controller
         foreach ($estudiantes as $estudiant) {
             try {
                 $email = $estudiant->edad >= 18 ? $estudiant->email : $estudiant->attendant->email;
-                Mail::to('dainer2607@gmail.com')->send(new SendMail($asunto, $text, $documento));
+                /* Mail::to('dainer2607@gmail.com')->send(new SendMail($asunto, $text, $documento)); */
+                Mail::to($email)->send(new SendMail($asunto, $text, $documento));
             } catch (\Throwable $th) {
 
                 return redirect()->route('sendEmail')->with('error', 'Ha ocurrido un error');

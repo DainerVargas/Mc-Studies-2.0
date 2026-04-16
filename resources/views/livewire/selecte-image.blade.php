@@ -116,6 +116,7 @@
                                             <option value="{{ $grupo->id }}">{{ $grupo->name }}</option>
                                         @endif
                                     @endforeach
+                                    <option value="">Sin Grupo</option>
                                 @else
                                     @foreach ($grupos as $grupo)
                                         <option value="{{ $grupo->id }}">{{ $grupo->name }}</option>
@@ -158,7 +159,8 @@
                         @endif
                         <div class="conteInput">
                             <select class="input" name="becado_id" id="">
-                                <option value="{{ $aprendiz->becado->id ?? '' }}">{{ $aprendiz->becado->name ?? 'No' }}
+                                <option value="{{ $aprendiz->becado->id ?? '' }}">
+                                    {{ $aprendiz->becado->name ?? 'No' }}
                                 </option>
                                 @foreach ($becados as $becado)
                                     @if ($becado->id != $aprendiz->becado?->id ?? null)

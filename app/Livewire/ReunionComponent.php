@@ -38,8 +38,10 @@ class ReunionComponent extends Component
 
         if ($user->attendant) {
             $query->where('attendant_id', $user->attendant->id);
+        } elseif ($user->rol_id == 6 && $user->apprentice) {
+            $query->where('apprentice_id', $user->apprentice->id);
         } else {
-            $query->with('attendant');
+            $query->with(['attendant', 'apprentice']);
         }
 
         if ($this->filterStatus) {
@@ -62,7 +64,7 @@ class ReunionComponent extends Component
         $this->validate();
 
         $user = Auth::user();
-        if ($user->attendant) {
+        if ($user->attendant || ($user->rol_id == 6 && $user->apprentice)) {
             // Combine Date and Time
             $fullDateTime = $this->fecha_programada . ' ' . $this->hora_seleccionada . ':00';
 
@@ -74,7 +76,8 @@ class ReunionComponent extends Component
             }
 
             Reunion::create([
-                'attendant_id' => $user->attendant->id,
+                'attendant_id' => $user->attendant ? $user->attendant->id : null,
+                'apprentice_id' => $user->rol_id == 6 ? $user->apprentice->id : null,
                 'titulo' => $this->titulo,
                 'descripcion' => $this->descripcion,
                 'fecha_programada' => $fullDateTime,

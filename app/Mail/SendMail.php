@@ -23,29 +23,33 @@ class SendMail extends Mailable
         $this->documento = $documento;
     }
 
-    public function build()
-    {
-        return $this->subject($this->asunto)->view('emails.send-mail')
-            ->with(['text' => $this->text, 'asunto' => $this->asunto]);
-    }
-
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->asunto,
+            subject: $this->asunto ?? 'Sin asunto',
         );
     }
 
-    /**
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.send-mail',
+            with: [
+                'text' => $this->text,
+                'asunto' => $this->asunto
+            ],
+        );
+    }
 
     public function attachments(): array
     {
-        return [
-            Attachment::fromPath(public_path('users/' . $this->documento))
-                ->as(basename($this->documento))
-                ->withMime('application/pdf'),
-        ];
+        $attachments = [];
+
+        if ($this->documento && file_exists(public_path('users/' . $this->documento)) && !is_dir(public_path('users/' . $this->documento))) {
+            $attachments[] = Attachment::fromPath(public_path('users/' . $this->documento))
+                ->as(basename($this->documento));
+        }
+
+        return $attachments;
     }
 }

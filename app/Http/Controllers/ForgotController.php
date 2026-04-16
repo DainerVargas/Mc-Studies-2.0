@@ -40,8 +40,7 @@ class ForgotController extends Controller
         }
 
         try {
-           /*  Mail::to($email)->send(new RecuperarPasswordMail($newPassword, $user)); */
-            Mail::to('dainer2607@gmail.com')->send(new RecuperarPasswordMail($newPassword, $user));
+            Mail::to($email)->send(new RecuperarPasswordMail($newPassword, $user));
             $user->save();
             
         } catch (\Throwable $th) {
@@ -50,9 +49,7 @@ class ForgotController extends Controller
             ]);
         }
         
-        return back()->withErrors([
-            'message' => "Tu nueva contraseña se ha enviado a tu Email: ". $email
-        ]);
+        return back()->with('messageSuccess', "Tu nueva contraseña se ha enviado a tu Email: " . $email);
 
     }
 }

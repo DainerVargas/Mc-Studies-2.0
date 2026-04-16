@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo(function () {
             $user = Illuminate\Support\Facades\Auth::user();
             if ($user) {
-                if ($user->rol_id == 5) { // Acudiente
+                if ($user->rol_id == 5 || $user->rol_id == 6) { // Acudiente o Estudiante
                     return route('mis_hijos');
                 }
                 // Administrador y otros roles de personal

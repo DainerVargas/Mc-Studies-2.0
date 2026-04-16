@@ -1,7 +1,8 @@
 <div class="component">
     <div class="links">
-        <a wire:click="view(1)" class="{{ $show == 1 ? 'active' : '' }}">Servicios</a>
-        <a wire:click="view(2)" class="{{ $show == 2 ? 'active' : '' }}">Caja</a>
+        <a wire:click="view(1)" class="{{ $show == 1 ? 'active' : '' }}">Registro de gastos y servicios</a>
+        <a wire:click="view(2)" class="{{ $show == 2 ? 'active' : '' }}">Control de Caja </a>
+        <a wire:click="view(3)" class="{{ $show == 3 ? 'active' : '' }}">Documentación</a>
     </div>
 
     @if ($show == 1)
@@ -124,7 +125,7 @@
                 </tfoot>
             </table>
         </div>
-    @else
+    @elseif ($show == 2)
         <div class="modern-filters">
             <div class="filter-header">
                 <div class="filter-title">
@@ -256,6 +257,89 @@
                 </tfoot>
             </table>
         </div>
+    @elseif ($show == 3)
+        <div class="modern-filters">
+            <div class="filter-header">
+                <div class="filter-title">
+                    <span class="material-symbols-outlined">description</span>
+                    Documentación y Archivos
+                </div>
+                <div class="header-actions">
+                    <button class="filter-btn outline" wire:click="showDocCategory">
+                        <span class="material-symbols-outlined">category</span> Categoría
+                    </button>
+                    <button class="filter-btn dark" wire:click="showDocument">
+                        <span class="material-symbols-outlined">upload_file</span> Subir Documento
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Buscador de documentos</label>
+                <input type="text" wire:model.live="searchDoc" placeholder="Buscar por nombre...">
+            </div>
+
+            <div class="filter-group">
+                <label>Filtrar por categoría</label>
+                <select wire:model.live="categoryDocFilter">
+                    <option value="null">Todas las categorías</option>
+                    @foreach ($docCategories as $cat)
+                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="modern-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Fecha Registro</th>
+                        <th>Archivo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($documents as $key => $doc)
+                        <tr wire:key="doc-{{ $doc->id }}">
+                            <td style="font-weight: 600; color: #718096;">#{{ $key + 1 }}</td>
+                            <td><span style="font-weight: 700;">{{ $doc->name }}</span></td>
+                            <td><span class="badge-category">{{ $doc->documentCategory->name }}</span></td>
+                            <td>{{ $doc->created_at->format('d/m/Y H:i') }}</td>
+                            <td>
+                                <a href="{{ asset('users/' . $doc->file_path) }}" target="_blank" class="btn-update"
+                                    style="text-decoration: none;">
+                                    <span class="material-symbols-outlined">visibility</span> Ver
+                                </a>
+                                <a href="{{ asset('users/' . $doc->file_path) }}" download class="btn-update"
+                                    style="text-decoration: none; margin-left: 5px;">
+                                    <span class="material-symbols-outlined">download</span>
+                                </a>
+                            </td>
+                            <td>
+                                @if (auth()->user()->rol_id == 1)
+                                    <button wire:click="deleteDocument({{ $doc->id }})"
+                                        wire:confirm="¿Desea eliminar este documento?" class="btn-delete">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 50px;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 48px; color: #cbd5e0;">folder_open</span>
+                                <p style="margin-top: 10px; color: #718096;">No hay documentos registrados</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     @endif
 
     {{-- MODAL: NUEVO/EDITAR SERVICIO --}}
@@ -355,6 +439,95 @@
                 <div class="srv-modal-footer">
                     <button class="srv-btn-cancel" wire:click="close">Cancelar</button>
                     <button class="srv-btn-save" wire:click="saveCategory">
+                        <span class="material-symbols-outlined">check_circle</span> Crear Categoría
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- MODAL: SUBIR DOCUMENTO --}}
+    @if ($showDocumentModal)
+        <div class="srv-modal-container" wire:key="modal-document-container">
+            <div class="srv-modal-content" wire:key="modal-document-form">
+                <div class="srv-modal-header">
+                    <button class="srv-btn-close" wire:click="close">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                    <h3>Subir Nuevo Documento</h3>
+                    <p>Cargue archivos importantes (Imagen, PDF, Word)</p>
+                </div>
+                <div class="srv-modal-body">
+                    <div class="srv-form-row">
+                        <div class="srv-input-group">
+                            <label>Nombre del Documento</label>
+                            <input type="text" wire:model="nameDoc" placeholder="Ej: Contrato de servicios">
+                            @error('nameDoc')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="srv-form-row">
+                        <div class="srv-input-group">
+                            <label>Categoría</label>
+                            <select wire:model="categoryDoc_id">
+                                <option value="">Seleccione...</option>
+                                @foreach ($docCategories as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('categoryDoc_id')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="srv-input-group">
+                            <label>Archivo</label>
+                            <input type="file" wire:model="fileDoc">
+                            @error('fileDoc')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="srv-modal-footer">
+                    <button class="srv-btn-cancel" wire:click="close">Cancelar</button>
+                    <button class="srv-btn-save" wire:click="saveDocument">
+                        <span class="material-symbols-outlined">upload</span> Subir Documento
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- MODAL: NUEVA CATEGORÍA (DOCUMENTO) --}}
+    @if ($showDocCategoryModal)
+        <div class="srv-modal-container" wire:key="modal-doc-category-container">
+            <div class="srv-modal-content" wire:key="modal-doc-category-form">
+                <div class="srv-modal-header">
+                    <button class="srv-btn-close" wire:click="close">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                    <h3>Nueva Categoría de Documento</h3>
+                    <p>Cree una nueva categoría para organizar sus archivos</p>
+                </div>
+                <div class="srv-modal-body">
+                    <div class="srv-form-row">
+                        <div class="srv-input-group">
+                            <label>Nombre de Categoría</label>
+                            <input type="text" wire:model="name" placeholder="Ej: Contratos">
+                            @error('name')
+                                <span class="error"
+                                    style="color: #e74c3c; font-size: 0.75rem;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="srv-modal-footer">
+                    <button class="srv-btn-cancel" wire:click="close">Cancelar</button>
+                    <button class="srv-btn-save" wire:click="saveDocCategory">
                         <span class="material-symbols-outlined">check_circle</span> Crear Categoría
                     </button>
                 </div>

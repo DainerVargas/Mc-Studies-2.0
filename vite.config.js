@@ -17,6 +17,7 @@ export default defineConfig({
                 "resources/sass/servicios.scss",
                 "resources/sass/user-profile.scss",
                 "resources/sass/qualification-premium.scss",
+                "resources/sass/send-email-premium.scss",
                 "resources/js/app.js",
             ],
             refresh: true,

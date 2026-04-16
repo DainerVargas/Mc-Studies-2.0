@@ -175,6 +175,20 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="gc-form-row">
+                            <div class="gc-input-group full-width">
+                                <label class="label">Asignar Tutores (Opcional)</label>
+                                <div class="tutors-selection-grid">
+                                    @foreach ($allTutors as $tutor)
+                                        <div class="tutor-checkbox-item">
+                                            <input type="checkbox" id="tutor_{{ $tutor->id }}" value="{{ $tutor->id }}" wire:model="tutor_ids">
+                                            <label for="tutor_{{ $tutor->id }}">{{ $tutor->name }} {{ $tutor->apellido }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="gc-modal-footer">
                         <button type="button" class="gc-btn-cancel" wire:click="ocultar">Cancelar</button>
@@ -225,6 +239,18 @@
                             @error('profesor_id')
                                 <small class="errors" id="errors" style="color: #E74C3C">{{ $message }}</small>
                             @enderror
+                        </div>
+
+                        <div class="gc-input-group full-width">
+                            <label class="label">Actualizar Tutores Asignados</label>
+                            <div class="tutors-selection-grid">
+                                @foreach ($allTutors as $tutor)
+                                    <div class="tutor-checkbox-item">
+                                        <input type="checkbox" id="edit_tutor_{{ $tutor->id }}" value="{{ $tutor->id }}" wire:model="tutor_ids">
+                                        <label for="edit_tutor_{{ $tutor->id }}">{{ $tutor->name }} {{ $tutor->apellido }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     <div class="gc-modal-footer">

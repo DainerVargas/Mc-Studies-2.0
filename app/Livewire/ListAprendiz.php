@@ -81,10 +81,13 @@ class ListAprendiz extends Component
 
         $aprendices = $query->get();
 
+        $targetTeacherId = $user->teacher_id ?? (\App\Models\Teacher::first()->id ?? null);
+
         return view('livewire.list-aprendiz', [
             'user' => $user,
             'aprendices' => $aprendices,
-            'grupos' => $gruposSelect
+            'grupos' => $gruposSelect,
+            'targetTeacherId' => $targetTeacherId
         ]);
     }
 }

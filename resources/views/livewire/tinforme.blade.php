@@ -15,7 +15,12 @@
                 </div>
             </div>
 
-            <div class="btn-group" style="display: flex; gap: 10px; margin-left: auto;">
+            <div class="btn-group" style="display: flex; gap: 18px; margin-left: auto; align-items: center;">
+                <a href="{{ route('registerHours') }}" class="btn-action"
+                    style="background: #05ccd1; color: white; display: flex; align-items: center; gap: 6px; text-decoration: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.82rem; transition: all 0.3s; box-shadow: 0 4px 6px rgba(5, 204, 209, 0.15); height: 30px; text-transform: uppercase; letter-spacing: 0.02em;">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">timer</span>
+                    Registrar Horas
+                </a>
                 <a href="{{ route('informedescarga', $year) }}" class="btn-action btn-download">
                     <span class="material-symbols-outlined">download</span>
                     Descargar Nómina

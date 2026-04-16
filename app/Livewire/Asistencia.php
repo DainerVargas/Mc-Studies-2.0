@@ -14,55 +14,74 @@ class Asistencia extends Component
 {
     public $asistencias, $user, $estado = [], $date, $message, $observaciones = [];
     public $estudiantes, $filter = 'null', $nameAprendiz = '', $groups, $grupos, $selectGrupo = 'all';
+    public $startDate, $endDate, $datesInRange = [];
     public Teacher $teacher;
 
     public function mount($teacher)
     {
         $this->teacher = $teacher;
         $this->user = Auth::user();
+
+        // Inicializar con la semana actual
+        $this->startDate = now()->startOfWeek()->format('Y-m-d');
+        $this->endDate = now()->endOfWeek()->format('Y-m-d');
         $this->date = now()->format('Y-m-d');
 
         $this->cargarAsistencias();
     }
 
-    public function updatedDate()
+    public function updatedStartDate()
     {
         $this->message = null;
-        if ($this->date > now()->format('Y-m-d')) {
-            $this->message = "La fecha seleccionada es mayor que la actual.";
-            return;
+        $this->cargarAsistencias();
+    }
+
+    public function updatedEndDate()
+    {
+        $this->message = null;
+        $this->cargarAsistencias();
+    }
+
+    public function setFilter($value)
+    {
+        if ($this->filter === $value) {
+            $this->filter = 'null';
+        } else {
+            $this->filter = $value;
         }
         $this->cargarAsistencias();
     }
 
     public function updatedFilter()
     {
-        try {
-            if ($this->date <= now()->format('Y-m-d') && !empty($this->asistencias->toArray())) {
-                $this->cargarAsistencias();
-            } else {
-                $this->message = "Debes guardar la asistencia.";
-            }
-        } catch (\Throwable $th) {
-            dd('Por favor guarde asistencias.');
-        }
+        $this->cargarAsistencias();
     }
 
     public function updatedNameAprendiz()
     {
-        $grupos = Group::where('teacher_id', $this->teacher->id)->pluck('id');
+        $isAdmin = in_array(Auth::user()->rol_id, [1, 2, 3]);
+        if ($isAdmin) {
+            $gruposIds = Group::pluck('id');
+        } else {
+            $gruposIds = Group::where('teacher_id', $this->teacher->id)
+                ->orWhereHas('tutors', function($q) {
+                    $q->where('teacher_id', $this->teacher->id);
+                })
+                ->pluck('id');
+        }
+
         if ($this->nameAprendiz != '') {
-            $estudiantes = Apprentice::whereIn('group_id', $grupos)
+            $estudiantesIds = Apprentice::whereIn('group_id', $gruposIds)
                 ->where('name', 'LIKE', "%{$this->nameAprendiz}%")
                 ->pluck('id');
 
-            $query = Asistent::whereIn('apprentice_id', $estudiantes)
-                ->where('fecha', $this->date);
+            $query = Asistent::whereIn('apprentice_id', $estudiantesIds)
+                ->whereBetween('fecha', [$this->startDate, $this->endDate]);
 
             if ($this->filter !== 'null') {
                 $query->where('estado', $this->filter);
             }
-            $this->asistencias = $query->get();
+            $this->asistencias = $query->get()->groupBy(['apprentice_id', 'fecha'])->toArray();
         } else {
             $this->cargarAsistencias();
         }
@@ -75,10 +94,45 @@ class Asistencia extends Component
 
     private function cargarAsistencias()
     {
-        $query = Asistent::where('teacher_id', $this->teacher->id)
-            ->where('fecha', $this->date);
+        $isAdmin = in_array(Auth::user()->rol_id, [1, 2, 3]);
 
-        $this->grupos = Group::where('teacher_id', $this->teacher->id)->get();
+        // Generar lista de fechas en el rango
+        $this->datesInRange = [];
+        $start = \Carbon\Carbon::parse($this->startDate);
+        $end = \Carbon\Carbon::parse($this->endDate);
+
+        // Limitar el rango a máximo 31 días para evitar problemas de rendimiento/diseño
+        if ($start->diffInDays($end) > 31) {
+            $end = (clone $start)->addDays(31);
+            $this->endDate = $end->format('Y-m-d');
+        }
+
+        $tempDate = clone $start;
+        while ($tempDate <= $end) {
+            $this->datesInRange[] = $tempDate->format('Y-m-d');
+            $tempDate->addDay();
+        }
+
+        $query = Asistent::whereBetween('fecha', [$this->startDate, $this->endDate]);
+
+        if (!$isAdmin) {
+            $query->where(function($q) {
+                $q->where('teacher_id', $this->teacher->id)
+                  ->orWhereHas('group.tutors', function($sq) {
+                      $sq->where('teacher_id', $this->teacher->id);
+                  });
+            });
+        }
+
+        if ($isAdmin) {
+            $this->grupos = Group::all();
+        } else {
+            $this->grupos = Group::where('teacher_id', $this->teacher->id)
+                ->orWhereHas('tutors', function($q) {
+                    $q->where('teacher_id', $this->teacher->id);
+                })
+                ->get();
+        }
 
         if ($this->selectGrupo != 'all') {
             $query->where('group_id', $this->selectGrupo);
@@ -86,35 +140,38 @@ class Asistencia extends Component
 
         if ($this->filter !== 'null') {
             $query->where('estado', $this->filter);
-
-            $validate = $query->get();
-
-            if ($validate->isEmpty()) {
-                $this->message = "No hay registros con el estado: " . $this->filter;
-                return;
-            } else {
-                $this->message = '';
-            }
-        } else {
-            $this->message = '';
         }
 
-        $this->asistencias = $query->get();
+        $this->asistencias = $query->get()->groupBy(['apprentice_id', 'fecha'])->toArray();
 
-        if ($this->asistencias->isEmpty()) {
-            $this->groups = Group::where('teacher_id', $this->teacher->id)->pluck('id');
-
-            if ($this->selectGrupo != 'all') {
-                $this->estudiantes = Apprentice::where('group_id', $this->selectGrupo)->get();
-            } else {
-                $this->estudiantes = Apprentice::whereIn('group_id', $this->groups)->get();
-            }
-            $this->asistencias = [];
-            return;
+        // Cargar estudiantes siempre para tener la lista base
+        if ($isAdmin) {
+            $this->groups = Group::pluck('id');
         } else {
+            $this->groups = Group::where('teacher_id', $this->teacher->id)
+                ->orWhereHas('tutors', function($q) {
+                    $q->where('teacher_id', $this->teacher->id);
+                })
+                ->pluck('id');
+        }
 
-            $estudiantesIds = $this->asistencias->pluck('apprentice_id');
-            $this->estudiantes = Apprentice::whereIn('id', $estudiantesIds)->get();
+        $studentQuery = Apprentice::query();
+        if ($this->selectGrupo != 'all') {
+            $studentQuery->where('group_id', $this->selectGrupo);
+        } else {
+            $studentQuery->whereIn('group_id', $this->groups);
+        }
+
+        if ($this->nameAprendiz != '') {
+            $studentQuery->where('name', 'LIKE', "%{$this->nameAprendiz}%");
+        }
+
+        $this->estudiantes = $studentQuery->get();
+
+        if (empty($this->asistencias)) {
+            $this->message = $this->filter !== 'null' ? "No hay registros con el estado: " . $this->filter : '';
+        } else {
+            $this->message = '';
         }
     }
 
@@ -136,14 +193,18 @@ class Asistencia extends Component
         );
 
         foreach ($this->estudiantes as $estudiante) {
+            $groupId = $this->selectGrupo === 'all' ? $estudiante->group_id : $this->selectGrupo;
+            $group = Group::find($groupId);
+            $teacherId = $group->teacher_id ?? $this->teacher->id;
+
             Asistent::create(
                 [
                     'apprentice_id' => $estudiante->id,
-                    'teacher_id' => $this->teacher->id,
+                    'teacher_id' => $teacherId,
                     'fecha' => $this->date,
-                    'group_id' => $this->selectGrupo,
+                    'group_id' => $groupId,
                     'estado' => $this->estado[$estudiante->id],
-                    'observaciones' => $this->observaciones[$this->selectGrupo][$estudiante->id] ?? null,
+                    'observaciones' => $this->observaciones[$groupId][$estudiante->id] ?? null,
                 ]
             );
         }
@@ -153,16 +214,17 @@ class Asistencia extends Component
 
     public function descarga()
     {
-        $asistencias = Asistent::with('apprentice')
-            ->where('teacher_id', $this->teacher->id)
-            ->where('fecha', $this->date)
-            ->where('group_id', $this->selectGrupo)
-            ->get();
+        $isAdmin = in_array(Auth::user()->rol_id, [1, 2, 3]);
+        $query = Asistent::with('apprentice')
+            ->whereBetween('fecha', [$this->startDate, $this->endDate])
+            ->where('group_id', $this->selectGrupo);
 
+        if (!$isAdmin) {
+            $query->where('teacher_id', $this->teacher->id);
+        }
 
-        /*  $pdf = Pdf::loadView('descargaAsistencia', ['asistencias' => $asistencias]);
-    
-    return $pdf->download("Registro_Asistencia.pdf"); */
+        $asistencias = $query->get();
+
         dd($asistencias);
 
         return view('descargaAsistencia', compact('asistencias'));
@@ -171,7 +233,7 @@ class Asistencia extends Component
     public function render()
     {
         return view('livewire.asistencia', [
-            'mostrarVideo' => $this->filter !== 'null' && $this->asistencias->isEmpty()
+            'mostrarVideo' => $this->filter !== 'null' && empty($this->asistencias)
         ]);
     }
 }

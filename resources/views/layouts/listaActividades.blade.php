@@ -3,7 +3,7 @@
 
 @section('listaAprendiz')
     <div class="ux-ap-container">
-        {{-- Tabs de Navegación --}}
+        {{-- Tabs de Navegacion --}}
         <div class="ux-ap-tabs">
             <a href="{{ route('listaActividades', array_merge(request()->all(), ['view' => 'recibidas'])) }}"
                 class="ux-ap-tab {{ $view === 'recibidas' ? 'active' : '' }}">
@@ -15,32 +15,47 @@
                 <span class="material-symbols-outlined">outbox</span>
                 Mis Asignaciones a Grupos
             </a>
+            @if ($user->rol_id == 1)
+                <a href="{{ route('listaActividades', array_merge(request()->all(), ['view' => 'todas'])) }}"
+                    class="ux-ap-tab {{ $view === 'todas' ? 'active' : '' }}">
+                    <span class="material-symbols-outlined">list_alt</span>
+                    Todas las Actividades
+                </a>
+            @endif
         </div>
 
         {{-- Filtros --}}
-        <div class="ux-ap-filters-card">
+        <div class="ux-ap-filters-card" style="margin-bottom: 24px;">
             <form action="{{ route('listaActividades') }}" method="GET">
                 <input type="hidden" name="view" value="{{ $view }}">
-                <div class="ux-ap-filter-top">
-                    <div class="ux-ap-input-group">
-                        <label for="search">Buscar por nombre de actividad</label>
-                        <div class="ux-ap-input-with-icon">
-                            <span class="material-symbols-outlined">search</span>
+                <div class="ux-ap-filter-top" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="ux-ap-input-group" style="flex: 2;">
+                        <label for="search"
+                            style="display: block; margin-bottom: 8px; font-weight: 700; color: #475569; font-size: 0.9rem;">Buscar
+                            por nombre de actividad</label>
+                        <div class="ux-ap-input-with-icon" style="position: relative;">
+                            <span class="material-symbols-outlined"
+                                style="position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: #94a3b8;">search</span>
                             <input type="text" name="search" id="search" value="{{ request('search') }}"
-                                placeholder="Buscar actividad..." onchange="this.form.submit()">
+                                placeholder="Buscar actividad..." onchange="this.form.submit()"
+                                style="width: 100%; height: 54px; border-radius: 16px; border: 2px solid #eef2f6; padding: 0 1.5rem 0 3.5rem; background: #f8fafc; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.3s focus;">
                         </div>
                     </div>
-                    <div class="ux-ap-input-group">
-                        <label for="fecha">Filtrar por fecha</label>
+                    <div class="ux-ap-input-group" style="flex: 1;">
+                        <label for="fecha"
+                            style="display: block; margin-bottom: 8px; font-weight: 700; color: #475569; font-size: 0.9rem;">Filtrar
+                            por fecha</label>
                         <input type="date" name="fecha" id="fecha" value="{{ request('fecha') }}"
                             onchange="this.form.submit()"
-                            style="height: 54px; border-radius: 16px; border: 2px solid #eef2f6; padding: 0 1.5rem; background: #f8fafc; font-size: 1rem; font-weight: 600;">
+                            style="width: 100%; height: 54px; border-radius: 16px; border: 2px solid #eef2f6; padding: 0 1.5rem; background: #f8fafc; font-size: 1rem; font-weight: 600;">
                     </div>
                 </div>
 
-                <div class="ux-ap-filter-bottom">
+                <div class="ux-ap-filter-bottom"
+                    style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
                     <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; flex: 1;">
-                        <select name="group_id" onchange="this.form.submit()" style="min-width: 200px;">
+                        <select name="group_id" onchange="this.form.submit()"
+                            style="min-width: 200px; height: 54px; border-radius: 16px; border: 2px solid #eef2f6; padding: 0 1.5rem; background: #f8fafc; font-size: 1rem; font-weight: 600; cursor: pointer;">
                             <option value="">Todos los grupos</option>
                             @foreach ($groups as $group)
                                 <option value="{{ $group->id }}"
@@ -51,7 +66,8 @@
                         </select>
 
                         @if ($view === 'recibidas')
-                            <select name="aprendiz_id" onchange="this.form.submit()" style="min-width: 200px;">
+                            <select name="aprendiz_id" onchange="this.form.submit()"
+                                style="min-width: 200px; height: 54px; border-radius: 16px; border: 2px solid #eef2f6; padding: 0 1.5rem; background: #f8fafc; font-size: 1rem; font-weight: 600; cursor: pointer;">
                                 <option value="">Todos los aprendices</option>
                                 @foreach ($aprendices as $aprendiz)
                                     <option value="{{ $aprendiz->id }}"
@@ -63,7 +79,8 @@
                         @endif
 
                         @if (request()->anyFilled(['search', 'fecha', 'aprendiz_id', 'group_id']))
-                            <a href="{{ route('listaActividades') }}" class="ux-ap-btn-clear">
+                            <a href="{{ route('listaActividades') }}" class="ux-ap-btn-clear"
+                                style="font-weight: 800; font-size: 0.8rem; color: #ef4444; text-decoration: none; padding: 0 1rem; letter-spacing: 0.5px;">
                                 LIMPIAR FILTROS
                             </a>
                         @endif
@@ -81,17 +98,22 @@
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th>Título</th>
+                            <th>Titulo</th>
                             @if ($view === 'recibidas')
-                                <th>Aprendiz</th>
+                                <th>Estudiantes</th>
                                 <th>Acudiente</th>
+                                <th>Calificacion</th>
+                                <th>Acciones</th>
                             @else
                                 <th colspan="2">Grupos Destinatarios</th>
                             @endif
-                            <th>Descripción</th>
+                            <th>Descripcion</th>
                             <th>Fecha</th>
+                            @if ($view === 'todas')
+                                <th>Remitente</th>
+                            @endif
                             <th>Archivo</th>
-                            @if ($view === 'asignadas' && $user->rol_id == 1)
+                            @if (($view === 'asignadas' || $view === 'todas') && $user->rol_id == 1)
                                 <th>Acciones</th>
                             @endif
                         </tr>
@@ -132,6 +154,41 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if ($activity->calificacion)
+                                            <span class="ux-feedback-pill {{ strtolower($activity->calificacion) }}">
+                                                {{ $activity->calificacion }}
+                                            </span>
+                                        @else
+                                            <span
+                                                style="color: #94a3b8; font-style: italic; font-size: 0.8rem;">Pendiente</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button type="button"
+                                                onclick="Livewire.dispatch('openFeedbackModal', { id: {{ $activity->id }} })"
+                                                class="ux-ap-btn-feedback" title="Calificar / Comentar">
+                                                <span
+                                                    class="material-symbols-outlined">{{ $activity->calificacion ? 'edit_note' : 'add_comment' }}</span>
+                                            </button>
+
+                                            @if ($user->rol_id == 1)
+                                                <form
+                                                    action="{{ route('listaActividades.destroySubmission', $activity->id) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Esta seguro de que desea eliminar esta entrega?\n\nEsta accion no se puede deshacer.')"
+                                                    style="display: inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="ux-ap-btn-delete-activity"
+                                                        title="Eliminar Entrega">
+                                                        <span class="material-symbols-outlined">delete</span>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
                                         <div class="ux-ap-description-cell" title="{{ $activity->descripcion }}">
                                             {{ $activity->descripcion }}
                                         </div>
@@ -158,7 +215,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7">
+                                    <td colspan="9">
                                         <div class="ux-ap-no-data">
                                             <p>No se encontraron actividades</p>
                                             <video src="/videos/video2.mp4" autoplay loop muted></video>
@@ -167,7 +224,11 @@
                                 </tr>
                             @endforelse
                         @else
-                            @forelse ($assignedActivities as $index => $activity)
+                            @php
+                                $activitiesToDisplay = $assignedActivities;
+                            @endphp
+
+                            @forelse ($activitiesToDisplay as $index => $activity)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>
@@ -194,12 +255,21 @@
                                             <span class="time">{{ $activity->created_at->format('H:i') }}</span>
                                         </div>
                                     </td>
+                                    @if ($view === 'todas')
+                                        <td>
+                                            <div class="ux-ap-user-info" style="font-size: 0.85rem;">
+                                                <span style="font-weight: 600; color: #475569;">
+                                                    {{ $activity->user->name ?? 'Sistema' }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    @endif
                                     <td>
                                         @if ($activity->archivo)
                                             <a href="{{ asset('users/' . $activity->archivo) }}" target="_blank"
-                                                class="ux-ap-btn-action-download" title="Descargar Guía">
+                                                class="ux-ap-btn-action-download" title="Descargar Guia">
                                                 <span class="material-symbols-outlined">download</span>
-                                                <span>Guía</span>
+                                                <span>Guia</span>
                                             </a>
                                         @else
                                             <span class="ux-ap-no-file">N/A</span>
@@ -207,25 +277,34 @@
                                     </td>
                                     @if ($user->rol_id == 1)
                                         <td>
-                                            <form action="{{ route('listaActividades.destroy', $activity->id) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('¿Está seguro de que desea eliminar esta actividad?\n\nEsta acción no se puede deshacer.')"
-                                                style="display: inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="ux-ap-btn-delete-activity"
-                                                    title="Eliminar Actividad">
-                                                    <span class="material-symbols-outlined">delete</span>
+                                            <div style="display: flex; gap: 8px;">
+                                                <button type="button"
+                                                    onclick="Livewire.dispatch('editActivity', { id: {{ $activity->id }} })"
+                                                    class="ux-ap-btn-edit-activity" title="Editar Actividad">
+                                                    <span class="material-symbols-outlined">edit</span>
                                                 </button>
-                                            </form>
+
+                                                <form action="{{ route('listaActividades.destroy', $activity->id) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Esta seguro de que desea eliminar esta actividad?\n\nEsta accion no se puede deshacer.')"
+                                                    style="display: inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="ux-ap-btn-delete-activity"
+                                                        title="Eliminar Actividad">
+                                                        <span class="material-symbols-outlined">delete</span>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     @endif
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7">
+                                    <td colspan="{{ $view === 'todas' ? '8' : '7' }}">
                                         <div class="ux-ap-no-data">
-                                            <p>No has asignado actividades aún</p>
+                                            <p>{{ $view === 'todas' ? 'No se encontraron actividades registradas' : 'No has asignado actividades aún' }}
+                                            </p>
                                             <video src="/videos/video2.mp4" autoplay loop muted></video>
                                         </div>
                                     </td>
@@ -248,6 +327,38 @@
             border-radius: 20px;
             border: 2px solid #eef2f6;
             width: fit-content;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .ux-ap-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .ux-ap-tabs {
+                gap: 8px;
+                padding: 6px;
+            }
+
+            .ux-ap-tab {
+                padding: 10px 16px !important;
+                font-size: 0.85rem !important;
+                white-space: nowrap;
+            }
+
+            .ux-ap-filter-top {
+                flex-direction: column !important;
+            }
+
+            .ux-ap-input-group {
+                width: 100% !important;
+            }
+
+            .ux-ap-filter-bottom {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
         }
 
         .ux-ap-tab {
@@ -406,5 +517,79 @@
             color: white;
             transform: scale(1.05);
         }
+
+        .ux-ap-btn-edit-activity {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #e0e7ff;
+            color: #4338ca;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ux-ap-btn-edit-activity:hover {
+            background: #4338ca;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .ux-ap-btn-feedback {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #ecfdf5;
+            color: #059669;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ux-ap-btn-feedback:hover {
+            background: #059669;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .ux-feedback-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .ux-feedback-pill.excelente {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .ux-feedback-pill.sobresaliente {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .ux-feedback-pill.aceptable {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .ux-feedback-pill.insuficiente {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .ux-feedback-pill.pendiente {
+            background: #f1f5f9;
+            color: #475569;
+        }
     </style>
+    @livewire('academic-feedback-modal')
 @endsection

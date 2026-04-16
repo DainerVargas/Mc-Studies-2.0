@@ -30,11 +30,10 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app-DnEp5ElW.css') }}">
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
 <body>
-    @vite('resources/sass/app.scss')
     @php
         $user = Illuminate\Support\Facades\Auth::user();
     @endphp
@@ -57,10 +56,11 @@
                 </div>
 
                 <div class="links-group">
-                    @if ($user->rol_id == 5)
+                    @if ($user->rol_id == 5 || $user->rol_id == 6)
                         <a href="{{ route('mis_hijos') }}"
-                            class="{{ request()->routeIs('mis_hijos') || request()->routeIs('informacion') ? 'active' : '' }}">Mi(s)
-                            Hijo(s)</a>
+                            class="{{ request()->routeIs('mis_hijos') || request()->routeIs('informacion') ? 'active' : '' }}">
+                            {{ $user->rol_id == 6 ? 'Mi Perfil' : 'Mi(s) Hijo(s)' }}
+                        </a>
                         <a href="{{ route('actividades') }}"
                             class="{{ request()->routeIs('actividades') ? 'active' : '' }}">Actividades</a>
                         <a href="{{ route('reuniones') }}"
@@ -71,6 +71,13 @@
                                     $attendantMeetings = \App\Models\Reunion::where(
                                         'attendant_id',
                                         $user->attendant->id,
+                                    )
+                                        ->where('estado', 'pendiente')
+                                        ->count();
+                                } elseif ($user->rol_id == 6 && $user->apprentice) {
+                                    $attendantMeetings = \App\Models\Reunion::where(
+                                        'apprentice_id',
+                                        $user->apprentice->id,
                                     )
                                         ->where('estado', 'pendiente')
                                         ->count();

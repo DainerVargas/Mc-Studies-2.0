@@ -8,22 +8,25 @@ use Livewire\Component;
 
 class ListadoUsuarios extends Component
 {
-    public $user, $usuarios;
-
-    public function mount()
-    {
-        $this->usuarios = User::all();
-    }
+    public $search = '';
 
     public function eliminar(User $user)
     {
         $user->delete();
-        $this->usuarios = User::all();
     }
 
     public function render()
     {
-        $this->user = Auth::user();
-        return view('livewire.listado-usuarios');
+        $user = Auth::user();
+        $usuarios = User::where(function ($query) {
+            $query->where('name', 'like', '%' . $this->search . '%')
+                ->orWhere('email', 'like', '%' . $this->search . '%');
+        })
+            ->get();
+
+        return view('livewire.listado-usuarios', [
+            'usuarios' => $usuarios,
+            'user' => $user
+        ]);
     }
 }

@@ -23,17 +23,21 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('index');
 
+Route::get('/mantenimiento', function () {
+    return view('maintenance');
+})->name('maintenance');
+
 Route::get('Login', [AuthenticationController::class, 'login'])->middleware('guest')->name('login');
 
 Route::post('Login', [AuthenticationController::class, 'loginPost'])->name('loginPost');
 
 /* LOGOUT */
-Route::get('Cerrar Sesion', [AuthenticationController::class, 'logout'])->name('logout');
+Route::get('Cerrar-Sesion', [AuthenticationController::class, 'logout'])->name('logout');
 
 /* FORGOT */
-Route::get('Recuperar-Contraseña', [ForgotController::class, 'forgot'])->middleware('guest')->name('forgot');
+Route::get('Recuperar-Contrasena', [ForgotController::class, 'forgot'])->middleware('guest')->name('forgot');
 
-Route::post('Recuperar-Contraseña', [ForgotController::class, 'forgotPassword'])->middleware('guest')->name('forgotPassword');
+Route::post('Recuperar-Contrasena', [ForgotController::class, 'forgotPassword'])->middleware('guest')->name('forgotPassword');
 
 /* APRENDINCES */
 Route::get('Lista-Aprendiz', [ApprenticeController::class, 'lista'])->middleware('auth')->name('listaAprendiz');
@@ -60,8 +64,10 @@ Route::get('Registrate', [AuthenticationController::class, 'registrar'])->name('
 Route::post('Registrate', [AuthenticationController::class, 'store'])->name('store');
 
 /* CREAR GRUPO */
-
 Route::get('Crear-grupo', [GroupController::class, 'index'])->middleware('auth')->name('grupo');
+Route::post('Crear-grupo', [GroupController::class, 'store'])->middleware('auth')->name('grupo.store');
+Route::put('Crear-grupo/{group}', [GroupController::class, 'update'])->middleware('auth')->name('grupo.update');
+Route::delete('Crear-grupo/{group}', [GroupController::class, 'destroy'])->middleware('auth')->name('grupo.destroy');
 
 /* ACTUALIZAR INFORMACIÓN */
 
@@ -73,9 +79,9 @@ Route::post('Actualizar-Informacion/{aprendiz}', [AttendantController::class, 'u
 Route::get('Informe', [InformeController::class, 'informe'])->middleware('auth')->name('informe');
 
 /* USUARIO */
-Route::get('Información-Usuario', [UserController::class, 'usuario'])->middleware('auth')->name('usuario');
+Route::get('Informacion-Usuario', [UserController::class, 'usuario'])->middleware('auth')->name('usuario');
 
-Route::post('Información-Usuario/{user}', [UserController::class, 'updateInfo'])->middleware('auth')->name('updateInfo');
+Route::post('Informacion-Usuario/{user}', [UserController::class, 'updateInfo'])->middleware('auth')->name('updateInfo');
 
 
 Route::get('Editar-Informacion', [UserController::class, 'actualizar'])->middleware('auth')->name('actualizar');
@@ -86,8 +92,9 @@ Route::get('Agregar-Usuarios', [UserController::class, 'agregar'])->middleware('
 Route::post('Agregar-Usuarios', [UserController::class, 'storeUser'])->middleware('auth')->name('storeUser');
 
 Route::get('Listado-Usuarios', [UserController::class, 'listado'])->middleware('auth')->name('listado');
+Route::delete('Listado-Usuarios/{user}', [UserController::class, 'destroy'])->middleware('auth')->name('user.destroy');
 
-Route::get('Historial de acciones', [UserController::class, 'history'])->middleware('auth')->name('history');
+Route::get('Historial-de-acciones', [UserController::class, 'history'])->middleware('auth')->name('history');
 
 /* DESCARGA PDF */
 
@@ -120,9 +127,9 @@ Route::get('Descarga-Informe/{estudiante}', [descargaController::class, 'descarg
 
 /* ASISTENCIA */
 
-Route::get('Resgistro-Asistencias/{userId}', [AsistenciaController::class, 'asistencias'])->middleware('auth')->name('asistencias');
+Route::get('Registro-Asistencias/{userId}', [AsistenciaController::class, 'asistencias'])->middleware('auth')->name('asistencias');
 
-Route::get('descargar-Asistencias/{teacher}/{date}/{grupo}', [AsistenciaController::class, 'descargar'])->middleware('auth')->name('descargarAsistencias');
+Route::get('descargar-Asistencias/{teacher}/{startDate}/{endDate}/{grupo}', [AsistenciaController::class, 'descargar'])->middleware('auth')->name('descargarAsistencias');
 
 
 /* SERVICIOS */
@@ -131,22 +138,22 @@ Route::get('Servicios', [ServiceController::class, 'index'])->middleware('auth')
 
 Route::get('Enviar-Email', [ApprenticeController::class, 'sendEmail'])->middleware('auth')->name('sendEmail');
 
-Route::get('Enviando email', [ApprenticeController::class, 'send'])->middleware('auth')->name('send');
+Route::get('Enviando-email', [ApprenticeController::class, 'send'])->middleware('auth')->name('send');
 
 /* qualification */
-Route::get('Calificación/{teacher}', [ApprenticeController::class, 'qualification'])->middleware('auth')->name('qualification');
+Route::get('Calificacion/{teacher}', [ApprenticeController::class, 'qualification'])->middleware('auth')->name('qualification');
 
-Route::get('Calificación/download/informe', [DescargaController::class, 'qualificationDownload'])->middleware('auth')->name('qualificationDownload');
+Route::get('Calificacion/download/informe', [DescargaController::class, 'qualificationDownload'])->middleware('auth')->name('qualificationDownload');
 
 Route::get('Copia-Seguridad', [DescargaController::class, 'copiaseguridad'])->middleware('auth')->name('copiaseguridad');
 
-Route::get('Informe Caja', [DescargaController::class, 'informeCaja'])->middleware('auth')->name('informe.caja');
+Route::get('Informe-Caja', [DescargaController::class, 'informeCaja'])->middleware('auth')->name('informe.caja');
 
-Route::get('Descarga Registro Horas/{teacher}', [DescargaController::class, 'registroHoras'])->middleware('auth')->name('registroHoras');
+Route::get('Descarga-Registro-Horas/{teacher}', [DescargaController::class, 'registroHoras'])->middleware('auth')->name('registroHoras');
 
 Route::get('Certificado/{aprendiz}', [DescargaController::class, 'certificado'])->middleware('auth')->name('certificado');
 
-Route::get('Calificacion Grupo', [DescargaController::class, 'groupCalification'])->middleware('auth')->name('groupCalification');
+Route::get('Calificacion-Grupo', [DescargaController::class, 'groupCalification'])->middleware('auth')->name('groupCalification');
 
 Route::get('Descarga-Calificacion', [DescargaController::class, 'donwloadQualification'])->middleware('auth')->name('donwloadQualification');
 
@@ -158,10 +165,12 @@ Route::get('Mis-Hijos', \App\Livewire\MyChildrenComponent::class)->middleware('a
 /* ACTIVITIES */
 Route::get('Lista-Actividades', [ActivityController::class, 'index'])->middleware('auth')->name('listaActividades');
 Route::delete('Lista-Actividades/{assignedActivity}', [ActivityController::class, 'destroy'])->middleware('auth')->name('listaActividades.destroy');
+Route::post('Lista-Actividades/feedback/{activity}', [ActivityController::class, 'updateFeedback'])->middleware('auth')->name('listaActividades.feedback');
+Route::delete('Lista-Actividades/submission/{activity}', [ActivityController::class, 'destroySubmission'])->middleware('auth')->name('listaActividades.destroySubmission');
 
 Route::get('/optimize', function () {
     Artisan::call('optimize:clear');
-    return '✅ Caché, configuración y rutas limpiadas correctamente.';
+    return 'Cache, configuracion y rutas limpiadas correctamente.';
 });
 /*
 Route::get('/storage-link', function () {

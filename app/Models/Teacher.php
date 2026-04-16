@@ -70,4 +70,9 @@ class Teacher extends Model
     {
         return $this->hasMany(Qualification::class);
     }
+
+    public function assignedGroups()
+    {
+        return $this->belongsToMany(Group::class, 'group_teacher', 'teacher_id', 'group_id');
+    }
 }

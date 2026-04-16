@@ -25,5 +25,17 @@ class RolSeeder extends Seeder
         Rol::create([
             'name' => 'Profesor'
         ]);
+
+        Rol::create([
+            'name' => 'Acudiente'
+        ]);
+
+        Rol::create([
+            'name' => 'Estudiante'
+        ]);
+
+        Rol::create([
+            'name' => 'Tutor'
+        ]);
     }
 }

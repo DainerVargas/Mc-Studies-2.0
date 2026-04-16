@@ -27,7 +27,7 @@ class AuthenticationController extends Controller
 
             $user = Auth::user();
 
-            if ($user->rol_id == 5) { // Acudiente
+            if ($user->rol_id == 5 || $user->rol_id == 6) { // Acudiente o Estudiante
                 return redirect()->route('mis_hijos');
             }
 
@@ -49,7 +49,7 @@ class AuthenticationController extends Controller
     public function registrar()
     {
         if (Auth::check() && Auth::user()->rol_id != 1) {
-            if (Auth::user()->rol_id == 5) {
+            if (Auth::user()->rol_id == 5 || Auth::user()->rol_id == 6) {
                 return redirect()->route('mis_hijos');
             }
             return redirect()->route('listaAprendiz');

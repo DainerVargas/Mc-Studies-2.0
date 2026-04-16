@@ -11,6 +11,7 @@ class Reunion extends Model
 
     protected $fillable = [
         'attendant_id',
+        'apprentice_id',
         'titulo',
         'descripcion',
         'fecha_programada',
@@ -26,5 +27,10 @@ class Reunion extends Model
     public function attendant()
     {
         return $this->belongsTo(Attendant::class);
+    }
+
+    public function apprentice()
+    {
+        return $this->belongsTo(Apprentice::class);
     }
 }

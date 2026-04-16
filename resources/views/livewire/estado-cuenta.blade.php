@@ -231,30 +231,47 @@
         }
 
         .modal-image-container {
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .modal-image-container img {
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
             border-radius: 12px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            object-fit: contain;
         }
 
         .btn-close-modal {
             position: absolute;
-            top: -40px;
-            right: -40px;
+            top: 10px;
+            right: 10px;
             color: white;
             cursor: pointer;
-            font-size: 2rem;
-            background: rgba(255, 255, 255, 0.1);
+            font-size: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
         }
     </style>
 

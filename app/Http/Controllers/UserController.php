@@ -74,9 +74,10 @@ class UserController extends Controller
             return redirect()->route('listaAprendiz');
         }
         $teachers = \App\Models\Teacher::all();
-        $attendants = \App\Models\Attendant::all();
+        $attendants = \App\Models\Attendant::orderBy('name')->get();
+        $apprentices = \App\Models\Apprentice::all();
         $rols = \App\Models\Rol::all();
-        return view('layouts.usuario.anadir', compact('user', 'teachers', 'attendants', 'rols'));
+        return view('layouts.usuario.anadir', compact('user', 'teachers', 'attendants', 'apprentices', 'rols'));
     }
 
     public function storeUser(Request $request)
@@ -115,18 +116,43 @@ class UserController extends Controller
         $usuario->rol_id = $request->type;
         $usuario->teacher_id = $request->teacher_id;
         $usuario->attendant_id = $request->attendant_id;
+        $usuario->apprentice_id = $request->apprentice_id;
         $usuario->save();
 
         return back()->with('message', '🎉 ¡Registro Exitoso! 🎉');
     }
 
-    public function listado()
+    public function listado(Request $request)
     {
         $user = Auth::user();
         if ($user->rol_id != 1) {
             return redirect()->route('listaAprendiz');
         }
-        return view('layouts.usuario.listado', compact('user'));
+
+        $search = $request->get('search');
+        $usuarios = User::with('rol')
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('usuario', 'like', '%' . $search . '%');
+            })
+            ->get();
+
+        return view('layouts.usuario.listado', compact('user', 'usuarios', 'search'));
+    }
+
+    public function destroy(User $user)
+    {
+        if (Auth::user()->rol_id != 1) {
+            abort(403);
+        }
+
+        if ($user->rol_id == 1) {
+            return back()->with('error', 'No se puede eliminar un administrador.');
+        }
+
+        $user->delete();
+        return back()->with('success', 'Usuario eliminado correctamente.');
     }
 
     public function history(Request $request)

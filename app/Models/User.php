@@ -20,6 +20,8 @@ class User extends Authenticatable
         'image',
         'usuario',
         'attendant_id',
+        'teacher_id',
+        'apprentice_id',
     ];
 
     public function rol()
@@ -35,6 +37,11 @@ class User extends Authenticatable
     public function attendant()
     {
         return $this->belongsTo(Attendant::class);
+    }
+
+    public function apprentice()
+    {
+        return $this->belongsTo(Apprentice::class);
     }
 
     /**

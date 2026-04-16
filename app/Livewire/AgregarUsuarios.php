@@ -25,7 +25,7 @@ class AgregarUsuarios extends Component
     {
         $this->rols = Rol::all();
         $this->teachers = Teacher::all();
-        $this->attendants = Attendant::all();
+        $this->attendants = Attendant::orderBy('name')->get();
     }
 
     public function updatedTeacherId()

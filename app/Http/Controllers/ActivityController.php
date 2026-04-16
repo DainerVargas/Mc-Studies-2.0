@@ -15,12 +15,27 @@ class ActivityController extends Controller
 
         // Base query con relaciones
         $query = AcademicActivity::with(['apprentice', 'apprentice.group', 'attendant'])
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'asc');
 
         $view = $request->get('view', 'recibidas');
         $assignedActivities = collect();
 
-        if ($view === 'asignadas') {
+        if ($view === 'todas' && $user->rol_id == 1) {
+            $assignedQuery = \App\Models\AssignedActivity::with(['groups', 'user'])
+                ->orderBy('created_at', 'desc');
+
+            if ($request->filled('search')) {
+                $assignedQuery->where('titulo', 'LIKE', '%' . $request->search . '%');
+            }
+
+            if ($request->filled('group_id')) {
+                $assignedQuery->whereHas('groups', function ($q) use ($request) {
+                    $q->where('groups.id', $request->group_id);
+                });
+            }
+
+            $assignedActivities = $assignedQuery->get();
+        } elseif ($view === 'asignadas') {
             $assignedQuery = \App\Models\AssignedActivity::with('groups')
                 ->where('user_id', Auth::id())
                 ->orderBy('created_at', 'desc');
@@ -98,7 +113,7 @@ class ActivityController extends Controller
             'action_type' => 'ELIMINAR',
             'entity_type' => 'Actividad',
             'entity_id' => $assignedActivity->id,
-            'description' => "Se eliminó la actividad asignada: {$assignedActivity->titulo}",
+            'description' => "Se elimino la actividad asignada: {$assignedActivity->titulo}",
             'old_values' => $assignedActivity->toArray(),
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
@@ -108,5 +123,83 @@ class ActivityController extends Controller
         $assignedActivity->delete();
 
         return redirect()->back()->with('success', 'Actividad eliminada correctamente.');
+    }
+
+    public function destroySubmission(AcademicActivity $activity)
+    {
+        $user = Auth::user();
+
+        if ($user->rol_id != 1) {
+            return redirect()->back()->with('error', 'No tienes permisos para eliminar esta actividad.');
+        }
+
+        // Log the deletion
+        \App\Models\ActivityLog::create([
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_role' => $user->rol->name ?? 'Gerente',
+            'action_type' => 'ELIMINAR',
+            'entity_type' => 'Actividad Recibida',
+            'entity_id' => $activity->id,
+            'description' => "Se elimino la actividad recibida de: " . ($activity->apprentice->name ?? 'N/A') . " - {$activity->titulo}",
+            'old_values' => $activity->toArray(),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        if ($activity->archivo) {
+            $path = public_path('users/' . $activity->archivo);
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+        }
+
+        $activity->delete();
+
+        return redirect()->back()->with('success', 'Actividad recibida eliminada correctamente.');
+    }
+
+    public function updateFeedback(\Illuminate\Http\Request $request, \App\Models\AcademicActivity $activity)
+    {
+        $request->validate([
+            'comentario' => 'required|string|max:1000',
+            'calificacion' => 'required|string|max:50',
+        ]);
+
+        $activity->update([
+            'comentario' => $request->comentario,
+            'calificacion' => $request->calificacion,
+        ]);
+
+        // Log the action
+        $user = \Illuminate\Support\Facades\Auth::user();
+        \App\Models\ActivityLog::create([
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_role' => $user->rol->name ?? 'Profesor',
+            'action_type' => 'CALIFICAR',
+            'entity_type' => 'Actividad Recibida',
+            'entity_id' => $activity->id,
+            'description' => "Se califico la actividad de: " . ($activity->apprentice->name ?? 'N/A') . " - {$activity->titulo}",
+            'old_values' => $activity->toArray(),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        // Enviar Correo Electronico al estudiante o acudiente
+        $estudiante = $activity->apprentice;
+        $emailRecipient = $estudiante->email ?? optional($estudiante->attendant)->email;
+
+        if ($emailRecipient) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($emailRecipient)->send(
+                    new \App\Mail\ActivityFeedbackMail($activity, $estudiante->name)
+                );
+            } catch (\Exception $e) {
+                // Log error if needed
+            }
+        }
+
+        return redirect()->back()->with('success', 'Calificacion y comentario guardados correctamente.');
     }
 }

@@ -44,6 +44,8 @@ class ActivityComponent extends Component
         $user = Auth::user();
         if ($user->attendant) {
             $this->children = $user->attendant->apprentice;
+        } elseif ($user->rol_id == 6 && $user->apprentice) {
+            $this->children = collect([$user->apprentice]);
         } else {
             $this->children = collect();
         }
@@ -57,6 +59,10 @@ class ActivityComponent extends Component
         } elseif ($user->attendant) {
             // For parents, only groups their children are in
             $groupIds = $user->attendant->apprentice->pluck('group_id')->filter()->unique();
+            $this->groups = \App\Models\Group::whereIn('id', $groupIds)->get();
+        } elseif ($user->rol_id == 6 && $user->apprentice) {
+            // For students, their own group
+            $groupIds = [$user->apprentice->group_id];
             $this->groups = \App\Models\Group::whereIn('id', $groupIds)->get();
         }
     }
@@ -85,11 +91,16 @@ class ActivityComponent extends Component
         $activities = collect();
         $assignedActivities = collect();
 
-        if ($user->attendant) {
+        if ($user->attendant || $user->rol_id == 6) {
             // "Realizadas" (Self-uploaded)
-            $query = AcademicActivity::where('attendant_id', $user->attendant->id)
-                ->with('apprentice')
-                ->orderBy('created_at', 'desc');
+            $query = AcademicActivity::with('apprentice')->orderBy('created_at', 'desc');
+
+            if ($user->attendant) {
+                $query->where('attendant_id', $user->attendant->id);
+            } else {
+                // If it's role 6 (Estudiante)
+                $query->where('apprentice_id', $user->apprentice->id);
+            }
 
             if ($this->filterChild) {
                 $query->where('apprentice_id', $this->filterChild);
@@ -118,7 +129,12 @@ class ActivityComponent extends Component
                     $assignedQuery->whereRaw('1 = 0'); // No group, no activities
                 }
             } else {
-                $childGroupIds = $user->attendant->apprentice->pluck('group_id')->filter()->unique()->toArray();
+                if ($user->attendant) {
+                    $childGroupIds = $user->attendant->apprentice->pluck('group_id')->filter()->unique()->toArray();
+                } else {
+                    $childGroupIds = [$user->apprentice->group_id ?? 0];
+                }
+
                 $assignedQuery->whereHas('groups', function ($q) use ($childGroupIds) {
                     $q->whereIn('groups.id', $childGroupIds);
                 })->with(['groups' => function ($q) use ($childGroupIds) {
@@ -257,7 +273,8 @@ class ActivityComponent extends Component
         $isAdmin = (int)$user->rol_id === 1;
         $isStaff = in_array((int)$user->rol_id, [2, 3]);
         // Allow owner (attendant) to delete own activity
-        $isOwner = $user->attendant && $activity->attendant_id == $user->attendant->id;
+        $isOwner = ($user->attendant && $activity->attendant_id == $user->attendant->id) ||
+            ($user->rol_id == 6 && $activity->apprentice_id == $user->apprentice->id);
 
         if (!$isAdmin && !$isStaff && !$isOwner) {
             $this->dispatch('error', 'No tienes permisos para eliminar.');

@@ -105,10 +105,133 @@
             height: auto;
             display: block;
         }
+
+        /* Estilos para tarjetas de actividades (añadido para consistencia) */
+        .cards-summary {
+            width: 100%;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .cards-table {
+            width: 100%;
+            border: none;
+            border-collapse: separate;
+            border-spacing: 15px 0;
+        }
+
+        .cards-table td {
+            border: none;
+            padding: 0;
+            width: 50%;
+        }
+
+        .card-custom {
+            background: #f2f2f2;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-custom .title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 5px;
+        }
+
+        .card-custom .subtitle {
+            font-size: 10px;
+            color: #777;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .card-custom .number {
+            font-size: 18px;
+            background-color: white;
+            border-radius: 6px;
+            padding: 5px;
+            margin-top: 8px;
+            display: inline-block;
+            width: 80%;
+        }
+
+        .greenA {
+            color: #6bb44b;
+            font-weight: bold;
+        }
+
+        .black {
+            color: #333;
+            font-weight: normal;
+        }
+
+        .card-custom .label {
+            display: block;
+            font-size: 10px;
+            color: #888;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 
 <body>
+    @php
+        use App\Models\AssignedActivity;
+        use App\Models\AcademicActivity;
+        use Carbon\Carbon;
+
+        $keywords = ['worksheet', 'pelicula', 'movie', 'serie', 'series'];
+        // Priorizamos el semestre de la sesión, si no existe usamos el guardado en el objeto
+        $semester = (int) (session('selectedSemester') ?? $qualifications[0]->semestre ?? 1);
+        $year = (int) (session('selectedYear') ?? $qualifications[0]->year ?? date('Y'));
+
+        // Función para calcular actividades Live
+        $getLiveCounts = function ($q) use ($keywords, $semester, $year) {
+            $result = (int) $q->resultado;
+            $groupId = $q->group_id;
+            $studentId = $q->apprentice_id;
+            $startDate = null; $endDate = null;
+
+            if ($semester == 1) {
+                if ($result == 1) { $startDate = Carbon::createFromDate($year, 2, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 3, 31)->endOfDay(); }
+                elseif ($result == 2) { $startDate = Carbon::createFromDate($year, 4, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 4, 30)->endOfDay(); }
+                elseif ($result == 3) { $startDate = Carbon::createFromDate($year, 5, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 5, 31)->endOfDay(); }
+            } else {
+                if ($result == 1) { $startDate = Carbon::createFromDate($year, 8, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 9, 30)->endOfDay(); }
+                elseif ($result == 2) { $startDate = Carbon::createFromDate($year, 10, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 10, 31)->endOfDay(); }
+                elseif ($result == 3) { $startDate = Carbon::createFromDate($year, 11, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 11, 30)->endOfDay(); }
+            }
+
+            $asigAct = 0; $asigWork = 0; $entAct = 0; $entWork = 0;
+            if ($startDate) {
+                $baseAsig = AssignedActivity::whereHas('groups', function ($g) use ($groupId) {
+                    $g->where('groups.id', $groupId);
+                })->whereBetween('assigned_activities.created_at', [$startDate, $endDate]);
+                $asigWork = (clone $baseAsig)->where(function ($g) use ($keywords) { foreach ($keywords as $word) { $g->orWhere('titulo', 'like', "%{$word}%"); } })->count();
+                $asigAct = (clone $baseAsig)->where(function ($g) use ($keywords) { foreach ($keywords as $word) { $g->where('titulo', 'not like', "%{$word}%"); } })->count();
+
+                $baseEnt = AcademicActivity::where('apprentice_id', $studentId)->whereBetween('fecha', [$startDate, $endDate]);
+                $entWork = (clone $baseEnt)->where(function ($g) use ($keywords) { foreach ($keywords as $word) { $g->orWhere('titulo', 'like', "%{$word}%"); } })->count();
+                $entAct = (clone $baseEnt)->where(function ($g) use ($keywords) { foreach ($keywords as $word) { $g->where('titulo', 'not like', "%{$word}%"); } })->count();
+            }
+            return (object) ['asigAct' => $asigAct, 'entAct' => $entAct, 'asigWork' => $asigWork, 'entWork' => $entWork];
+        };
+
+        // Recalcular totales live para el resumen superior
+        $totalLiveActAsig = 0; $totalLiveActEnt = 0;
+        $totalWorkAsig = 0; $totalWorkEnt = 0;
+        foreach ($qualifications as $q) {
+            $c = $getLiveCounts($q);
+            $totalLiveActAsig += $c->asigAct; $totalLiveActEnt += $c->entAct;
+            $totalWorkAsig += $q->worksheet_asignados; $totalWorkEnt += $q->worksheet_entregados;
+        }
+    @endphp
+
     <!-- CONTENIDO PRINCIPAL - PÁGINA 1 -->
     <div class="content">
         <!-- Logo -->
@@ -144,6 +267,11 @@
             $totalReading = 0;
             $totalWriting = 0;
 
+            $totalActividadesAsignadas = 0;
+            $totalActividadesEntregadas = 0;
+            $totalWorksheetsAsignados = 0;
+            $totalWorksheetsEntregados = 0;
+
             $totalesExamen = [];
 
             foreach ($qualifications as $key => $qualification) {
@@ -151,6 +279,11 @@
                 $totalSpeaking += $qualification->speaking;
                 $totalReading += $qualification->reading;
                 $totalWriting += $qualification->writing;
+
+                $totalActividadesAsignadas += $qualification->actividades_asignados;
+                $totalActividadesEntregadas += $qualification->actividades_entregados;
+                $totalWorksheetsAsignados += $qualification->worksheet_asignados;
+                $totalWorksheetsEntregados += $qualification->worksheet_entregados;
 
                 if (!isset($totalesExamen[$key])) {
                     $totalesExamen[$key] = 0;
@@ -182,6 +315,36 @@
             @else
                 <p class="failed">{{ $qualifications[0]->apprentice->level->desaprobado }}</p>
             @endif
+        </div>
+
+        <!-- Resumen de Actividades y Worksheets -->
+        <div class="cards-summary">
+            <table class="cards-table">
+                <tr>
+                    <td>
+                        <div class="card-custom">
+                            <div class="title">Worksheet entregados</div>
+                            <p class="subtitle">(Películas y series asignadas)</p>
+                            <div class="number">
+                                <span class="greenA">{{ $totalWorkEnt }}</span>
+                                <span class="black">/ {{ $totalWorkAsig }}</span>
+                            </div>
+                            <span class="label">COMPLETADAS</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card-custom">
+                            <div class="title">Actividades entregadas</div>
+                            <p class="subtitle">(Plataforma de Richmond)</p>
+                            <div class="number">
+                                <span class="greenA">{{ $totalLiveActEnt }}</span>
+                                <span class="black">/ {{ $totalLiveActAsig }}</span>
+                            </div>
+                            <span class="label">COMPLETADAS</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
 
 
@@ -229,16 +392,17 @@
                     <tr>
                         <td>Actividades Asig./Ent.</td>
                         @foreach ($qualifications as $q)
-                            <td>{{ $q->actividades_asignados }} / {{ $q->actividades_entregados }}</td>
+                            @php $c = $getLiveCounts($q); @endphp
+                            <td>{{ $c->asigAct }} / {{ $c->entAct }}</td>
                         @endforeach
-                        <td>-</td>
+                        <td>{{ $totalLiveActAsig }} / {{ $totalLiveActEnt }}</td>
                     </tr>
                     <tr>
                         <td>Worksheets Asig./Ent.</td>
                         @foreach ($qualifications as $q)
                             <td>{{ $q->worksheet_asignados }} / {{ $q->worksheet_entregados }}</td>
                         @endforeach
-                        <td>-</td>
+                        <td>{{ $totalWorkAsig }} / {{ $totalWorkEnt }}</td>
                     </tr>
                     <tr>
                         <td><strong>Consolidado Final</strong></td>

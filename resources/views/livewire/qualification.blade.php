@@ -63,8 +63,8 @@
             </div>
         @endif
 
-        <!-- Tabla de Calificaciones -->
-        <div class="ql-table-container">
+        <!-- Tabla de Calificaciones con AlpineJS aislado -->
+        <div class="ql-table-container" x-data="{ openModal: false, studentId: null, studentName: '' }">
             <table class="ql-table">
                 <thead>
                     <tr>
@@ -129,7 +129,7 @@
                             </td>
                             <td>
                                 <input type="number" wire:model.blur="actividades_asignados.{{ $student->id }}"
-                                    class="ql-input-count" placeholder="0"
+                                    class="ql-input-count" placeholder="0" readonly title="Calculado automáticamente"
                                     @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
                                 @error("actividades_asignados.{$student->id}")
                                     <span class="ql-error-tip">!</span>
@@ -137,7 +137,7 @@
                             </td>
                             <td>
                                 <input type="number" wire:model.blur="actividades_entregados.{{ $student->id }}"
-                                    class="ql-input-count" placeholder="0"
+                                    class="ql-input-count" placeholder="0" readonly title="Calculado automáticamente"
                                     @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
                                 @error("actividades_entregados.{$student->id}")
                                     <span class="ql-error-tip">!</span>
@@ -160,8 +160,14 @@
                                 @enderror
                             </td>
                             <td>
-                                <textarea wire:model.blur="observaciones.{{ $student->id }}" class="ql-textarea" placeholder="Sin observaciones..."
-                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif></textarea>
+                                <button type="button"
+                                    @click="openModal = true; studentId = '{{ $student->id }}'; studentName = @js($student->name . ' ' . $student->apellido)"
+                                    class="ql-btn-obs {{ !empty($observaciones[$student->id]) ? 'has-obs' : '' }}"
+                                    @if (!$isAdmin && $selectedResult === 'final') disabled @endif>
+                                    <i
+                                        class="fas {{ !empty($observaciones[$student->id]) ? 'fa-comment-alt' : 'fa-plus' }}"></i>
+                                    <span>{{ !empty($observaciones[$student->id]) ? 'Ver/Editar' : 'Agregar' }}</span>
+                                </button>
                                 @error("observaciones.{$student->id}")
                                     <span class="ql-error-tip">!</span>
                                 @enderror
@@ -185,6 +191,27 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <!-- Modal de Observaciones (Dentro del scope de AlpineJS) -->
+            <div x-show="openModal" class="ql-modal-overlay" x-cloak style="display: none;">
+                <div class="ql-modal" @click.away="openModal = false">
+                    <div class="ql-modal-header">
+                        <h3>Observación: <span x-text="studentName"></span></h3>
+                        <button type="button" class="ql-modal-close" @click="openModal = false">&times;</button>
+                    </div>
+                    <div class="ql-modal-body">
+                        <template x-if="studentId">
+                            <textarea x-model="$wire.observaciones[studentId]" class="ql-textarea-modal"
+                                placeholder="Escriba la observación aquí..." @if (!$isAdmin && $selectedResult === 'final') disabled @endif></textarea>
+                        </template>
+                    </div>
+                    <div class="ql-modal-footer">
+                        <button type="button" @click="openModal = false" class="ql-btn ql-btn-save">
+                            <i class="fas fa-check"></i> Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         @if (count($students) > 0)
@@ -192,11 +219,7 @@
                 <button wire:click="guardarNotas" class="ql-btn ql-btn-save">
                     <div wire:loading.remove wire:target="guardarNotas">
                         <i class="fas @if ($exists) fa-sync-alt @else fa-save @endif"></i>
-                        @if ($exists)
-                            Actualizar Calificaciones
-                        @else
-                            Guardar Calificaciones
-                        @endif
+                        {{ $exists ? 'Actualizar Calificaciones' : 'Guardar Calificaciones' }}
                     </div>
                     <div wire:loading wire:target="guardarNotas">
                         <i class="fas fa-spinner fa-spin"></i> Procesando...

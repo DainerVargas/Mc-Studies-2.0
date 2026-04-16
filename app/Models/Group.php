@@ -38,4 +38,9 @@ class Group extends Model
     {
         return $this->belongsTo(Type::class);
     }
+
+    public function tutors()
+    {
+        return $this->belongsToMany(Teacher::class, 'group_teacher', 'group_id', 'teacher_id');
+    }
 }

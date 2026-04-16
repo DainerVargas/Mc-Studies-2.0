@@ -25,6 +25,8 @@ class GrupoCrear extends Component
     public $filtroName = '';
     public $view = 0;
     public $view2 = 0;
+    public $tutor_ids = [];
+    public $allTutors = [];
 
     public function update()
     {
@@ -59,6 +61,10 @@ class GrupoCrear extends Component
                 'type_id' => $this->type_id,
             ]);
 
+            if (!empty($this->tutor_ids)) {
+                $grupos->tutors()->sync($this->tutor_ids);
+            }
+
             $year = Carbon::now()->format('y');
             /* $year = 25; */
             $mes = Carbon::now()->format('m');
@@ -78,13 +84,14 @@ class GrupoCrear extends Component
             $this->filtroTeacher = '';
 
             $this->view = 0;
-            $this->grupos = Group::all();
+            $this->tutor_ids = [];
+            $this->render();
         }
     }
     public function mount()
     {
-        $this->grupos = Group::all();
         $this->profesores = Teacher::all();
+        $this->allTutors = Teacher::where('type_teacher_id', 2)->get();
         $this->types = Type::all();
     }
 
@@ -108,6 +115,10 @@ class GrupoCrear extends Component
 
     public function actualizar(Group $grupo)
     {
+        if (!$this->canAccessGroup($grupo)) {
+            $this->dispatch('error', 'No tienes permisos para acceder a este grupo.');
+            return;
+        }
         $this->view2 = 1;
         $this->grupoNmae = $grupo->name;
         $this->historyName = $grupo->name;
@@ -115,11 +126,16 @@ class GrupoCrear extends Component
             $this->profesorName = Teacher::find($grupo->teacher->id);
             $this->profesor_id = $this->profesorName->id;
         }
+        $this->tutor_ids = $grupo->tutors->pluck('id')->toArray();
         $this->grupoId = $grupo->id;
     }
 
     public function guardar(Group $group)
     {
+        if (!$this->canAccessGroup($group)) {
+            $this->dispatch('error', 'No tienes permisos para modificar este grupo.');
+            return;
+        }
         $validaciones =  $this->validate([
             'grupoNmae' => 'required',
             'profesor_id' => 'required',
@@ -133,6 +149,8 @@ class GrupoCrear extends Component
                 'name' => $this->grupoNmae,
                 'teacher_id' => $this->profesor_id,
             ]);
+
+            $group->tutors()->sync($this->tutor_ids);
 
             $year = Carbon::now()->format('y');
             /* $year = 25; */
@@ -162,6 +180,11 @@ class GrupoCrear extends Component
     public function verDetalle($grupo = null)
     {
         $group = Group::find($grupo);
+        if (!$group || !$this->canAccessGroup($group)) {
+            $this->dispatch('error', 'No tienes permisos para ver los detalles de este grupo.');
+            return;
+        }
+
         $this->idGroup = $group->id;
 
         $this->show = true;
@@ -217,9 +240,40 @@ class GrupoCrear extends Component
 
         $query->where('name', 'LIKE', '%' . $this->filtroName . '%');
 
+        $user = Auth::user();
+        if (!in_array($user->rol_id, [1, 2, 3]) && $user->teacher_id) {
+            $teacher = $user->teacher;
+            if ($teacher->type_teacher_id == 2) { // Tutor
+                $query->where(function($q) use ($teacher) {
+                    $q->where('teacher_id', $teacher->id)
+                      ->orWhereHas('tutors', function($sq) use ($teacher) {
+                          $sq->where('teacher_id', $teacher->id);
+                      });
+                });
+            } else { // Regular Professor
+                $query->where('teacher_id', $teacher->id);
+            }
+        }
+
         $this->grupos = $query->get();
 
 
         return view('livewire.grupo-crear');
+    }
+    protected function canAccessGroup(Group $group)
+    {
+        $user = Auth::user();
+        if (in_array($user->rol_id, [1, 2, 3])) { // Admin, Secretaria, Asistente
+            return true;
+        }
+
+        if (!$user->teacher_id) {
+            return false;
+        }
+
+        $teacherId = $user->teacher_id;
+        
+        // Owner or assigned tutor
+        return $group->teacher_id == $teacherId || $group->tutors()->where('teacher_id', $teacherId)->exists();
     }
 }

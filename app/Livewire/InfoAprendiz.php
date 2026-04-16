@@ -35,7 +35,7 @@ class InfoAprendiz extends Component
     public $viewAttendance = false;
 
     // Filters for attendance
-    public $attendanceYear;
+    public $startDate, $endDate;
     public $attendanceStatus = '';
 
     // Computed properties or passed directly to render to avoid hydration overhead
@@ -47,7 +47,8 @@ class InfoAprendiz extends Component
     {
         $this->aprendiz = $aprendiz;
         $this->selectedYear = date('Y');
-        $this->attendanceYear = date('Y');
+        $this->startDate = now()->startOfWeek()->format('Y-m-d');
+        $this->endDate = now()->endOfWeek()->format('Y-m-d');
     }
 
     public function toggleEstado()
@@ -174,7 +175,7 @@ class InfoAprendiz extends Component
 
         // Fetch attendance data
         $attendanceQuery = Asistencia::where('apprentice_id', $this->aprendiz->id)
-            ->whereYear('fecha', $this->attendanceYear);
+            ->whereBetween('fecha', [$this->startDate, $this->endDate]);
 
         if ($this->attendanceStatus) {
             $attendanceQuery->where('estado', $this->attendanceStatus);

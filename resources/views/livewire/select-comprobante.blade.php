@@ -2,7 +2,16 @@
     <div class="src-form-card">
         <form wire:submit.prevent="">
             @csrf
-            <h2>Datos del Estudiante</h2>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                <h2>Datos del Estudiante</h2>
+                @auth
+                    <a href="{{ route('listaAprendiz') }}"
+                        style="display: flex; align-items: center; gap: 8px; color: #64748b; text-decoration: none; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; transition: all 0.3s; padding: 10px 20px; background: #f1f5f9; border-radius: 12px;">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
+                        Volver
+                    </a>
+                @endauth
+            </div>
             <div class="src-grid">
                 <div class="src-input-group">
                     <label>Nombre</label>
@@ -145,7 +154,8 @@
                         <span>$460k</span>
                         <small>Primer pago (Inc. Plataforma)</small>
                     </div>
-                    <button type="button" class="src-btn-plan" wire:click.stop="modalidad(1)">Seleccionar Plan</button>
+                    <button type="button" class="src-btn-plan" wire:click.stop="modalidad(1)">Seleccionar
+                        Plan</button>
                 </div>
 
                 {{-- Pago Completo --}}

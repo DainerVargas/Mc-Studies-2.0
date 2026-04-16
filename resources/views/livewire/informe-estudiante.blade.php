@@ -116,7 +116,7 @@
                                 $estudiante->modality_id != 4 ? $estudiante->modality->valor : $estudiante->valor;
                             $pendiente = $isBecado ? 0 : $valorModulo - $totalAbonos - $estudiante->descuento;
 
-                            if (!$isBecado && $estudiante->fechaPlataforma == $fechaPlataforma) {
+                            if (!$isBecado) {
                                 $plataformaTotal += $estudiante->plataforma ?? 0;
                             }
                         @endphp

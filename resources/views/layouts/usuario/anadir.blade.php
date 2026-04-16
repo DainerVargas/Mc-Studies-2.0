@@ -96,7 +96,7 @@
                         <option value="" selected>Ninguno</option>
                         @foreach ($teachers as $teacher)
                             <option value="{{ $teacher->id }}" data-name="{{ $teacher->name }}"
-                                data-email="{{ $teacher->email }}">
+                                data-email="{{ $teacher->email }}" data-type="{{ $teacher->type_teacher_id }}">
                                 {{ $teacher->name }}</option>
                         @endforeach
                     </select>
@@ -116,6 +116,21 @@
                     </select>
                 </div>
 
+                <div id="apprenticeGroup" class="input-group" style="display: none;">
+                    <label>Estudiante Asociado</label>
+                    <select name="apprentice_id" id="apprenticeSelector">
+                        <option value="" selected>Ninguno</option>
+                        @foreach ($apprentices as $apprentice)
+                            <option value="{{ $apprentice->id }}"
+                                data-name="{{ $apprentice->name }} {{ $apprentice->apellido }}"
+                                data-email="{{ $apprentice->email }}"
+                                data-usuario="{{ strtolower(explode(' ', trim($apprentice->name))[0]) . '.' . strtolower(explode(' ', trim($apprentice->apellido))[0]) }}">
+                                {{ $apprentice->name }} {{ $apprentice->apellido }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <button type="submit" class="btn-update">Añadir Usuario</button>
             </form>
         </div>
@@ -126,10 +141,12 @@
             const roleSelector = document.getElementById('roleSelector');
             const teacherGroup = document.getElementById('teacherGroup');
             const attendantGroup = document.getElementById('attendantGroup');
+            const apprenticeGroup = document.getElementById('apprenticeGroup');
             const previewRole = document.getElementById('previewRole');
 
             const nameInput = document.getElementById('name');
             const emailInput = document.getElementById('email');
+            const usuarioInput = document.getElementById('usuario');
 
             roleSelector.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
@@ -138,11 +155,28 @@
                 // Reset display
                 teacherGroup.style.display = 'none';
                 attendantGroup.style.display = 'none';
+                apprenticeGroup.style.display = 'none';
 
-                if (this.value == 4) { // Profesor
+                if (this.value == 4 || this.value == 7) { // Profesor or Tutor
                     teacherGroup.style.display = 'block';
-                } else if (this.value == 5 || this.value == 6) { // Acudiente o Rol 6
+                    const teacherLabel = teacherGroup.querySelector('label');
+                    teacherLabel.innerText = this.value == 7 ? 'Tutor Asociado' : 'Profesor Asociado';
+                    
+                    // Filter teacher options
+                    const targetType = this.value == 7 ? 2 : 1;
+                    const teacherSelector = document.getElementById('teacherSelector');
+                    Array.from(teacherSelector.options).forEach(option => {
+                        if (option.value === "") {
+                            option.style.display = 'block';
+                        } else {
+                            option.style.display = option.dataset.type == targetType ? 'block' : 'none';
+                        }
+                    });
+                    teacherSelector.value = ""; // Reset selection
+                } else if (this.value == 5) { // Acudiente
                     attendantGroup.style.display = 'block';
+                } else if (this.value == 6) { // Estudiante
+                    apprenticeGroup.style.display = 'block';
                 }
             });
 
@@ -160,6 +194,16 @@
                 if (this.value) {
                     nameInput.value = selectedOption.dataset.name;
                     emailInput.value = selectedOption.dataset.email;
+                    document.getElementById('previewName').innerText = selectedOption.dataset.name;
+                }
+            });
+
+            document.getElementById('apprenticeSelector').addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (this.value) {
+                    nameInput.value = selectedOption.dataset.name;
+                    emailInput.value = selectedOption.dataset.email;
+                    usuarioInput.value = selectedOption.dataset.usuario;
                     document.getElementById('previewName').innerText = selectedOption.dataset.name;
                 }
             });

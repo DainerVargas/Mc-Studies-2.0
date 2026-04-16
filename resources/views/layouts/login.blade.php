@@ -40,7 +40,7 @@
                         @enderror
                     </div>
 
-                    <a class="lp-forgot-link" href="/Recuperar-Contraseña">¿Haz olvidado la contraseña?</a>
+                    <a class="lp-forgot-link" href="{{ route('forgot') }}">¿Haz olvidado la contraseña?</a>
 
                     <button class="lp-btn-submit" type="submit">INGRESAR</button>
                 </form>

@@ -30,9 +30,9 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app-Be1cidhe.css') }}">
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-@vite('resources/sass/app.scss')
+
 
 <!-- Service Worker Registration -->
 <script>

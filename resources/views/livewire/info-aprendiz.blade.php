@@ -70,7 +70,7 @@
                         <span class="material-symbols-outlined">rewarded_ads</span>
                     </div>
 
-                    @if ($user->rol_id != 5)
+                    @if ($user->rol_id != 5 && $user->rol_id != 6)
                         <div title="Certificado" wire:click="showCertificate" class="btn-icon">
                             <span class="material-symbols-outlined">license</span>
                         </div>
@@ -164,7 +164,7 @@
                     @endif
                 </div>
 
-                @if ($user->rol_id == 1)
+                @if ($user->rol_id == 1 || $user->rol_id == 2 || $user->rol_id == 3)
                     <a href="{{ route('viewUpdate', $aprendiz->id) }}" style="text-decoration: none;">
                         <button class="btn-update">
                             <span>Ir a Actualizar</span>
@@ -355,15 +355,17 @@
                     style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="ql-filter-group">
                         <label
-                            style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">AÑO</label>
-                        <select wire:model.live="attendanceYear"
+                            style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">DESDE</label>
+                        <input type="date" wire:model.live="startDate"
                             style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-weight: 600;">
-                            @for ($i = date('Y'); $i >= 2023; $i--)
-                                <option value="{{ $i }}">{{ $i }}</option>
-                            @endfor
-                        </select>
                     </div>
                     <div class="ql-filter-group">
+                        <label
+                            style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">HASTA</label>
+                        <input type="date" wire:model.live="endDate"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-weight: 600;">
+                    </div>
+                    <div class="ql-filter-group" style="grid-column: span 2;">
                         <label
                             style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px;">ESTADO</label>
                         <select wire:model.live="attendanceStatus"

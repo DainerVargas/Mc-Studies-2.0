@@ -16,6 +16,8 @@ class AcademicActivity extends Model
         'descripcion',
         'archivo',
         'fecha',
+        'comentario',
+        'calificacion',
     ];
 
     protected $casts = [

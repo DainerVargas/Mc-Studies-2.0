@@ -1,6 +1,12 @@
 <div class="children-container">
     <div class="header-section">
-        <h2>Mis Hijos / Acudidos</h2>
+        <h2>
+            @if (Auth::user()->rol_id == 6)
+                Mi Perfil
+            @else
+                Mis Hijos / Acudidos
+            @endif
+        </h2>
         <p>Selecciona un estudiante para ver su información detallada.</p>
     </div>
 

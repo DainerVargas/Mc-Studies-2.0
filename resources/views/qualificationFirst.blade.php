@@ -145,6 +145,60 @@
             height: auto;
             display: block;
         }
+
+        /* DISEÑO DE TARJETAS DE RESUMEN (PREMIUM) */
+        .cards-summary {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .cards-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 15px 0;
+            margin: 0 -15px;
+        }
+
+        .card-custom {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 5px solid #99BF51;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .card-custom .title {
+            font-weight: 800;
+            font-size: 14px;
+            color: #0e869c;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .card-custom .subtitle {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .card-custom .number {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .card-custom .greenA { color: #99BF51; }
+        .card-custom .black { color: #333; }
+
+        .card-custom .label {
+            font-size: 9px;
+            color: #888;
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
@@ -166,6 +220,58 @@
             <strong>Fecha:</strong>
             {{ \Carbon\Carbon::parse($qualifications[0]->created_at)->format('d/m/Y') }}
         </div>
+
+        @php
+            use App\Models\AssignedActivity;
+            use App\Models\AcademicActivity;
+            use Carbon\Carbon;
+
+            $keywords = ['worksheet', 'pelicula', 'movie', 'serie', 'series'];
+            // Detectar semestre desde la sesión o desde el modelo
+            $semester = (int) (session('selectedSemester') ?? $qualifications[0]->semestre);
+            $year = (int) (session('selectedYear') ?? $qualifications[0]->year ?? date('Y'));
+
+            // Función para calcular actividades Live para una calificación dada
+            $getLiveCounts = function ($q) use ($keywords, $semester, $year) {
+                $result = (int) $q->resultado;
+                $groupId = $q->group_id;
+                $studentId = $q->apprentice_id;
+                $startDate = null; $endDate = null;
+
+                if ($semester == 1) {
+                    if ($result == 1) { $startDate = Carbon::createFromDate($year, 2, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 3, 31)->endOfDay(); }
+                    elseif ($result == 2) { $startDate = Carbon::createFromDate($year, 4, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 4, 30)->endOfDay(); }
+                    elseif ($result == 3) { $startDate = Carbon::createFromDate($year, 5, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 5, 31)->endOfDay(); }
+                } else {
+                    if ($result == 1) { $startDate = Carbon::createFromDate($year, 8, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 9, 30)->endOfDay(); }
+                    elseif ($result == 2) { $startDate = Carbon::createFromDate($year, 10, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 10, 31)->endOfDay(); }
+                    elseif ($result == 3) { $startDate = Carbon::createFromDate($year, 11, 1)->startOfDay(); $endDate = Carbon::createFromDate($year, 11, 30)->endOfDay(); }
+                }
+
+                $asignadasAct = 0; $entregadasAct = 0;
+                if ($startDate) {
+                    $asignadasAct = AssignedActivity::whereHas('groups', function ($g) use ($groupId) {
+                        $g->where('groups.id', $groupId);
+                    })->whereBetween('assigned_activities.created_at', [$startDate, $endDate])
+                      ->where(function ($g) use ($keywords) { foreach ($keywords as $word) { $g->where('titulo', 'not like', "%{$word}%"); } })
+                      ->count();
+
+                    $entregadasAct = AcademicActivity::where('apprentice_id', $studentId)
+                      ->whereBetween('fecha', [$startDate, $endDate])
+                      ->where(function ($g) use ($keywords) { foreach ($keywords as $word) { $g->where('titulo', 'not like', "%{$word}%"); } })
+                      ->count();
+                }
+
+                return (object) [
+                    'asigAct' => $asignadasAct,
+                    'entAct' => $entregadasAct,
+                    'asigWork' => $q->worksheet_asignados, // Estáticos
+                    'entWork' => $q->worksheet_entregados, // Estáticos
+                ];
+            };
+
+            $liveCounts = $getLiveCounts($qualifications[0]);
+        @endphp
 
         @php
             $totalListening = 0;
@@ -250,6 +356,33 @@
                     <strong>{{ $skill1 }}</strong> y <strong>{{ $skill2 }}</strong>.
                 </p>
             @endif
+        </div>
+
+        <div class="cards-summary">
+            <table class="cards-table">
+                <tr>
+                    <td style="width: 50%;">
+                        <div class="card-custom">
+                            <div class="title">Worksheets entregados</div>
+                            <p class="subtitle">(Películas y series asignadas)</p>
+                            <div class="number">
+                                <span class="greenA">{{ $liveCounts->entWork }} <span class="black">/ {{ $liveCounts->asigWork }}</span></span>
+                            </div>
+                            <span class="label">COMPLETADAS</span>
+                        </div>
+                    </td>
+                    <td style="width: 50%;">
+                        <div class="card-custom">
+                            <div class="title">Actividades entregadas</div>
+                            <p class="subtitle">(Plataforma de Richmond)</p>
+                            <div class="number">
+                                <span class="greenA">{{ $liveCounts->entAct }} <span class="black">/ {{ $liveCounts->asigAct }}</span></span>
+                            </div>
+                            <span class="label">COMPLETADAS</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
 
 

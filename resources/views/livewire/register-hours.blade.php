@@ -9,14 +9,12 @@
                         <p>Visualice y administre los registros de horas y pagos de los profesores.</p>
                     </div>
                 </div>
-                @if (auth()->user()->rol_id == 1)
-                    <div class="header-actions">
-                        <a href="{{ route('teacher.hours-form') }}" class="btn-create">
-                            <span class="material-symbols-outlined">add_circle</span>
-                            <span>Registrar Horas</span>
-                        </a>
-                    </div>
-                @endif
+                <div class="header-actions">
+                    <a href="{{ route('teacher.hours-form') }}" class="btn-create">
+                        <span class="material-symbols-outlined">add_circle</span>
+                        <span>Registrar Horas</span>
+                    </a>
+                </div>
             </div>
 
             <div class="card-filters">

@@ -14,6 +14,8 @@ class MyChildrenComponent extends Component
         $user = Auth::user();
         if ($user->attendant) {
             $this->children = $user->attendant->apprentice;
+        } elseif ($user->rol_id == 6 && $user->apprentice) {
+            $this->children = collect([$user->apprentice]);
         } else {
             $this->children = collect();
         }

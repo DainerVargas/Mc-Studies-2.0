@@ -1,0 +1,26 @@
+
+   INFO  Running migrations.  
+
+  2026_02_15_072844_create_assigned_activities_table  4.61ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'assigned_activities' already exists (Connection: mysql, SQL: create table `assigned_activities` (`id` bigint unsigned not null auto_increment primary key, `titulo` varchar(255) not null, `descripcion` text null, `archivo` varchar(255) null, `user_id` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci')
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOException::("SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'assigned_activities' already exists")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOStatement::execute()
+
